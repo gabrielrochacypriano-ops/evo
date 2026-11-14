@@ -188,6 +188,11 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 .idi-pecas{display:flex;flex-wrap:wrap;margin-top:10px}
 .idi-pecas .chip{font-size:16px;color:var(--txt,#e8eef7)}
 .chip.usado{opacity:.25}
+.idi-perg{font-size:22px;font-weight:700;text-align:center;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.idi-som{width:40px;height:40px;border-radius:50%;border:1px solid var(--cyan);background:rgba(24,240,255,.08);font-size:18px}
+.idi-som.g{width:84px;height:84px;font-size:38px;box-shadow:0 0 22px rgba(24,240,255,.25)}
+.qbtn.esc{border-color:var(--gold);color:var(--gold);background:rgba(255,201,74,.08)}
+
 .rf-area{position:relative;height:min(52vh,380px);border:1px solid var(--line);border-radius:14px;background:rgba(34,211,238,.04);overflow:hidden;touch-action:manipulation}
 .rf-alvo{position:absolute;width:60px;height:60px;border-radius:50%;font-size:32px;background:radial-gradient(circle,rgba(255,201,74,.35),transparent 70%);transition:left .08s,top .08s}
 .rf-cent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -283,11 +288,16 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
     <div class="h glow" style="font-size:44px;font-weight:900;letter-spacing:.3em;color:var(--txt);margin:-6px 0 6px .3em">EVO</div>
     <h1 class="h cy glow" style="font-size:16px;font-weight:700">Sistema Iniciado</h1>
     <p class="mut typing" style="margin:14px 0 40px;font-size:16px" id="typeTxt"></p>
-    <button class="btn" id="btnIniciar">👁️ INICIAR SINCRONIZAÇÃO</button>
+    <button class="btn" id="btnIniciar">📊 COMEÇAR TESTE DE STATUS</button>
     <div style="height:14px"></div>
     <button class="btn ghost" id="btnRecomecar" style="display:none">RECOMEÇAR DO ZERO</button>
     <button class="h mut" style="font-size:12px;margin-top:16px;padding:8px" id="btnTenhoBk">JÁ TENHO UM BACKUP</button>
-    <p class="mut" style="font-size:14px;margin-top:18px;line-height:1.4">40 perguntas · cerca de 8 minutos.<br>Responda pelo que você <b>faz</b>, não pelo que gostaria de fazer.</p>
+    <div class="card" style="text-align:left;margin-top:22px;font-size:14px;line-height:1.45">
+      <div class="h cy" style="font-size:12px;margin-bottom:8px">SUA AVALIAÇÃO INICIAL TEM 2 TESTES</div>
+      <p><b>📊 1. Teste de Status</b> · 60 perguntas · ~10 min<br><span class="mut">Mede seus 5 pilares: Físico, Mente, Espírito, Recursos e Comunidade.</span></p>
+      <p style="margin-top:10px"><b>⚔️ 2. Teste de Classe</b> · 24 escolhas · ~3 min<br><span class="mut">Revela seu estilo natural, forças e ponto cego. Liberado logo após o primeiro.</span></p>
+      <p class="mut" style="margin-top:10px;font-size:13px">Responda pelo que você <b>faz</b>, não pelo que gostaria de fazer.</p>
+    </div>
   </div>
 </section>
 
@@ -445,6 +455,10 @@ const PERGUNTAS=[
  [0,'Você bebe água suficiente ao longo do dia (cerca de 2 litros)?'],
  [0,'Você passa horas sentado sem pausas para se movimentar?',1],
  [0,'Você consome álcool em excesso, cigarro ou vape?',1],
+ [0,'Você faz alongamento ou exercícios de mobilidade?'],
+ [0,'Você mantém horários regulares para dormir e acordar?'],
+ [0,'Você sente dores ou desconfortos por má postura ou por ficar parado?',1],
+ [0,'Você faz exames de rotina e cuida da saúde de forma preventiva?'],
  [1,'Quando surge um problema complexo, você mantém o foco até resolver?'],
  [1,'Você lê livros ou conteúdos aprofundados (além de redes sociais)?'],
  [1,'Você pega o celular sem motivo quando deveria estar focado?',1],
@@ -453,6 +467,10 @@ const PERGUNTAS=[
  [1,'Você busca aprender habilidades novas por conta própria?'],
  [1,'Você deixa tarefas importantes para a última hora?',1],
  [1,'Você consegue ficar 30 minutos ou mais concentrado em uma única tarefa?'],
+ [1,'Você revisa o que aprendeu ou anota ideias importantes?'],
+ [1,'Você passa mais de 3 horas por dia em redes sociais ou vídeos curtos?',1],
+ [1,'Você define prioridades claras antes de começar o trabalho?'],
+ [1,'Você muda de ideia diante de bons argumentos, mesmo contrariando sua opinião?'],
  [2,'Você mantém a calma e a clareza quando algo dá muito errado?'],
  [2,'Você reserva momentos de silêncio, oração, meditação ou reflexão?'],
  [2,'Você sente que sua vida tem um propósito claro?'],
@@ -461,6 +479,10 @@ const PERGUNTAS=[
  [2,'Você sente gratidão pelo que tem no dia a dia?'],
  [2,'Você reage com raiva ou impulsividade e depois se arrepende?',1],
  [2,'Você se sente em paz consigo mesmo?'],
+ [2,'Você consegue perdoar quem te magoou?'],
+ [2,'Você se compara com os outros e se sente inferior?',1],
+ [2,'Você dedica tempo a algo que te faz sentir vivo (natureza, arte, fé, hobby)?'],
+ [2,'Você reconhece e aceita suas emoções, em vez de reprimi-las?'],
  [3,'Você investe ou guarda parte da sua renda antes de gastar?'],
  [3,'Você acompanha quanto ganha e quanto gasta no mês?'],
  [3,'Você termina o mês com dinheiro sobrando?'],
@@ -469,6 +491,10 @@ const PERGUNTAS=[
  [3,'Você paga juros de cartão, cheque especial ou contas atrasadas?',1],
  [3,'Você estuda ou busca formas de aumentar sua renda?'],
  [3,'Você tem metas financeiras definidas e acompanha o progresso?'],
+ [3,'Você compara preços e planeja compras maiores com antecedência?'],
+ [3,'Você evita olhar suas contas ou pensar em dinheiro por ansiedade?',1],
+ [3,'Você trabalha com qualidade mesmo quando ninguém está supervisionando?'],
+ [3,'Você investe em cursos ou habilidades que aumentam seu valor profissional?'],
  [4,'Em um ambiente novo, você tem facilidade para criar conexões reais?'],
  [4,'Você tem pessoas com quem pode contar em um momento difícil?'],
  [4,'Você toma a iniciativa de procurar amigos e familiares?'],
@@ -476,7 +502,11 @@ const PERGUNTAS=[
  [4,'Você consegue expressar o que sente e dizer "não" quando precisa?'],
  [4,'Você passa tempo de qualidade com pessoas importantes, sem o celular?'],
  [4,'Você evita conversas difíceis ou conflitos necessários?',1],
- [4,'Você ajuda outras pessoas sem esperar algo em troca?']
+ [4,'Você ajuda outras pessoas sem esperar algo em troca?'],
+ [4,'Você lembra de datas importantes das pessoas próximas?'],
+ [4,'Você fala mal de pessoas pelas costas?',1],
+ [4,'Você participa de algum grupo, comunidade ou causa?'],
+ [4,'Você demonstra carinho e reconhecimento a quem você gosta?']
 ];
 /* Perguntas para avaliadores externos: [pilar, texto, invertida?] */
 const PERG_EXT=[
@@ -530,7 +560,7 @@ const ART_URL='https://claude.ai/artifact/TLPnHJNnw5yDeS6ZmCHmSr';
 const ALF='abcdefghijkmnpqrstuvwxyz23456789';
 const HOSTED=!!document.querySelector('link[rel=manifest]');
 const RESPOSTAS=[['SEMPRE',6],['QUASE SEMPRE',5],['ÀS VEZES',4],['RARAMENTE',3],['QUASE NUNCA',2],['NUNCA',1]];
-const NOTA_MAX_INICIAL=85, NOTA_MIN=10, NOTA_TETO=99, K_EVOL=600;
+const NOTA_MAX_INICIAL=85, NOTA_MIN=10, NOTA_TETO=99, K_EVOL=2400;   // status sobe devagar (4× mais lento que antes)
 /* média 1..6 -> nota 10..85 (ninguém começa perfeito) */
 const notaDeMedia=m=>Math.round(NOTA_MIN+(m-1)/5*(NOTA_MAX_INICIAL-NOTA_MIN));
 const MODOS={
@@ -871,7 +901,7 @@ function prepararDespertar(){
   const pr=lerProg();
   if(pr&&pr.resp&&pr.resp.length===PERGUNTAS.length&&pr.qi>0){
     $('#btnIniciar').textContent='▶ CONTINUAR ('+pr.qi+'/'+PERGUNTAS.length+')';$('#btnRecomecar').style.display='block';
-  }else{$('#btnIniciar').textContent='👁️ INICIAR SINCRONIZAÇÃO';$('#btnRecomecar').style.display='none'}
+  }else{$('#btnIniciar').textContent='📊 COMEÇAR TESTE DE STATUS';$('#btnRecomecar').style.display='none'}
 }
 $('#btnIniciar').onclick=()=>{const pr=lerProg();
   if(pr&&pr.resp&&pr.resp.length===PERGUNTAS.length){qi=Math.min(pr.qi,PERGUNTAS.length-1);resp=pr.resp}else{qi=0;resp=Array(PERGUNTAS.length).fill(0)}
@@ -912,17 +942,27 @@ function egoTela(){
 $('#btnEgo').onclick=()=>{
   const nome=$('#nomeIn').value.trim()||'Jogador';
   const antigo=S&&S.nome?S:null;
+  let zerar=false;try{zerar=localStorage.getItem('evo_reset')==='1';localStorage.removeItem('evo_reset')}catch(x){}
   S=novoEstado();
-  if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+  if(antigo&&zerar){ // redefinir: só mantém a visão dos outros, a guilda e as configurações
+    S.token=antigo.token||S.token;S.ext=antigo.ext||[];S.extArq=antigo.extArq||[];S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.modo=antigo.modo||S.modo;
+    ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+  }
+  else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
-  registrar('🌀 Despertar concluído. O Sistema reconhece '+nome+'.');
-  processarDias();salvar();iniciar();
+  registrar(zerar?'♻️ Perfil redefinido. Um novo começo para '+nome+'.':'🌀 Despertar concluído. O Sistema reconhece '+nome+'.');
+  processarDias();salvar();if(!S.classe)avaliacoesTela();else iniciar();
   const dis=dissonancia();
   setTimeout(()=>sistema('DESPERTAR CONCLUÍDO','Bem-vindo, <b class="cy">'+esc(nome)+'</b>.<br><br>Dissonância do ego: <b class="'+(dis>=20?'rd':'cy')+'">'+N(dis)+'</b> pontos.<br>'+(dis>=20?'Sua percepção está acima da sua realidade. O Sistema vai te corrigir.':'Sua percepção está alinhada com a realidade. Bom começo.')),400);
 };
+document.addEventListener('click',e=>{
+  if(e.target.id==='zrX')fechar();
+  if(e.target.id==='zrOk'){const b=e.target;if(!b.dataset.c){b.dataset.c=1;b.textContent='TOQUE DE NOVO PARA CONFIRMAR';return}
+    fechar();try{localStorage.setItem('evo_reset','1')}catch(x){}limparProg();qi=0;resp=Array(PERGUNTAS.length).fill(0);quest()}
+});
 function dissonancia(){let s=0;for(let i=0;i<5;i++)s+=Math.abs(S.ego[i]-realNota(i));return s/5}
 
 /* ============ 4. APP ============ */
@@ -970,7 +1010,7 @@ function renderRadar(){
   $('#kDis').innerHTML='<span class="'+(dis>=20?'rd':'cy')+'">'+N(dis)+'</span>';
   $('#kStreak').textContent=sequencia()+' 🔥';
   $('#stats').innerHTML=PIL.map((p,i)=>{
-    const lv=1+Math.floor(Math.max(0,S.xp[i])/100), d=S.ego[i]-realNota(i);
+    const lv=1+Math.floor(Math.max(0,S.xp[i])/300), d=S.ego[i]-realNota(i);
     return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'}).join('');
   const f=fraco();let maior=0;for(let i=1;i<5;i++)if(S.ego[i]-realNota(i)>S.ego[maior]-realNota(maior))maior=i;
   const gap=S.ego[maior]-realNota(maior);
@@ -1255,6 +1295,7 @@ $('#btnCfg').onclick=()=>{
     '<button class="btn ghost" style="margin-top:10px" id="cPf">PREFERÊNCIAS DE MISSÕES</button>'+
     '<div class="row" style="margin-top:10px"><button class="btn ghost" id="cBk">BACKUP</button><button class="btn ghost" id="cRs">RESTAURAR</button></div>'+
     '<button class="btn ghost" style="margin-top:10px" id="cRe">REFAZER O DESPERTAR</button>'+
+    '<button class="btn ghost" style="margin-top:10px" id="cZr">♻️ REDEFINIR PERFIL</button>'+
     '<p class="mut" style="font-size:12px;margin-top:14px;text-align:center">'+(ref?'☁ Progresso salvo na sua conta Claude':'💾 Progresso salvo neste aparelho — faça backup de vez em quando')+'</p>');
   const info=()=>{const m=MODOS[modo];$('#cmInfo').textContent=m.qtd+' missões/dia · XP ×'+m.mult+' · mínimo '+Math.round(m.limite*100)+'% para evitar penalidade'+(modo!==S.modo?' · vale a partir de amanhã':'')};info();
   $('#cm').querySelectorAll('button').forEach(b=>b.onclick=()=>{modo=b.dataset.k;$('#cm').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));info()});
@@ -1265,7 +1306,11 @@ $('#btnCfg').onclick=()=>{
   $('#cPf').onclick=prefsTela;$('#cBk').onclick=backup;$('#cRs').onclick=restaurar;if($('#cInst'))$('#cInst').onclick=instalar;
   $('#cX').onclick=fechar;
   $('#cOk').onclick=()=>{S.nome=$('#cn').value.trim()||S.nome;S.linkBase=$('#cl').value.trim();if(modo!==S.modo){S.modo=modo;registrar('⚙️ Dificuldade alterada para '+MODOS[modo].nome)}fechar();salvar();render()};
-  $('#cRe').onclick=()=>{const b=$('#cRe');b.textContent='TOCAR DE NOVO: nova linha de base, XP zera (metas e histórico ficam)';b.classList.add('red');b.onclick=()=>{fechar();limparProg();qi=0;resp=Array(PERGUNTAS.length).fill(0);quest()}};
+  $('#cZr').onclick=()=>abrir('<h3 class="rd">♻️ REDEFINIR PERFIL</h3><p style="font-size:15px;line-height:1.5;margin:8px 0 12px">Você vai começar do zero e refazer o teste do Despertar.</p>'+
+    '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:10px"><b class="rd">Será apagado:</b> nível, rank, XP, status, sequência, metas, tarefas, conquistas, títulos, histórico, progresso da Arena, das matérias, da lógica e dos idiomas.</div>'+
+    '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:14px"><b class="cy">Será mantido:</b> a visão que outras pessoas deram sobre você (avaliações externas e o seu link de avaliação), a sua guilda, o seu nome, as preferências de missões e as configurações de som.</div>'+
+    '<div class="row"><button class="btn ghost" id="zrX">CANCELAR</button><button class="btn red" id="zrOk">REDEFINIR</button></div>');
+  $('#cRe').onclick=()=>{const b=$('#cRe');b.textContent='TOCAR DE NOVO: nova linha de base, XP zera (metas e histórico ficam)';b.classList.add('red');b.onclick=()=>{fechar();try{localStorage.removeItem('evo_reset')}catch(x){}limparProg();qi=0;resp=Array(PERGUNTAS.length).fill(0);quest()}};
 };
 
 /* ============ ÁUDIO, MÚSICA E VIBRAÇÃO (tudo gerado pelo app, sem arquivos) ============ */
@@ -1368,7 +1413,9 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('visibilitychange',()=>{if(document.hidden){MUS.pausaTemp();AC&&AC.suspend()}else if(_audioIniciado){MUS.retoma();AC&&AC.resume()}});
 
 /* ============ ARENA: feed vertical de desafios (estilo TikTok) ============ */
-const ARENA_CAP=300;   // XP máximo por dia vindo da Arena (o resto vira treino livre)
+const ARENA_CAP=500;   // limite diário maior…
+const ARENA_FATOR=.7;  // …mas cada desafio vale ~30% menos
+const xpA=n=>Math.max(1,Math.round(n*ARENA_FATOR));   // XP máximo por dia vindo da Arena (o resto vira treino livre)
 const DIF={facil:['FÁCIL','cy'],medio:['MÉDIO','gd'],dificil:['DIFÍCIL','rd']};
 function arenaDia(){const k=hoje();S.arena=S.arena||{};S.arena[k]=S.arena[k]||{xp:0,feitos:0};return S.arena[k]}
 function arenaGanhar(xp,pilar,nome){
@@ -1377,7 +1424,7 @@ function arenaGanhar(xp,pilar,nome){
   if(q>0){const nvA=nivel();d.xp+=q;S.xp[pilar]+=q;registrar('🎮 Arena: '+nome+' (+'+q+' XP)');salvar();renderHeader();arenaTopo();
     const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.')}
     else{try{SFX.sucesso()}catch(e){}toast('+'+q+' XP · '+PIL[pilar])}}
-  else{salvar();arenaTopo();toast('Treino livre: limite de XP da Arena hoje atingido')}
+  else{salvar();arenaTopo();if(!d.avisado){d.avisado=1;salvar();toast('Limite diário de XP da Arena atingido. Continue treinando à vontade!')}}
   return q;
 }
 const rr=(a,b)=>a+Math.floor(Math.random()*(b-a+1)), pick=a=>a[Math.floor(Math.random()*a.length)], embaralhar=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -1422,7 +1469,9 @@ function sudokuGerar(n,dicas){
   return{p,sol};
 }
 function cardSudoku(el,fim,n){
-  const {p,sol}=sudokuGerar(n,n===9?36:7),g=p.slice();let cur=-1,erros=0,acabou=false;
+  const nvL=n===9?logNivel():1,dicas=n===9?[56,50,44,38,32][nvL-1]:7,fx=n===9?(81-dicas)/45:1;
+  if(n===9)cabecalho(el,'🔢','Sudoku 9×9 · Nível '+nvL,LOG_NOMES[nvL-1].toUpperCase(),LOG_COR[nvL-1],'até +'+xpA(60*fx)+' XP · MENTE');
+  const {p,sol}=sudokuGerar(n,dicas),g=p.slice();let cur=-1,erros=0,acabou=false;
   const draw=()=>{
     el.querySelector('.jogo').innerHTML='<p class="ar-inst">Complete a grade: cada linha, coluna e bloco com 1 a '+n+'.</p>'+
       '<div class="sg s'+n+'">'+g.map((v,i)=>{const r=Math.floor(i/n),c=i%n,bw=n===9?3:2,bh=n===9?3:2;
@@ -1431,7 +1480,7 @@ function cardSudoku(el,fim,n){
     el.querySelectorAll('.sc').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i;if(p[i])return;cur=i;draw()});
     el.querySelectorAll('.snum button').forEach(b=>b.onclick=()=>{if(acabou||cur<0)return;const v=+b.dataset.n;g[cur]=v;
       if(v&&v!==sol[cur]){erros++;try{SFX.erro()}catch(e){}}else if(v)try{SFX.tick()}catch(e){}
-      if(g.every((x,i)=>x===sol[i])){acabou=true;draw();el.querySelector('.ar-msg').innerHTML='<b class="cy">Sudoku resolvido!</b> '+(erros?erros+' erro(s).':'Sem erros!');fim(true,erros===0?1.2:1)}else draw()});
+      if(g.every((x,i)=>x===sol[i])){acabou=true;draw();el.querySelector('.ar-msg').innerHTML='<b class="cy">Sudoku resolvido!</b> '+(erros?erros+' erro(s).':'Sem erros!');fim(true,(erros===0?1.2:1)*fx)}else draw()});
   };draw();
 }
 
@@ -1645,7 +1694,7 @@ const MATERIAS={
    ['Qual é a voz passiva de "O juiz leu a sentença"?',['A sentença foi lida pelo juiz.','O juiz lia a sentença.','A sentença leu o juiz.','Leu-se o juiz.'],0,'Na voz passiva, o objeto vira sujeito e o verbo vai para "ser + particípio".'],
    ['Qual destas palavras é proparoxítona?',['café','pássaro','cadeira','jacaré'],1,'Proparoxítona tem a sílaba tônica na antepenúltima: PÁS-sa-ro. Toda proparoxítona é acentuada.']]]}
 };
-const SABER_NIVEIS=[0,8,20];   // acertos para chegar ao nível 2 e 3
+const SABER_NIVEIS=[0,40,120];   // acertos para chegar ao nível 2 e 3
 const SABER_NOMES=['Básico','Intermediário','Avançado'];
 const SABER_XP=[10,20,35];
 function saber(m){S.saber=S.saber||{};S.saber[m]=S.saber[m]||{ac:0,er:0,vistos:[]};return S.saber[m]}
@@ -1654,7 +1703,7 @@ function cardSaber(el,fim){
   const {m,nv,i,q}=saberEscolher(),M=MATERIAS[m];let acabou=false;
   el.querySelector('.ar-ico').textContent=M.ico;
   el.querySelector('.ar-nome').textContent=M.nome+' · Nível '+nv;
-  el.querySelector('.ar-sub').innerHTML='<span class="tag '+['cy','gd','rd'][nv-1]+'" style="font-size:10px;padding:2px 6px">'+SABER_NOMES[nv-1].toUpperCase()+'</span> <span class="mut">até +'+SABER_XP[nv-1]+' XP · MENTE</span>';
+  el.querySelector('.ar-sub').innerHTML='<span class="tag '+['cy','gd','rd'][nv-1]+'" style="font-size:10px;padding:2px 6px">'+SABER_NOMES[nv-1].toUpperCase()+'</span> <span class="mut">até +'+xpA(SABER_XP[nv-1])+' XP · MENTE</span>';
   el.querySelector('.jogo').innerHTML='<div class="card" style="font-size:19px;font-weight:700;line-height:1.35;margin-bottom:14px">'+q[0]+'</div>'+
     q[1].map((t,k)=>'<button class="btn qbtn" data-k="'+k+'">'+t+'</button>').join('')+'<p class="ar-msg"></p>';
   el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(acabou)return;acabou=true;const ok=+b.dataset.k===q[2],sb=saber(m),nvA=saberNivel(m);
@@ -1908,7 +1957,7 @@ const EXTRAS={
 
 /* ============ LÓGICA: 5 níveis (facílimo → extremo) ============ */
 const LOG_NOMES=['Facílimo','Fácil','Médio','Difícil','Extremo'];
-const LOG_NIVEIS=[0,10,25,50,90];   // acertos para chegar a cada nível
+const LOG_NIVEIS=[0,30,80,160,300];   // acertos para chegar a cada nível
 const LOG_XP=[5,10,20,35,60];
 const LOG_COR=['cy','cy','gd','rd','rd'];
 const SEMANA=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
@@ -2436,7 +2485,7 @@ const VOC=[
   ['Nós vamos à praia amanhã.','We are going to the beach tomorrow.','Mañana vamos a la playa.','Nous allons à la plage demain.','Domani andiamo al mare.','Wir fahren morgen an den Strand.','明日、海に行きます (ashita, umi ni ikimasu)'],
   ['Meu irmão trabalha em um hospital.','My brother works in a hospital.','Mi hermano trabaja en un hospital.','Mon frère travaille dans un hôpital.','Mio fratello lavora in un ospedale.','Mein Bruder arbeitet in einem Krankenhaus.','兄は病院で働いています (ani wa byōin de hataraite imasu)']]
 ];
-const IDI_NIVEIS=[0,10,25,45,70,100,140,190,250,320];  // acertos para cada nível (1 a 10)
+const IDI_NIVEIS=[0,30,75,135,210,300,420,570,750,960];  // acertos para cada nível (1 a 10)
 const IDI_DICAS={
  en:'Em inglês o adjetivo vem antes do substantivo: "a new language" (uma língua nova).',
  es:'Em espanhol, perguntas e exclamações abrem com ¿ e ¡ invertidos.',
@@ -2466,7 +2515,7 @@ function quizHtml(q){return'<div class="card" style="font-size:19px;font-weight:
 /* ---------- Lógica com níveis ---------- */
 function cardLogica(el,fim){
   const nv=logNivel(),q=logPergunta(nv);let acabou=false;
-  cabecalho(el,'🧩','Lógica · Nível '+nv,LOG_NOMES[nv-1].toUpperCase(),LOG_COR[nv-1],'até +'+LOG_XP[nv-1]+' XP · MENTE');
+  cabecalho(el,'🧩','Lógica · Nível '+nv,LOG_NOMES[nv-1].toUpperCase(),LOG_COR[nv-1],'até +'+xpA(LOG_XP[nv-1])+' XP · MENTE');
   el.querySelector('.jogo').innerHTML='<p class="ar-inst">Pense antes de tocar. Só vale a primeira resposta.</p>'+quizHtml(q);
   el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(acabou)return;acabou=true;const ok=+b.dataset.k===q[2],L=logica(),nvA=logNivel();
     ok?L.ac++:L.er++;
@@ -2474,7 +2523,7 @@ function cardLogica(el,fim){
     if(!ok){b.classList.add('red');try{SFX.erro()}catch(e){}}
     el.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Correto!</b> ':'<b class="rd">Resposta: '+q[1][q[2]]+'.</b> ')+q[3];
     const nvD=logNivel();
-    if(nvD>nvA)setTimeout(()=>sistema('LÓGICA · NOVO NÍVEL','<span style="font-size:44px">🧩</span><br>Você chegou ao <b class="gd">Nível '+nvD+' · '+LOG_NOMES[nvD-1]+'</b>.<br><br>Os desafios ficam mais difíceis e valem até <b class="cy">'+LOG_XP[nvD-1]+' XP</b>.'),900);
+    if(nvD>nvA)setTimeout(()=>sistema('LÓGICA · NOVO NÍVEL','<span style="font-size:44px">🧩</span><br>Você chegou ao <b class="gd">Nível '+nvD+' · '+LOG_NOMES[nvD-1]+'</b>.<br><br>Os desafios ficam mais difíceis e valem até <b class="cy">'+xpA(LOG_XP[nvD-1])+' XP</b>.'),900);
     salvar();renderSaber();fim(ok,LOG_XP[nv-1]/ARENA_TIPOS.logica.xp);
   });
 }
@@ -2485,7 +2534,7 @@ function cardLivro(el,fim){
   S.lidos=S.lidos||[];let livres=IDEIAS.map((x,i)=>i).filter(i=>!S.lidos.includes(i));
   if(!livres.length){S.lidos=[];livres=IDEIAS.map((x,i)=>i)}
   const i=pick(livres),[k,tit,txt]=IDEIAS[i],[livro,autor,cat]=LIVROS_INFO[k],C=CAT_LIVRO[cat];
-  cabecalho(el,'📖','Ideia de livro',C[0],C[1],'+8 XP · '+PIL[C[2]]);
+  cabecalho(el,'📖','Ideia de livro',C[0],C[1],'+'+xpA(8)+' XP · '+PIL[C[2]]);
   el.querySelector('.jogo').innerHTML='<div class="card holo" style="margin-bottom:12px"><div class="h gd" style="font-size:15px;margin-bottom:10px">'+tit+'</div><p style="font-size:17px;line-height:1.55">'+txt+'</p></div>'+
     '<div class="card" style="font-size:14px"><b>'+livro+'</b><br><span class="mut">'+autor+'</span></div>'+
     '<p class="mut" style="font-size:12px;margin:8px 2px 12px">'+(cat==='cla'?'Ideia de obra em domínio público, em tradução e adaptação livres do EVO.':'Resumo da ideia em palavras do EVO. Vale ler o livro completo.')+'</p>'+
@@ -2510,15 +2559,33 @@ function idiNivel(l){const a=idiomas().ac[l]||0;let n=1;IDI_NIVEIS.forEach((v,i)
 function idiEscolherHtml(){const I=idiomas();return'<div class="idi-grid">'+Object.entries(IDIOMAS).map(([k,L])=>'<button class="chip'+(I.sel.includes(k)?' on':'')+'" data-l="'+k+'" style="font-size:15px;padding:10px 12px">'+L.flag+' '+L.nome+'</button>').join('')+'</div>'}
 function idiLigar(box,depois){box.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const I=idiomas(),k=b.dataset.l;
   I.sel=I.sel.includes(k)?I.sel.filter(x=>x!==k):I.sel.concat(k);b.classList.toggle('on');salvar();renderSaber();depois&&depois()})}
+/* ---------- Pronúncia (voz do próprio aparelho) ---------- */
+const VOZ_LANG={en:'en-US',es:'es-ES',fr:'fr-FR',it:'it-IT',de:'de-DE',ja:'ja-JP'};
+const textoFala=(l,t)=>{t=String(t);if(l==='ja')t=t.replace(/\s*\(.*\)\s*$/,'');return t.replace(/…/g,' ').trim()};
+function vozPara(l){const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[],c=VOZ_LANG[l];
+  return vs.find(v=>v.lang===c)||vs.find(v=>v.lang&&v.lang.replace('_','-').toLowerCase().startsWith(l))||null}
+function temVoz(l){if(!('speechSynthesis' in window))return false;const vs=speechSynthesis.getVoices();return !vs.length||!!vozPara(l)}
+function falar(l,t,lento){
+  if(!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(textoFala(l,t));u.lang=VOZ_LANG[l];const v=vozPara(l);if(v)u.voice=v;
+    u.rate=lento?.6:.9;try{MUS.abafar(2500)}catch(e){}speechSynthesis.speak(u)}catch(e){}
+}
+if('speechSynthesis' in window)try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}
+const limpaPal=w=>w.replace(/^[¿¡"«]+|[.,!?;:"»]+$/g,'');
+
+/* ---------- Exercícios ---------- */
 function idiExercicio(l){
-  const L=IDIOMAS[l],nv=idiNivel(l),maxT=nv<=2?0:nv<=5?1:2;
-  const t=Math.random()<.6?maxT:rr(0,maxT),banco=VOC[t],item=pick(banco);
-  const tipo=t===2&&!L.semMontar&&Math.random()<.6?'montar':pick(['lp','pl']);
-  if(tipo==='montar')return{tipo,item,t,alvo:item[L.col],pt:item[0]};
-  const outros=embaralhar(banco.filter(x=>x!==item&&x[0]!==item[0]&&x[L.col]!==item[L.col])).slice(0,3);
+  const L=IDIOMAS[l],nv=idiNivel(l),maxT=nv<=2?1:2,voz=temVoz(l),
+        tier=Math.random()<.45?0:Math.random()<.6||maxT<2?1:2;
+  const t=Math.min(tier,maxT),banco=VOC[t],item=pick(banco),alvo=item[L.col];
+  const montavel=!L.semMontar&&alvo.split(' ').length>=3&&!alvo.includes('…')&&t>0;
+  const tipos=['lp','pl'];if(voz)tipos.push('escuta');if(montavel){tipos.push('montar','montar');if(voz)tipos.push('ditado')}
+  const tipo=pick(tipos);
+  if(tipo==='montar'||tipo==='ditado')return{tipo,item,t,alvo,pt:item[0]};
+  const outros=embaralhar(banco.filter(x=>x!==item&&x[0]!==item[0]&&x[L.col]!==alvo)).slice(0,3);
   const ops=embaralhar([item].concat(outros));
-  return tipo==='lp'?{tipo,item,t,perg:item[L.col],ops:ops.map(x=>x[0]),c:ops.indexOf(item)}
-                    :{tipo,item,t,perg:item[0],ops:ops.map(x=>x[L.col]),c:ops.indexOf(item)};
+  if(tipo==='lp')return{tipo,item,t,perg:alvo,ops:ops.map(x=>x[0]),c:ops.indexOf(item),fala:alvo};
+  return{tipo,item,t,perg:item[0],ops:ops.map(x=>x[L.col]),c:ops.indexOf(item),fala:alvo};
 }
 function cardIdioma(el,fim){
   const I=idiomas(),J=el.querySelector('.jogo');
@@ -2528,37 +2595,55 @@ function cardIdioma(el,fim){
     idiLigar(J);J.querySelector('#idOk').onclick=()=>{if(!idiomas().sel.length){toast('Escolha pelo menos um idioma');return}cardIdioma(el,fim)};return;
   }
   I.vez=(I.vez||0)+1;const l=I.sel[I.vez%I.sel.length],L=IDIOMAS[l],nv=idiNivel(l);
-  cabecalho(el,L.flag,'Lição de '+L.nome+' · Nível '+nv,'NÍVEL '+nv,nv<4?'cy':nv<7?'gd':'rd','até +15 XP · MENTE');
-  let n=0,ac=0,nvAt=nv;const TOT=5;
+  cabecalho(el,L.flag,'Lição de '+L.nome+' · Nível '+nv,'NÍVEL '+nv,nv<4?'cy':nv<7?'gd':'rd','até +'+xpA(15)+' XP · MENTE');
+  let n=0,ac=0,nvAt=nv;const TOT=6;
   const prox=()=>{if(n>=TOT){
       const nvD=idiNivel(l);J.innerHTML='<div class="card" style="text-align:center"><div class="h cy" style="font-size:14px">Lição concluída</div><div style="font-family:Orbitron;font-size:40px;margin:10px 0">'+ac+'/'+TOT+'</div><div class="mut" style="font-size:14px">'+L.flag+' '+L.nome+' · Nível '+nvD+' · '+(I.ac[l]||0)+' acertos</div><p style="font-size:14px;margin-top:10px">💡 '+IDI_DICAS[l]+'</p></div>';
-      fim(ac>=3,ac/TOT);return}
+      fim(ac>=4,ac/TOT);return}
     const ex=idiExercicio(l);n++;
-    const resp=ok=>{if(ok){ac++;I.ac[l]=(I.ac[l]||0)+1;try{SFX.tick()}catch(e){}}else{try{SFX.erro()}catch(e){}}
+    const resp=ok=>{if(ok){ac++;I.ac[l]=(I.ac[l]||0)+1}else{try{SFX.erro()}catch(e){}}
       const nvA=nvAt,nvD=idiNivel(l);nvAt=nvD;salvar();renderSaber();
-      if(nvD>nvA&&ok)setTimeout(()=>sistema(L.nome.toUpperCase()+' · NÍVEL '+nvD,'<span style="font-size:44px">'+L.flag+'</span><br>Você chegou ao <b class="gd">Nível '+nvD+'</b> em '+L.nome+'.'+(nvD===3||nvD===6?'<br><br>Novas frases foram liberadas!':'')),600)};
+      if(nvD>nvA&&ok)setTimeout(()=>sistema(L.nome.toUpperCase()+' · NÍVEL '+nvD,'<span style="font-size:44px">'+L.flag+'</span><br>Você chegou ao <b class="gd">Nível '+nvD+'</b> em '+L.nome+'.'+(nvD===3?'<br><br>Frases completas foram liberadas!':'')),600)};
     const topo='<p class="ar-inst">'+n+'/'+TOT+' · ';
-    if(ex.tipo==='montar'){
+    const alto=(t,grande)=>'<button class="idi-som'+(grande?' g':'')+'" data-fala="'+encodeURIComponent(t)+'">🔊</button>';
+    const ligarSom=()=>J.querySelectorAll('[data-fala]').forEach(b=>b.onclick=()=>{falar(l,decodeURIComponent(b.dataset.fala),b.dataset.lento==='1');b.dataset.lento=b.dataset.lento==='1'?'0':'1'});
+    if(ex.tipo==='montar'||ex.tipo==='ditado'){
       const pecas=embaralhar(ex.alvo.split(' ').map((w,i)=>({w,i})));let esc=[],feito=false;
-      const draw=msg=>{J.innerHTML=topo+'Monte a frase em '+L.nome.toLowerCase()+':</p><div class="card" style="font-size:18px;font-weight:700;margin-bottom:10px">'+ex.pt+'</div>'+
+      const enun=ex.tipo==='montar'?'Monte a frase em '+L.nome.toLowerCase()+':</p><div class="card" style="font-size:18px;font-weight:700;margin-bottom:10px">'+ex.pt+'</div>'
+        :'Ouça e monte o que foi dito:</p><div style="text-align:center;margin-bottom:10px">'+alto(ex.alvo,1)+'<div class="mut" style="font-size:12px;margin-top:4px">toque de novo para ouvir devagar</div></div>';
+      const draw=msg=>{J.innerHTML=topo+enun+
         '<div class="card idi-resp">'+(esc.map(p=>'<span class="idi-p">'+p.w+'</span>').join(' ')||'<span class="mut">toque nas palavras abaixo</span>')+'</div>'+
         '<div class="idi-pecas">'+pecas.map((p,k)=>'<button class="chip'+(esc.includes(p)?' usado':'')+'" data-p="'+k+'" '+(esc.includes(p)?'disabled':'')+'>'+p.w+'</button>').join('')+'</div>'+
         '<div class="row" style="margin-top:10px"><button class="btn ghost" id="idDel">⌫ APAGAR</button><button class="btn" id="idVer">VERIFICAR</button></div><p class="ar-msg">'+(msg||'')+'</p>';
-        J.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(feito)return;esc.push(pecas[+b.dataset.p]);try{SFX.tick()}catch(e){}draw()});
+        ligarSom();
+        J.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(feito)return;const p=pecas[+b.dataset.p];esc.push(p);falar(l,limpaPal(p.w));draw()});
         J.querySelector('#idDel').onclick=()=>{if(feito)return;esc.pop();draw()};
         J.querySelector('#idVer').onclick=()=>{if(feito)return;if(esc.length<pecas.length){toast('Use todas as palavras');return}feito=true;
-          const ok=esc.map(p=>p.w).join(' ')===ex.alvo;resp(ok);
-          J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Perfeito!</b>':'<b class="rd">Correto:</b> '+ex.alvo);
+          const ok=esc.map(p=>p.w).join(' ')===ex.alvo;resp(ok);falar(l,ex.alvo);
+          J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Perfeito!</b>':'<b class="rd">Correto:</b> '+ex.alvo)+(ex.tipo==='ditado'?'<br><span class="mut">= '+ex.pt+'</span>':'');
           J.querySelector('#idVer').textContent='CONTINUAR →';J.querySelector('#idVer').onclick=prox;J.querySelector('#idDel').style.visibility='hidden'};
-      };draw();
-    }else{
-      J.innerHTML=topo+(ex.tipo==='lp'?'O que significa:':'Como se diz em '+L.nome.toLowerCase()+':')+'</p><div class="card" style="font-size:22px;font-weight:700;text-align:center;margin-bottom:14px">'+ex.perg+'</div>'+
-        ex.ops.map((t,k)=>'<button class="btn qbtn" data-k="'+k+'">'+t+'</button>').join('')+'<p class="ar-msg"></p>';
-      let feito=false;J.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(feito)return;feito=true;const ok=+b.dataset.k===ex.c;
-        J.querySelectorAll('[data-k]').forEach(x=>{if(+x.dataset.k===ex.c)x.classList.add('sel')});if(!ok)b.classList.add('red');
-        resp(ok);J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Isso!</b> ':'<b class="rd">Era:</b> '+ex.ops[ex.c]+' ')+'<button class="btn" style="margin-top:10px" id="idProx">CONTINUAR →</button>';
-        J.querySelector('#idProx').onclick=prox});
+      };draw();if(ex.tipo==='ditado')setTimeout(()=>falar(l,ex.alvo),350);
+      return;
     }
+    // múltipla escolha (lp, pl, escuta). Opções no idioma estrangeiro: toque ouve e seleciona; confirme em VERIFICAR.
+    const estrangeiro=ex.tipo!=='lp',falaOps=ex.tipo==='pl';
+    let enun;
+    if(ex.tipo==='lp')enun='O que significa:</p><div class="card idi-perg">'+ex.perg+' '+alto(ex.fala)+'</div>';
+    else if(ex.tipo==='pl')enun='Como se diz em '+L.nome.toLowerCase()+':</p><div class="card idi-perg">'+ex.perg+'</div>';
+    else enun='O que você ouviu?</p><div style="text-align:center;margin-bottom:14px">'+alto(ex.fala,1)+'<div class="mut" style="font-size:12px;margin-top:4px">toque de novo para ouvir devagar</div></div>';
+    J.innerHTML=topo+enun+ex.ops.map((t,k)=>'<button class="btn qbtn" data-k="'+k+'">'+t+'</button>').join('')+(estrangeiro?'<button class="btn" id="idVer" style="margin-top:6px" disabled>VERIFICAR</button>':'')+'<p class="ar-msg"></p>';
+    ligarSom();let feito=false,sel=-1;
+    const corrigir=k=>{feito=true;const ok=k===ex.c;
+      J.querySelectorAll('[data-k]').forEach(x=>{x.classList.remove('esc');if(+x.dataset.k===ex.c)x.classList.add('sel')});if(!ok)J.querySelector('[data-k="'+k+'"]').classList.add('red');
+      resp(ok);if(ex.tipo!=='escuta'||!ok)falar(l,ex.fala);
+      const v=J.querySelector('#idVer');if(v)v.remove();
+      J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Isso!</b> ':'<b class="rd">Era:</b> '+ex.ops[ex.c]+' ')+(ex.tipo==='escuta'?'<span class="mut">= '+ex.item[0]+'</span>':'')+'<button class="btn" style="margin-top:10px" id="idProx">CONTINUAR →</button>';
+      J.querySelector('#idProx').onclick=prox};
+    J.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(feito)return;const k=+b.dataset.k;
+      if(!estrangeiro){corrigir(k);return}
+      sel=k;J.querySelectorAll('[data-k]').forEach(x=>x.classList.toggle('esc',+x.dataset.k===k));if(falaOps)falar(l,ex.ops[k]);J.querySelector('#idVer').disabled=false});
+    if(estrangeiro)J.querySelector('#idVer').onclick=()=>{if(!feito&&sel>=0)corrigir(sel)};
+    if(ex.tipo==='escuta'||ex.tipo==='lp')setTimeout(()=>falar(l,ex.fala),350);
   };prox();
 }
 
@@ -2629,6 +2714,162 @@ function saberExtraHtml(){
 }
 function idiModal(){abrir('<h3 class="cy">🌍 IDIOMAS</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Escolha quantos idiomas quiser. As lições na Arena alternam entre eles, e cada um sobe de nível separado.</p><div id="idM">'+idiEscolherHtml()+'</div><button class="btn" style="margin-top:14px" onclick="this.closest(\'.modal\').classList.remove(\'on\')">PRONTO</button>');idiLigar(document.getElementById('idM'))}
 
+/* ============ MAIS LÓGICA E MAIS PERGUNTAS ============ */
+const MDC=(a,b)=>b?MDC(b,a%b):a, fracTxt=(n,d)=>{const g=MDC(n,d);return (n/g)+'/'+(d/g)};
+GEN_LOG[0].push(
+  ()=>{const a=rr(1,15),d=rr(2,5),s=[a,a+d,a+2*d,a+3*d],k=rr(1,2),cert=s[k];s[k]='__';return qNum('Qual número falta?<br><b style="font-size:22px">'+s.join(', ')+'</b>',cert,()=>cert+pick([-2,-1,1,2,d]),'A sequência soma '+d+' a cada passo; o número que falta é '+cert+'.')},
+  ()=>{const n=rr(2,9),[an,pt]=pick([['gatos',4],['galinhas',2],['aranhas',8],['cachorros',4]]);return qNum('Quantas patas têm '+n+' '+an+' juntos?',n*pt,()=>n*pt+pick([-pt,pt,-2,2,n]),'Cada um tem '+pt+' patas: '+n+' × '+pt+' = '+(n*pt)+'.')},
+  ()=>{const d=rr(0,6);return['Se hoje é '+SEMANA[d]+', que dia foi anteontem?',embaralhar([SEMANA[(d+5)%7],SEMANA[(d+6)%7],SEMANA[(d+1)%7],SEMANA[(d+4)%7]]),null,'Anteontem = 2 dias antes de hoje: '+SEMANA[(d+5)%7]+'.',SEMANA[(d+5)%7]]}
+);
+GEN_LOG[1].push(
+  ()=>{const p=rr(5,45)+pick([0,.5]);const t=50-p;return qNum('Você comprou algo de R$ '+fmt(p)+' e pagou com uma nota de R$ 50. Qual é o troco (R$)?',t,()=>t+pick([-1,1,-5,5,10,-.5]),'50 − '+fmt(p)+' = '+fmt(t)+'.',fmt)},
+  ()=>{const a=rr(1,5),s=[a,a*2,'__',a*8,a*16];return qNum('Qual número falta?<br><b style="font-size:22px">'+s.join(', ')+'</b>',a*4,()=>a*4+pick([-a,a,a*2,1,-1]),'Cada número é o dobro do anterior: '+a*2+' × 2 = '+a*4+'.')},
+  ()=>{const h=rr(1,3),m=pick([0,15,30,45]),t=h*60+m;return qNum('Quantos minutos há em '+h+' hora'+(h>1?'s':'')+(m?' e '+m+' minutos':'')+'?',t,()=>t+pick([-15,15,-30,30,60]),h+' × 60 = '+h*60+(m?' + '+m+' = '+t:'')+' minutos.')}
+);
+GEN_LOG[2].push(
+  ()=>{const p=pick([10,20,25,50,75]),n=pick([40,80,120,200,360,400,600]);const r=n*p/100;return qNum('Quanto é '+p+'% de '+n+'?',r,()=>r+pick([-n/10,n/10,n/20,-n/20,10]),p+'% = '+p+'/100. '+n+' × '+p+' ÷ 100 = '+r+'.')},
+  ()=>{const q=rr(2,5),pr=rr(2,6),n=rr(6,12);return qNum('Se '+q+' canetas custam R$ '+(q*pr)+', quanto custam '+n+' canetas (R$)?',n*pr,()=>n*pr+pick([-pr,pr,q,-q,2*pr]),'Cada caneta custa '+(q*pr)+' ÷ '+q+' = R$ '+pr+'. Então '+n+' × '+pr+' = R$ '+(n*pr)+'.')},
+  ()=>{const n=rr(1,4),s=[n,n+1,n+2,n+3].map(x=>x*x+x);return qSeq(s,(n+4)**2+(n+4),'n² + n (ou n × (n+1)): '+n+'×'+(n+1)+', '+(n+1)+'×'+(n+2)+'…')}
+);
+GEN_LOG[3].push(
+  ()=>{const a=rr(4,18),b=rr(4,18),c=rr(4,18),s=a+b+c;if(s%3)return null;return qNum('Qual é a média de '+a+', '+b+' e '+c+'?',s/3,()=>s/3+pick([-2,-1,1,2,3]),'Some e divida pela quantidade: ('+a+' + '+b+' + '+c+') ÷ 3 = '+s+' ÷ 3 = '+s/3+'.')},
+  ()=>{const h=rr(1,11),g=h<=6?h*30:360-h*30;return qNum('Qual é o menor ângulo entre os ponteiros de um relógio às '+h+'h00 (em graus)?',g,()=>pick([g+30,g-30,h*30,g+15].filter(x=>x>0)),'Cada hora vale 30°. Às '+h+'h: '+h+' × 30° = '+h*30+'°'+(h>6?'; o menor ângulo é 360° − '+h*30+'° = '+g+'°':'')+'.')},
+  ()=>{const n=pick([50,60,100,120,200]),k=pick([3,4,6,7,9]);const r=Math.floor(n/k);return qNum('Quantos números de 1 a '+n+' são divisíveis por '+k+'?',r,()=>r+pick([-1,1,2,-2]),n+' ÷ '+k+' = '+(n/k).toLocaleString('pt-BR',{maximumFractionDigits:2})+'. A parte inteira é '+r+'.')}
+);
+GEN_LOG[4].push(
+  ()=>{const S2=rr(2,12),f=6-Math.abs(S2-7),cert=fracTxt(f,36),out=embaralhar([1,2,3,4,5,6].filter(k=>k!==f)).slice(0,3).map(k=>fracTxt(k,36));return['Lançando dois dados comuns, qual a probabilidade de a soma ser '+S2+'?',embaralhar([cert].concat(out)),null,'São 36 combinações possíveis (6 × 6). Somas iguais a '+S2+': '+f+'. Probabilidade = '+f+'/36'+(cert!==f+'/36'?' = '+cert:'')+'.',cert]},
+  ()=>{const [w,n]=pick([['SOL',3],['GATO',4],['LIVRO',5],['AMOR',4],['PRATO',5]]);let f=1;for(let i=2;i<=n;i++)f*=i;return qNum('Quantos anagramas (ordens diferentes das letras) tem a palavra '+w+'?',f,()=>pick([f/2,f*2,n*n,f+n,f-1].filter(x=>x>0&&x!==f)),'As '+n+' letras são diferentes: '+n+'! = '+Array.from({length:n},(_,i)=>n-i).join(' × ')+' = '+f+'.')},
+  ()=>{const c=pick([1000,2000,5000]),t=pick([10,20]),a1=c*(100+t)/100,r=a1*(100+t)/100,js=c*(100+2*t)/100;return qNum('R$ '+c.toLocaleString('pt-BR')+' rendem '+t+'% ao ano, com juros compostos. Quanto haverá após 2 anos (R$)?',r,()=>pick([js,r+c/100,r-c/50,a1]),'Ano 1: '+c+' + '+t+'% = '+a1+'. Ano 2: '+a1+' + '+t+'% = '+r+'. Com juros simples seriam só '+js+'.',x=>x.toLocaleString('pt-BR'))}
+);
+LOG_CHARADAS[0].push(
+  ['Um trem elétrico vai para o norte e o vento sopra para o sul. Para onde vai a fumaça?',['Norte','Sul','Para cima','Não há fumaça'],3,'Trem elétrico não solta fumaça.'],
+  ['Se hoje é segunda-feira, que dia foi anteontem?',['Sábado','Domingo','Sexta-feira','Quarta-feira'],0,'Ontem foi domingo; anteontem, sábado.'],
+  ['Que número, multiplicado por qualquer outro, sempre dá zero?',['1','0','10','-1'],1,'Qualquer número vezes zero é zero.']
+);
+LOG_CHARADAS[1].push(
+  ['Se 1 pedreiro faz um muro em 6 dias, em quantos dias 2 pedreiros, no mesmo ritmo, fazem o mesmo muro?',['12','6','3','2'],2,'O dobro de pessoas faz o trabalho na metade do tempo: 3 dias.'],
+  ['Quantos minutos há em 2 horas e meia?',['120','130','150','250'],2,'2 × 60 + 30 = 150 minutos.'],
+  ['Uma dúzia tem 12 unidades. Quantas unidades há em meia dúzia e mais três?',['6','9','15','18'],1,'Meia dúzia = 6. 6 + 3 = 9.']
+);
+LOG_CHARADAS[2].push(
+  ['Uma dúzia e meia de ovos custa R$ 9. Quanto custa cada ovo?',['R$ 0,50','R$ 0,75','R$ 0,60','R$ 1,00'],0,'Dúzia e meia = 18 ovos. 9 ÷ 18 = R$ 0,50.'],
+  ['Se 4 é 50% de um número, qual é esse número?',['2','6','8','16'],2,'Se 4 é a metade, o número inteiro é 8.'],
+  ['Um relógio adianta 2 minutos por hora. Quanto ele adianta em um dia?',['24 min','48 min','2 h','12 min'],1,'Um dia tem 24 horas: 24 × 2 = 48 minutos.'],
+  ['Qual é o próximo: 1, 4, 9, 16, 25, ?',['30','34','36','49'],2,'São os quadrados: 1², 2², 3², 4², 5², 6² = 36.']
+);
+LOG_CHARADAS[3].push(
+  ['Um ônibus sai às 7h40 e a viagem dura 2h35. A que horas chega?',['9h75','10h15','10h05','9h15'],1,'7h40 + 2h = 9h40. + 35 min = 10h15.'],
+  ['Ana tem o dobro da idade de Beto. Daqui a 10 anos, a soma das idades será 50. Quantos anos Beto tem hoje?',['10','15','20','12'],0,'Beto = x, Ana = 2x. Daqui a 10 anos: (x+10) + (2x+10) = 50 → 3x = 30 → x = 10.'],
+  ['Um produto teve 20% de desconto e passou a custar R$ 80. Qual era o preço original?',['R$ 96','R$ 100','R$ 104','R$ 120'],1,'R$ 80 corresponde a 80% do preço. 80 ÷ 0,8 = R$ 100. (Somar 20% de 80 daria 96, errado.)'],
+  ['De 1 a 100, quantos números têm pelo menos um algarismo 7?',['10','19','20','11'],1,'7, 17, …, 97 são 10; de 70 a 79 são 10; o 77 foi contado duas vezes: 10 + 10 − 1 = 19.']
+);
+LOG_CHARADAS[4].push(
+  ['Lançando duas moedas, qual a probabilidade de saírem duas caras?',['50%','25%','33%','75%'],1,'As possibilidades são CC, CK, KC, KK: só 1 de 4 = 25%.'],
+  ['Num programa, há 3 portas e um prêmio atrás de uma. Você escolhe uma, o apresentador (que sabe onde está o prêmio) abre outra vazia e oferece a troca. Trocando, sua chance de ganhar é…',['1/3','1/2','2/3','1'],2,'É o problema de Monty Hall. Sua primeira escolha tinha 1/3 de chance; os outros 2/3 se concentram na porta que sobrou.'],
+  ['Quantos números de 3 algarismos existem (de 100 a 999)?',['899','900','999','1000'],1,'999 − 100 + 1 = 900.'],
+  ['Uma bactéria se divide em duas a cada minuto e, começando com 1, enche um pote em 60 minutos. Começando com 2, em quanto tempo enche?',['30 min','59 min','58 min','45 min'],1,'Começar com 2 é como pular o primeiro minuto: 59 minutos.']
+);
+/* mais perguntas escritas à mão */
+EXTRAS.mat=[
+ [['Quantos lados tem um hexágono?',['5','6','7','8'],1,'"Hexa" vem do grego e significa seis.'],
+  ['Qual destes números é par?',['17','33','48','91'],2,'Números pares terminam em 0, 2, 4, 6 ou 8.'],
+  ['Quantos centímetros há em 1 metro?',['10','100','1.000','50'],1,'"Centi" significa centésima parte: 1 m = 100 cm.'],
+  ['Quanto é o dobro de 25?',['40','50','52','75'],1,'Dobro é multiplicar por 2: 25 × 2 = 50.']],
+ [['Quantos graus somam os ângulos internos de um triângulo?',['90°','180°','270°','360°'],1,'Em qualquer triângulo (plano), a soma é 180°.'],
+  ['Um número é divisível por 3 quando…',['termina em 3','a soma dos algarismos é divisível por 3','é ímpar','termina em 0'],1,'Exemplo: 123 → 1 + 2 + 3 = 6, divisível por 3, então 123 também é.'],
+  ['Quantos gramas há em 1 quilograma?',['100','500','1.000','10.000'],2,'"Quilo" significa mil: 1 kg = 1.000 g.'],
+  ['Qual é o número primo par?',['0','2','4','Não existe'],1,'O 2 é o único primo par: todo outro número par é divisível por 2.']],
+ [['O que é um número irracional?',['Um número negativo','Um número que não pode ser escrito como fração de inteiros','Um número muito grande','Uma fração'],1,'Exemplos: π e √2. Sua expansão decimal é infinita e não periódica.'],
+  ['Qual o valor de 0! (zero fatorial)?',['0','1','Não existe','Infinito'],1,'Por definição, 0! = 1. Isso mantém as fórmulas de combinações consistentes.'],
+  ['Qual é a fórmula da área de um círculo de raio r?',['2πr','πr²','πd','r²'],1,'Área = π × r². Já 2πr é o comprimento da circunferência.'],
+  ['Em uma PA (progressão aritmética), a diferença entre termos consecutivos é…',['sempre 1','constante','sempre crescente','o dobro'],1,'Essa diferença constante se chama razão. Ex.: 3, 7, 11, 15 (razão 4).']]
+];
+EXTRAS.his[0].push(['Qual povo construiu as pirâmides de Gizé?',['Romanos','Egípcios','Gregos','Maias'],1,'Foram construídas pelos antigos egípcios há cerca de 4.500 anos, como tumbas de faraós.'],['Qual foi a primeira capital do Brasil?',['Rio de Janeiro','Salvador','Brasília','São Paulo'],1,'Salvador foi capital de 1549 a 1763, quando a sede passou para o Rio de Janeiro.']);
+EXTRAS.his[1].push(['Brasília foi inaugurada em que ano?',['1950','1960','1964','1970'],1,'Foi inaugurada em 21 de abril de 1960, no governo de Juscelino Kubitschek.'],['Quem foi o presidente que construiu Brasília?',['Getúlio Vargas','Juscelino Kubitschek','Jânio Quadros','João Goulart'],1,'JK prometia "50 anos em 5" e transferiu a capital para o Planalto Central.']);
+EXTRAS.his[2].push(['O Plano Real, que criou a moeda atual do Brasil, é de que ano?',['1986','1990','1994','2000'],2,'O real entrou em circulação em 1º de julho de 1994 e controlou a hiperinflação.'],['A Guerra do Paraguai (1864–1870) opôs o Paraguai a quais países?',['Brasil, Argentina e Uruguai','Brasil e Chile','Argentina e Bolívia','Brasil e Peru'],0,'Brasil, Argentina e Uruguai formaram a Tríplice Aliança. Foi o maior conflito armado da América do Sul.']);
+EXTRAS.cie[0].push(['Qual é o maior órgão do corpo humano?',['Fígado','Pele','Coração','Pulmão'],1,'A pele cobre todo o corpo e, num adulto, pesa alguns quilos.'],['Quantos planetas tem o Sistema Solar?',['7','8','9','10'],1,'São 8. Plutão foi reclassificado como planeta-anão em 2006.']);
+EXTRAS.cie[1].push(['Qual o osso mais longo do corpo humano?',['Úmero','Tíbia','Fêmur','Coluna'],2,'O fêmur fica na coxa e é o maior e mais forte osso do corpo.'],['Em quanto tempo a luz do Sol chega à Terra, aproximadamente?',['8 segundos','8 minutos','8 horas','1 dia'],1,'Cerca de 8 minutos e 20 segundos, viajando a quase 300 mil km/s.']);
+EXTRAS.cie[2].push(['O que é o DNA?',['Uma proteína do sangue','A molécula que guarda as informações genéticas','Um tipo de vitamina','Um hormônio'],1,'O DNA tem formato de dupla hélice e carrega as instruções para formar e manter os seres vivos.'],['Qual a velocidade da luz no vácuo, aproximadamente?',['300 km/s','300 mil km/s','30 mil km/s','3 milhões de km/s'],1,'Cerca de 299.792 km/s: nada viaja mais rápido do que isso.']);
+EXTRAS.geo[0].push(['Qual é o maior oceano do mundo?',['Atlântico','Índico','Pacífico','Ártico'],2,'O Pacífico cobre cerca de um terço da superfície da Terra.'],['Qual é o menor estado do Brasil em área?',['Sergipe','Alagoas','Rio de Janeiro','Espírito Santo'],0,'Sergipe é o menor estado brasileiro em área.']);
+EXTRAS.geo[1].push(['Qual é o maior estado do Brasil em área?',['Pará','Mato Grosso','Amazonas','Minas Gerais'],2,'O Amazonas tem mais de 1,5 milhão de km², cerca de 18% do Brasil.'],['Qual bioma ocupa a maior área do Brasil?',['Cerrado','Mata Atlântica','Amazônia','Caatinga'],2,'A Amazônia cobre cerca de metade do território brasileiro. O Cerrado é o segundo.']);
+EXTRAS.geo[2].push(['O único bioma exclusivamente brasileiro é…',['Pantanal','Caatinga','Cerrado','Pampa'],1,'A Caatinga, do semiárido nordestino, só existe no Brasil.'],['Qual é o rio mais extenso totalmente brasileiro?',['Amazonas','São Francisco','Paraná','Tocantins'],1,'O Rio São Francisco nasce e deságua em território brasileiro, com cerca de 2.800 km.']);
+EXTRAS.por[0].push(['Qual é o coletivo de "lobos"?',['manada','alcateia','cardume','enxame'],1,'Alcateia é o coletivo de lobos. Cardume é de peixes; enxame, de abelhas.'],['Qual destas palavras é um substantivo?',['correr','feliz','alegria','muito'],2,'Substantivo dá nome a seres, objetos e sentimentos: alegria.']);
+EXTRAS.por[1].push(['"Onde" ou "aonde": "___ você mora?"',['Onde','Aonde'],0,'"Onde" indica lugar fixo (morar em). "Aonde" é para movimento (ir a).'],['Qual é o feminino de "réu"?',['réua','ré','réia','reuza'],1,'O feminino de réu é ré.']);
+EXTRAS.por[2].push(['Quem escreveu "O Cortiço"?',['Aluísio Azevedo','Machado de Assis','José de Alencar','Lima Barreto'],0,'Publicado em 1890, é um marco do Naturalismo no Brasil.'],['Qual é a figura de linguagem em "Ele chegou, viu, venceu" (sem conectivos)?',['Polissíndeto','Assíndeto','Pleonasmo','Hipérbato'],1,'Assíndeto é a ausência de conectivos entre termos ou orações. O excesso de "e" seria polissíndeto.']);
+
+/* ============ GRANDES NOMES DA CIÊNCIA ============
+   [nome, período, origem, área, "Quem … ?" (feito para a pergunta), texto] */
+const CIENTISTAS=[
+ ['Isaac Newton','1643–1727','Inglaterra','Física e matemática','formulou a lei da gravitação universal e as três leis do movimento','Em 1687 publicou os "Principia", com as leis do movimento e a gravitação universal. Também mostrou, com um prisma, que a luz branca é formada por várias cores, e desenvolveu o cálculo (ao mesmo tempo que Leibniz, de forma independente).'],
+ ['Albert Einstein','1879–1955','Alemanha','Física','criou a teoria da relatividade','Publicou a relatividade restrita em 1905 e a relatividade geral em 1915, que explica a gravidade como curvatura do espaço-tempo. Ganhou o Nobel de Física de 1921 pela explicação do efeito fotoelétrico.'],
+ ['Marie Curie','1867–1934','Polônia (trabalhou na França)','Física e química','descobriu os elementos polônio e rádio','Pioneira no estudo da radioatividade. Foi a primeira pessoa a ganhar dois prêmios Nobel (Física em 1903 e Química em 1911) e continua sendo a única a vencer em duas ciências diferentes.'],
+ ['Charles Darwin','1809–1882','Inglaterra','Biologia','propôs a evolução das espécies por seleção natural','Após a viagem no navio Beagle, que passou pelas Ilhas Galápagos, publicou "A Origem das Espécies" em 1859. Alfred Russel Wallace chegou a ideias semelhantes na mesma época.'],
+ ['Galileu Galilei','1564–1642','Itália','Física e astronomia','observou com seu telescópio as quatro maiores luas de Júpiter','Em 1610, com um telescópio que ele mesmo aperfeiçoou, viu luas girando em torno de Júpiter. Defendeu que a Terra gira em torno do Sol e foi condenado pela Inquisição em 1633.'],
+ ['Nicolau Copérnico','1473–1543','Polônia','Astronomia','propôs o modelo em que a Terra e os planetas giram em torno do Sol','Seu livro com o modelo heliocêntrico foi publicado em 1543, ano de sua morte, e mudou a forma de entender o universo.'],
+ ['Louis Pasteur','1822–1895','França','Microbiologia','criou a vacina contra a raiva e o processo de pasteurização','Mostrou que microrganismos causam fermentação e doenças, derrubando a ideia de geração espontânea. Em 1885 aplicou com sucesso a vacina antirrábica em um menino.'],
+ ['Alexander Fleming','1881–1955','Escócia','Medicina','descobriu a penicilina','Em 1928 percebeu que um fungo havia matado as bactérias de uma placa esquecida no laboratório. A penicilina se tornou o primeiro antibiótico de uso amplo. Nobel de Medicina em 1945.'],
+ ['Gregor Mendel','1822–1884','Império Austríaco (atual República Tcheca)','Genética','descobriu as leis da hereditariedade estudando ervilhas','Monge que cruzou milhares de pés de ervilha e mostrou que as características passam por "fatores" (hoje chamados genes). Seu trabalho só foi reconhecido após sua morte; é considerado o pai da genética.'],
+ ['Dmitri Mendeleev','1834–1907','Rússia','Química','organizou a tabela periódica dos elementos','Em 1869 organizou os elementos por massa e propriedades e deixou espaços para elementos ainda desconhecidos, prevendo suas características. Vários foram descobertos depois, como o gálio.'],
+ ['Nikola Tesla','1856–1943','Nascido na atual Croácia, viveu nos EUA','Engenharia elétrica','desenvolveu sistemas de corrente alternada e o motor de indução','Seus sistemas de corrente alternada se tornaram a base da distribuição de energia elétrica no mundo. A unidade de campo magnético, o tesla, leva seu nome.'],
+ ['Thomas Edison','1847–1931','Estados Unidos','Invenção e engenharia','inventou o fonógrafo e desenvolveu uma lâmpada incandescente prática','Registrou mais de mil patentes. Criou o fonógrafo em 1877 e, em 1879, uma lâmpada elétrica durável, além de sistemas para distribuir eletricidade.'],
+ ['Michael Faraday','1791–1867','Inglaterra','Física e química','descobriu a indução eletromagnética','Em 1831 mostrou que um ímã em movimento gera corrente elétrica numa bobina. É o princípio dos geradores e transformadores que usamos até hoje.'],
+ ['James Clerk Maxwell','1831–1879','Escócia','Física','unificou eletricidade e magnetismo em um conjunto de equações','As equações de Maxwell mostraram que a luz é uma onda eletromagnética e abriram caminho para o rádio, a TV e as telecomunicações.'],
+ ['Rosalind Franklin','1920–1958','Inglaterra','Química e biologia','obteve a imagem de raios X do DNA conhecida como "Foto 51"','Suas imagens de difração de raios X foram essenciais para revelar a estrutura em dupla hélice do DNA, descrita por Watson e Crick em 1953.'],
+ ['Santos Dumont','1873–1932','Brasil','Aviação','voou com o 14-Bis em Paris, em 1906','Alberto Santos Dumont também criou dirigíveis e o pequeno avião Demoiselle. O voo do 14-Bis, em 1906, decolou por meios próprios diante de público e juízes.'],
+ ['Oswaldo Cruz','1872–1917','Brasil','Saúde pública','comandou o combate à febre amarela, à peste e à varíola no Rio de Janeiro','Médico sanitarista, liderou campanhas de saúde no início do século XX. O instituto que dirigiu em Manguinhos hoje se chama Fundação Oswaldo Cruz (Fiocruz).'],
+ ['Carlos Chagas','1879–1934','Brasil','Medicina','descreveu sozinho uma doença, seu agente causador e seu inseto transmissor','Em 1909 descreveu a doença de Chagas, o protozoário Trypanosoma cruzi e o barbeiro que o transmite. É um caso raro na história da medicina.'],
+ ['César Lattes','1924–2005','Brasil','Física','participou da descoberta da partícula méson pi (píon)','Em 1947, com colegas, detectou o píon em raios cósmicos. A Plataforma Lattes, de currículos científicos do Brasil, homenageia seu nome.'],
+ ['Vital Brazil','1865–1950','Brasil','Medicina','desenvolveu soros específicos contra veneno de cobras','Mostrou que cada tipo de veneno precisa de um soro próprio. Foi o primeiro diretor do Instituto Butantan, em São Paulo.'],
+ ['Johannes Kepler','1571–1630','Alemanha','Astronomia','descobriu que as órbitas dos planetas são elipses','Suas três leis do movimento planetário descrevem como os planetas se movem em torno do Sol e ajudaram Newton a formular a gravitação.'],
+ ['Arquimedes','c. 287–212 a.C.','Siracusa (Grécia Antiga)','Matemática e física','descobriu o princípio do empuxo','Explicou por que objetos flutuam, estudou alavancas e calculou uma ótima aproximação para π. Segundo a lenda, gritou "Eureka!" ao ter a ideia no banho.'],
+ ['Edward Jenner','1749–1823','Inglaterra','Medicina','criou a primeira vacina, contra a varíola','Em 1796 usou material da varíola bovina para proteger as pessoas da varíola humana. A palavra "vacina" vem do latim "vacca" (vaca). A varíola foi declarada erradicada em 1980.'],
+ ['Ada Lovelace','1815–1852','Inglaterra','Matemática e computação','escreveu o que é considerado o primeiro algoritmo para uma máquina','Em 1843 publicou notas sobre a Máquina Analítica de Charles Babbage com um algoritmo para calcular números de Bernoulli. É considerada a primeira programadora.'],
+ ['Alan Turing','1912–1954','Inglaterra','Matemática e computação','criou o modelo teórico de computador conhecido como "máquina de Turing"','Lançou as bases da ciência da computação, ajudou a decifrar a máquina Enigma na Segunda Guerra e propôs um teste para avaliar se uma máquina pode parecer inteligente.'],
+ ['Stephen Hawking','1942–2018','Inglaterra','Física','mostrou teoricamente que buracos negros emitem radiação','A chamada radiação Hawking une relatividade e física quântica. Escreveu "Uma Breve História do Tempo" e trabalhou por décadas convivendo com ELA, uma doença neuromotora.'],
+ ['Carl Sagan','1934–1996','Estados Unidos','Astronomia e divulgação','apresentou a série "Cosmos" e popularizou a ideia do "Pálido Ponto Azul"','Grande divulgador científico. Inspirou-se numa foto da Terra feita pela sonda Voyager 1 de muito longe para refletir sobre o quanto somos pequenos no universo.'],
+ ['Niels Bohr','1885–1962','Dinamarca','Física','propôs um modelo atômico com elétrons em níveis de energia','Seu modelo de 1913 explicou por que os átomos emitem luz em cores específicas. Recebeu o Nobel de Física em 1922.'],
+ ['Ernest Rutherford','1871–1937','Nova Zelândia','Física e química','descobriu o núcleo atômico','Com o experimento da folha de ouro, concluiu em 1911 que o átomo tem um núcleo pequeno e denso, com muito espaço vazio ao redor.'],
+ ['Max Planck','1858–1947','Alemanha','Física','propôs que a energia é emitida em pequenos pacotes chamados quanta','Sua ideia de 1900 deu origem à física quântica. Recebeu o Nobel de Física em 1918.'],
+ ['Antoine Lavoisier','1743–1794','França','Química','demonstrou a conservação da massa nas reações químicas','Mostrou que, numa reação, a massa total não muda. Ajudou a dar nome ao oxigênio e ao hidrogênio e é chamado de pai da química moderna.'],
+ ['Robert Hooke','1635–1703','Inglaterra','Biologia e física','usou pela primeira vez a palavra "célula" para estruturas vistas no microscópio','No livro "Micrographia" (1665), observou pequenas cavidades na cortiça e as chamou de células, lembrando pequenos quartos.'],
+ ['Antonie van Leeuwenhoek','1632–1723','Holanda','Microbiologia','foi o primeiro a observar microrganismos ao microscópio','Fabricou microscópios de lente única muito potentes e descreveu bactérias e protozoários, que chamou de "animálculos".'],
+ ['Edwin Hubble','1889–1953','Estados Unidos','Astronomia','mostrou que existem outras galáxias além da Via Láctea e que o universo está em expansão','Nos anos 1920 provou que algumas "nebulosas" eram galáxias distantes e que elas se afastam de nós. O telescópio espacial Hubble leva seu nome.'],
+ ['Katherine Johnson','1918–2020','Estados Unidos','Matemática','fez cálculos de trajetória para voos espaciais tripulados da NASA','Seus cálculos foram usados no voo orbital de John Glenn em 1962 e em missões Apollo. Sua história aparece no filme "Estrelas Além do Tempo".'],
+ ['Tim Berners-Lee','1955–','Inglaterra','Computação','criou a World Wide Web','Em 1989, trabalhando no CERN, propôs um sistema de páginas ligadas por links. Criou o primeiro navegador e o primeiro site, e liberou a tecnologia sem cobrar por ela.'],
+ ['Jennifer Doudna e Emmanuelle Charpentier','nascidas em 1964 e 1968','EUA e França','Bioquímica','desenvolveram a técnica de edição genética CRISPR-Cas9','A técnica funciona como uma "tesoura" que corta o DNA em pontos precisos. Ganharam o Nobel de Química em 2020.'],
+ ['Euclides','c. 300 a.C.','Alexandria (Egito Antigo)','Matemática','escreveu "Os Elementos", base da geometria por mais de 2 mil anos','Organizou a geometria a partir de poucos postulados, deduzindo todo o resto com lógica. A geometria ensinada nas escolas ainda é chamada de euclidiana.'],
+ ['Ibn al-Haytham','c. 965–1040','Basra (atual Iraque), trabalhou no Cairo','Óptica','explicou que enxergamos porque a luz entra nos olhos','No "Livro da Óptica", combateu a ideia de que os olhos emitiam raios e defendeu testar hipóteses com experimentos, antecipando o método científico.'],
+ ['Johannes Gutenberg','c. 1400–1468','Alemanha','Tecnologia','desenvolveu na Europa a prensa com tipos móveis de metal','Por volta de 1450, sua prensa barateou a produção de livros e espalhou o conhecimento. A Bíblia de Gutenberg é um dos primeiros livros impressos assim.'],
+ ['Johanna Döbereiner','1924–2000','Nascida na Tchecoslováquia, naturalizada brasileira','Agronomia','pesquisou bactérias que fixam nitrogênio e reduzem o uso de adubo na soja','Seu trabalho na Embrapa permitiu que a soja brasileira dispensasse boa parte dos adubos nitrogenados, gerando grande economia e menos impacto ambiental.'],
+ ['Nise da Silveira','1905–1999','Brasil','Psiquiatria','usou a arte no tratamento psiquiátrico e criou o Museu de Imagens do Inconsciente','Rejeitou tratamentos agressivos como o eletrochoque e a lobotomia e apostou em pintura, modelagem e convívio com animais para cuidar dos pacientes.'],
+ ['Bertha Lutz','1894–1976','Brasil','Zoologia','pesquisou anfíbios no Museu Nacional e liderou a luta pelo voto feminino no Brasil','Bióloga especialista em sapos e rãs, foi também uma das principais vozes pelo direito das mulheres ao voto, conquistado em 1932.'],
+ ['Hipócrates','c. 460–370 a.C.','Grécia Antiga','Medicina','é chamado de "pai da medicina"','Defendeu que as doenças têm causas naturais, e não castigos divinos, e valorizou a observação dos pacientes. O juramento médico tradicional leva seu nome.'],
+ ['Pitágoras','c. 570–495 a.C.','Grécia Antiga','Matemática','dá nome ao teorema sobre os lados do triângulo retângulo','O teorema diz que o quadrado da hipotenusa é igual à soma dos quadrados dos catetos (a² = b² + c²). A relação já era usada por povos mais antigos, como os babilônios.']
+];
+
+/* ---------- Grandes nomes da ciência ---------- */
+function cardCientista(el,fim){
+  S.ciVistos=S.ciVistos||[];let livres=CIENTISTAS.map((x,i)=>i).filter(i=>!S.ciVistos.includes(i));
+  if(!livres.length){S.ciVistos=[];livres=CIENTISTAS.map((x,i)=>i)}
+  const i=pick(livres),C=CIENTISTAS[i],[nome,anos,orig,area,feito,txt]=C;
+  const ops=embaralhar([nome].concat(embaralhar(CIENTISTAS.filter(x=>x!==C).map(x=>x[0])).slice(0,3)));let acabou=false;
+  cabecalho(el,'🔬','Grandes nomes da ciência','CIÊNCIAS','cy','até +'+xpA(15)+' XP · MENTE');
+  el.querySelector('.jogo').innerHTML='<div class="card" style="font-size:19px;font-weight:700;line-height:1.35;margin-bottom:14px">Quem '+feito+'?</div>'+ops.map((t,k)=>'<button class="btn qbtn" data-k="'+k+'">'+t+'</button>').join('')+'<div id="ciBio"></div>';
+  el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(acabou)return;acabou=true;const ok=ops[+b.dataset.k]===nome,sb=saber('cie');
+    ok?sb.ac++:sb.er++;S.ciVistos.push(i);
+    el.querySelectorAll('[data-k]').forEach(x=>{if(ops[+x.dataset.k]===nome)x.classList.add('sel')});if(!ok){b.classList.add('red');try{SFX.erro()}catch(e){}}
+    el.querySelector('#ciBio').innerHTML='<div class="card holo" style="margin-top:12px"><div class="h gd" style="font-size:15px">'+nome+'</div><div class="mut" style="font-size:13px;margin:4px 0 10px">'+anos+' · '+orig+' · '+area+'</div><p style="font-size:16.5px;line-height:1.55">'+txt+'</p></div>';
+    salvar();renderSaber();fim(ok)});
+}
+/* ---------- Feed sempre aleatório (com pesos e sem repetir em sequência) ---------- */
+const ARENA_PESO={saber:6,logica:4,cientista:3,livro:2,idioma:2,leitura:1,biblia:1,xadrez:1,sudoku9:1,sudoku4:1,memoria:1,erros:1,calculo:1,fisico:1,respira:1,financas:1,alvos:1,reacao:1,simon:1,vainao:1};
+function arenaProxTipo(){
+  const ult=arenaUlt;let t,tent=0;
+  do{const tot=Object.values(ARENA_PESO).reduce((a,b)=>a+b,0);let r=Math.random()*tot;for(const[k,w]of Object.entries(ARENA_PESO)){r-=w;if(r<0){t=k;break}}tent++}
+  while(tent<30&&(t===ult[0]||(t!=='saber'&&ult.includes(t))));
+  arenaUlt=[t].concat(ult).slice(0,4);return t;
+}
+
 /* ---------- Catálogo ---------- */
 const ARENA_TIPOS={
   saber:{nome:'Conhecimento',ico:'📚',dif:'medio',xp:20,pilar:1,run:cardSaber},
@@ -2638,6 +2879,7 @@ const ARENA_TIPOS={
   memoria:{nome:'Memória',ico:'🃏',dif:'medio',xp:20,pilar:1,run:cardMemoria},
   erros:{nome:'Jogo dos Erros',ico:'🔍',dif:'medio',xp:25,pilar:1,run:cardErros},
   logica:{nome:'Desafio de Lógica',ico:'🧩',dif:'medio',xp:60,pilar:1,run:cardLogica},
+  cientista:{nome:'Grandes nomes da ciência',ico:'🔬',dif:'medio',xp:15,pilar:1,run:cardCientista},
   livro:{nome:'Ideia de livro',ico:'📖',dif:'facil',xp:8,pilar:2,run:cardLivro},
   biblia:{nome:'Palavra do dia',ico:'✝️',dif:'facil',xp:8,pilar:2,run:cardBiblia},
   idioma:{nome:'Lição de idioma',ico:'🌍',dif:'facil',xp:15,pilar:1,run:cardIdioma},
@@ -2653,19 +2895,14 @@ const ARENA_TIPOS={
 };
 const ARENA_ORDEM=['saber','logica','livro','memoria','saber','idioma','alvos','xadrez','saber','leitura','logica','reacao','saber','biblia','calculo','idioma','saber','erros','livro','simon','saber','sudoku4','financas','logica','saber','vainao','fisico','livro','saber','respira','idioma','sudoku9'];
 let arenaN=0,arenaUlt=[];
-function arenaProxTipo(){
-  const prio=ARENA_ORDEM[arenaN%ARENA_ORDEM.length];arenaN++;
-  if(arenaN>ARENA_ORDEM.length&&Math.random()<.5){let t;do{t=pick(ARENA_ORDEM)}while(arenaUlt.includes(t)&&t!=='saber');arenaUlt=[t].concat(arenaUlt).slice(0,3);return t}
-  arenaUlt=[prio].concat(arenaUlt).slice(0,3);return prio;
-}
 function arenaCard(){
   const tipo=arenaProxTipo(),T=ARENA_TIPOS[tipo],el=document.createElement('section');el.className='ar-card';
-  el.innerHTML='<div class="ar-top"><span class="ar-ico">'+T.ico+'</span><div style="flex:1;min-width:0"><div class="ar-nome">'+T.nome+'</div><div class="ar-sub"><span class="tag '+DIF[T.dif][1]+'" style="font-size:10px;padding:2px 6px">'+DIF[T.dif][0]+'</span> <span class="mut">até +'+T.xp+' XP · '+PIL[T.pilar]+'</span></div></div></div><div class="jogo"></div><div class="ar-res"></div><div class="ar-swipe">deslize ↑ para o próximo</div>';
+  el.innerHTML='<div class="ar-top"><span class="ar-ico">'+T.ico+'</span><div style="flex:1;min-width:0"><div class="ar-nome">'+T.nome+'</div><div class="ar-sub"><span class="tag '+DIF[T.dif][1]+'" style="font-size:10px;padding:2px 6px">'+DIF[T.dif][0]+'</span> <span class="mut">até +'+xpA(T.xp)+' XP · '+PIL[T.pilar]+'</span></div></div></div><div class="jogo"></div><div class="ar-res"></div><div class="ar-swipe">deslize ↑ para o próximo</div>';
   let feito=false;
   T.run(el,(ok,mult=1,pilar)=>{if(feito)return;feito=true;
     const res=el.querySelector('.ar-res');
-    if(ok){const q=arenaGanhar(Math.max(1,Math.round(T.xp*mult)),pilar!=null?pilar:T.pilar,T.nome);res.innerHTML='<div class="ar-ok">✓ '+(q?'+'+q+' XP':'Treino livre')+'</div>'}
-    else{arenaDia().feitos++;salvar();res.innerHTML='<div class="ar-no">Sem XP desta vez. Bora para o próximo!</div>'}
+    if(ok){const q=arenaGanhar(xpA(T.xp*mult),pilar!=null?pilar:T.pilar,T.nome);res.innerHTML=q?'<div class="ar-ok">✓ +'+q+' XP</div>':'<div class="ar-no">✓ Concluído</div>'}
+    else{arenaDia().feitos++;salvar();res.innerHTML='<div class="ar-no">Não foi dessa vez. Bora para o próximo!</div>'}
   });
   return el;
 }
@@ -2767,7 +3004,7 @@ const RITUAL=[
  ['Prefiro ser visto como...',['Forte','Querido','Confiável','Competente']]
 ];
 const EST='DISC';
-const DIAS_RETESTE=90;
+const DIAS_RETESTE=30;   // o ritual pode ser refeito 1 vez por mês, com resumo da evolução
 function classeInfo(sc){
   const ord=[0,1,2,3].sort((a,b)=>sc[b]-sc[a]),p=EST[ord[0]],q=EST[ord[1]];
   const hib=sc[ord[1]]>=55&&sc[ord[0]]-sc[ord[1]]<=12;
@@ -2804,10 +3041,13 @@ function renderClasse(){
     (ext?'<p style="font-size:14px;margin-top:8px"><span class="gd">Como os outros te veem:</span> '+ext+'</p>':'')+
     '<div style="margin-top:12px;line-height:1.45;font-size:15px"><p><b class="cy">Forças:</b> '+c.forcas+'</p><p style="margin-top:6px"><b class="rd">Ponto cego:</b> '+c.cego+'</p><p style="margin-top:6px"><b class="gd">Contrapeso a treinar:</b> '+c.contra+'. Uma missão de Classe aparece todo dia.</p></div>'+
     '<div style="margin-top:14px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:6px"><span>⚖️ EQUILÍBRIO</span><span class="gd">'+S.equil+(proxN?' / '+proxN[0]:'')+'</span></div><div class="bar"><i style="width:'+(proxN?((S.equil-base)/(proxN[0]-base)*100):100)+'%;background:var(--gold);box-shadow:0 0 10px var(--gold)"></i></div>'+(proxN?'<p class="mut" style="font-size:12px;margin-top:4px">Próximo título: '+(proxN[1]||c.titulo)+'</p>':'')+'</div>'+
-    '<div class="row" style="margin-top:14px"><button class="btn sm ghost" id="btnTit">🏷️ TÍTULOS</button><button class="btn sm ghost" id="btnReRit"'+(libera?'':' disabled')+'>'+(libera?'REFAZER RITUAL':'NOVO RITUAL: '+(DIAS_RETESTE-dias)+'D')+'</button></div>'+
+    '<div class="row" style="margin-top:14px"><button class="btn sm ghost" id="btnTit">🏷️ TÍTULOS</button><button class="btn sm '+(libera?'':'ghost')+'" id="btnReRit"'+(libera?'':' disabled')+'>'+(libera?'⚔️ RITUAL DO MÊS':'NOVO RITUAL EM '+(DIAS_RETESTE-dias)+'D')+'</button></div>'+
+    (S.classe.resumo?'<button class="btn sm ghost" style="margin-top:8px" id="btnResumo">📈 ÚLTIMO RESUMO DO MÊS</button>':'')+
     '<p class="mut" style="font-size:11px;margin-top:10px;text-align:center">Um mapa do seu estilo, não um rótulo. Todo estilo pode se desenvolver.</p>';
   $('#btnTit').onclick=titulosTela;
   if(libera)$('#btnReRit').onclick=ritualIntro;
+  if($('#btnResumo'))$('#btnResumo').onclick=()=>resumoTela(S.classe.resumo);
+  if(libera&&S.classe.avisoRit!==S.classe.d){S.classe.avisoRit=S.classe.d;salvar();setTimeout(()=>sistema('RITUAL DO MÊS LIBERADO','<span style="font-size:44px">⚔️</span><br>Já faz '+dias+' dias desde o seu último Ritual de Classe.<br><br>Refaça em <b class="cy">Perfil → Identidade</b> e veja o <b class="gd">resumo das suas melhorias e dos pontos a trabalhar</b>.'),1200)}
 }
 function todosTitulos(){
   const t=titulosEquil().slice();
@@ -2858,8 +3098,9 @@ function ritPasso(){
 function ritFim(){
   const v=[0,0,0,0];RITUAL.forEach((_,i)=>{v[RIT.mais[i]]+=1;v[RIT.menos[i]]-=1});
   const sc=v.map(x=>Math.round((x+RITUAL.length)/(2*RITUAL.length)*100));
-  const novo=!S.classe;
-  S.classe={d:Date.now(),scores:sc,hist:((S.classe&&S.classe.hist)||[]).concat([{d:Date.now(),scores:sc}])};
+  const novo=!S.classe,ant=S.classe,snap=fotoAtual();
+  const resumo=ant?resumoMes(ant,sc,snap):null;
+  S.classe={d:Date.now(),scores:sc,foto:snap,resumo,hist:((ant&&ant.hist)||[]).concat([{d:Date.now(),scores:sc,foto:snap}])};
   const ci=classeInfo(sc),c=CLASSES[ci.prim];
   registrar('⚔️ Classe revelada: '+ci.nome);try{SFX.levelup()}catch(e){}
   sincronizarHoje();salvar();
@@ -2869,10 +3110,60 @@ function ritFim(){
     '<div class="mut" style="margin-top:6px">'+(ci.hib?CLASSES[ci.prim].nome+' + '+CLASSES[ci.sec].nome:c.estilo)+'</div>'+
     '<p style="margin:20px 0 8px;line-height:1.5"><b class="cy">Forças:</b> '+c.forcas+'</p><p style="line-height:1.5"><b class="rd">Ponto cego:</b> '+c.cego+'</p>'+
     '<p class="mut" style="margin:16px 0 24px;line-height:1.5">A partir de hoje, uma <b class="gd">Missão de Classe</b> vai treinar seu contrapeso: <b>'+c.contra.toLowerCase()+'</b>.</p>'+
-    '<button class="btn" id="ritOk">'+(novo?'ACEITAR MINHA CLASSE':'CONTINUAR')+'</button></div>';
+    (resumo?'<button class="btn" id="ritRes" style="margin-bottom:10px">📈 VER MEU RESUMO DO MÊS</button>':'')+
+    '<button class="btn'+(resumo?' ghost':'')+'" id="ritOk">'+(novo?'ACEITAR MINHA CLASSE':'CONTINUAR')+'</button></div>';
   $('#ritOk').onclick=()=>{tela('app');render()};
+  if(resumo)$('#ritRes').onclick=()=>resumoTela(resumo,true);
 }
 
+
+/* ============ AVALIAÇÃO INICIAL (status + classe) e RESUMO MENSAL ============ */
+function avaliacoesTela(){
+  tela('ritual');const ok1=!!(S&&S.realAuto),ok2=!!(S&&S.classe);
+  $('#ritBody').innerHTML='<div class="pad fade" style="margin:auto 0"><div class="h cy glow" style="font-size:18px;font-weight:900;text-align:center">Avaliação inicial</div>'+
+    '<p class="mut" style="text-align:center;margin:8px 0 18px">Dois testes para o Sistema te conhecer de verdade.</p>'+
+    '<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>📊 Teste de Status</b><span class="'+(ok1?'cy':'mut')+'" style="font-size:13px">'+(ok1?'✓ CONCLUÍDO':'60 perguntas')+'</span></div><p class="mut" style="font-size:13px;margin-top:6px">Seus 5 pilares de 0 a 100.</p></div>'+
+    '<div class="card" style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;align-items:center"><b>⚔️ Teste de Classe</b><span class="'+(ok2?'cy':'gd')+'" style="font-size:13px">'+(ok2?'✓ CONCLUÍDO':'24 escolhas · ~3 min')+'</span></div><p class="mut" style="font-size:13px;margin-top:6px">Seu estilo natural, forças e ponto cego. Refeito 1 vez por mês com um resumo da sua evolução.</p>'+
+      (ok2?'':'<button class="btn" id="avCls" style="margin-top:12px">⚔️ FAZER TESTE DE CLASSE</button>')+'</div>'+
+    '<button class="btn '+(ok2?'':'ghost')+'" id="avEntrar">'+(ok2?'ENTRAR NO EVO':'FAZER DEPOIS E ENTRAR')+'</button></div>';
+  if($('#avCls'))$('#avCls').onclick=ritualIntro;
+  $('#avEntrar').onclick=()=>{tela('app');render()};
+}
+function fotoAtual(){
+  const sb=S.saber||{},ac=Object.values(sb).reduce((a,x)=>a+(x.ac||0),0)+((S.logica&&S.logica.ac)||0);
+  return{st:[0,1,2,3,4].map(i=>Math.round(atual(i)*10)/10),xp:S.xp.slice(),nivel:nivel(),saber:ac};
+}
+function resumoMes(ant,sc,agora){
+  const de=ant.d,f=ant.foto,dias=Math.max(1,Math.round((Date.now()-de)/864e5));
+  let tot=0,ok=0,pen=0,ativos=0;
+  for(const[k,d]of Object.entries(S.dias||{})){const t=new Date(k+'T12:00').getTime();if(t<de)continue;
+    if(d.lista&&d.lista.length){tot+=d.lista.length;ok+=d.feitas.length;if(d.feitas.length)ativos++}if(d.penal)pen++}
+  const st=agora.st.map((v,i)=>({i,v,d:f?Math.round((v-f.st[i])*10)/10:null}));
+  const xpG=agora.xp.map((v,i)=>f?v-f.xp[i]:null);
+  const melh=f?st.filter(x=>x.d>0).sort((a,b)=>b.d-a.d).slice(0,2).map(x=>x.i):[];
+  const fracos=st.slice().sort((a,b)=>a.v-b.v).slice(0,2).map(x=>x.i);
+  const parado=f?xpG.indexOf(Math.min(...xpG)):-1;
+  return{de,dias,tot,ok,pc:tot?Math.round(ok/tot*100):0,pen,ativos,st,xpG,melh,fracos,parado,
+    nivelDe:f?f.nivel:null,nivelPara:agora.nivel,saber:f?agora.saber-f.saber:null,disc:ant.scores.map((v,i)=>Math.round(sc[i]-v)),contra:CLASSES[classeInfo(sc).prim].contra};
+}
+function resumoTela(r,doRitual){
+  const sinal=n=>(n>0?'+':'')+n.toLocaleString('pt-BR',{maximumFractionDigits:1});
+  const linhaSt=r.st.map(x=>'<div class="disc"><b>'+PIL[x.i]+'</b><div class="bar"><i style="width:'+x.v+'%"></i></div><span class="vl '+(x.d>0?'cy':x.d<0?'rd':'mut')+'" style="font-family:Orbitron;font-size:12px;text-align:right">'+N(x.v)+(x.d!=null?' <small>('+sinal(x.d)+')</small>':'')+'</span></div>').join('');
+  const html='<h3 class="gd">📈 RESUMO DO MÊS</h3><p class="mut" style="font-size:13px;margin-bottom:12px">Últimos '+r.dias+' dias, desde o ritual de '+new Date(r.de).toLocaleDateString('pt-BR')+'.</p>'+
+    '<div class="card" style="margin-bottom:10px"><div class="h cy" style="font-size:12px;margin-bottom:8px">CONSTÂNCIA</div><p style="font-size:15px;line-height:1.6">✅ <b>'+r.ok+'</b> de '+r.tot+' missões cumpridas (<b>'+r.pc+'%</b>)<br>📅 Ativo em <b>'+r.ativos+'</b> dias'+(r.pen?'<br>☠️ <b class="rd">'+r.pen+'</b> dia(s) com Zona de Penalidade':'')+
+      (r.nivelDe!=null?'<br>⬆️ Nível '+r.nivelDe+' → <b class="cy">'+r.nivelPara+'</b>':'')+(r.saber!=null?'<br>📚 <b>'+r.saber+'</b> acertos novos em matérias e lógica':'')+'</p></div>'+
+    '<div class="card" style="margin-bottom:10px"><div class="h cy" style="font-size:12px;margin-bottom:8px">STATUS'+(r.st[0].d!=null?' (VARIAÇÃO NO MÊS)':'')+'</div>'+linhaSt+'</div>'+
+    '<div class="card" style="margin-bottom:10px"><div class="h cy" style="font-size:12px;margin-bottom:6px">💪 SUAS MELHORIAS</div><p style="font-size:15px;line-height:1.5">'+
+      (r.melh.length?r.melh.map(i=>'<b class="cy">'+PIL[i]+'</b> subiu '+sinal(r.st[i].d)+' ponto(s)'+(r.xpG[i]?' com +'+r.xpG[i]+' XP':'')).join('<br>'):(r.st[0].d==null?'Este é o primeiro resumo: no próximo mês você verá a variação de cada pilar.':'Nenhum pilar subiu neste período. Bora mudar isso no próximo mês!'))+'</p></div>'+
+    '<div class="card" style="margin-bottom:10px"><div class="h rd" style="font-size:12px;margin-bottom:6px">🎯 PONTOS A TRABALHAR</div><p style="font-size:15px;line-height:1.5">'+
+      r.fracos.map(i=>'<b class="rd">'+PIL[i]+'</b> é hoje um dos seus pilares mais baixos ('+N(r.st[i].v)+').').join('<br>')+
+      (r.parado>=0&&!r.fracos.includes(r.parado)?'<br><b class="gd">'+PIL[r.parado]+'</b> foi o pilar que menos recebeu XP no mês.':'')+
+      (r.pc<60&&r.tot?'<br>Sua taxa de missões ficou em '+r.pc+'%: tente escolher menos missões e cumprir todas.':'')+
+      '<br>Contrapeso da sua classe: <b class="gd">'+r.contra.toLowerCase()+'</b>.</p></div>'+
+    '<div class="card" style="margin-bottom:14px"><div class="h cy" style="font-size:12px;margin-bottom:6px">⚔️ SEU ESTILO NO MÊS</div><p style="font-size:14px">'+[0,1,2,3].map(i=>CLASSES[EST[i]].ico+' '+CLASSES[EST[i]].nome+' '+sinal(r.disc[i])).join(' · ')+'</p></div>'+
+    '<button class="btn" id="rsX">'+(doRitual?'VOLTAR':'FECHAR')+'</button>';
+  abrir(html);$('#rsX').onclick=fechar;
+}
 /* ============ VALORES ============ */
 const VALORES=[['Saúde',0],['Energia',0],['Aventura',0],['Conhecimento',1],['Excelência',1],['Disciplina',1],['Fé',2],['Paz',2],['Propósito',2],['Liberdade financeira',3],['Segurança',3],['Independência',3],['Família',4],['Amizade',4],['Generosidade',4],['Amor',4]];
 function valorPilar(p){return (S.valores||[]).some(v=>{const x=VALORES.find(y=>y[0]===v);return x&&x[1]===p})}
