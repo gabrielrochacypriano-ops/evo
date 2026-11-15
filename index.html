@@ -348,7 +348,7 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
     <div class="card" style="text-align:left;margin-top:22px;font-size:14px;line-height:1.45">
       <div class="h cy" style="font-size:12px;margin-bottom:8px">SUA JORNADA</div>
       <p><b>📊 1. Teste de Status</b> · 60 perguntas · ~10 min<br><span class="mut">Mede seus 5 pilares: Físico, Mente, Espírito, Recursos e Comunidade.</span></p>
-      <p style="margin-top:10px"><b>⚔️ 2. Teste de Classe</b> · liberado no nível 10<br><span class="mut">Revela seu estilo natural, forças e ponto cego, com missões e títulos próprios.</span></p>
+      <p style="margin-top:10px"><b>⚔️ 2. Teste de Classe</b> · liberado no Rank D<br><span class="mut">Revela seu estilo natural, forças e ponto cego, com missões e títulos próprios.</span></p>
       <p class="mut" style="margin-top:10px;font-size:13px">Responda pelo que você <b>faz</b>, não pelo que gostaria de fazer.</p>
     </div>
   </div>
@@ -696,7 +696,7 @@ const PENAL={
  4:'ZONA DE PENALIDADE: ligar para 2 pessoas que você não fala há tempos'
 };
 const RANKS=[[1,'E'],[8,'D'],[16,'C'],[26,'B'],[38,'A'],[52,'S'],[70,'SS']];
-const NV_CLASSE=10;   // classes liberadas a partir deste nível
+const NV_CLASSE=8;   // classes liberadas ao chegar no Rank D (nível 8)
 const XP_MISSAO=20, XP_PENAL=40, XP_NIVEL=150;
 
 /* ============ ESTADO ============ */
@@ -1249,7 +1249,7 @@ function checkin(){
       fechar();salvar();render();
       if(ganho){try{SFX.sucesso()}catch(e){}
         const nv=nivel();
-        if(nv>nvAntes){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();renderLog();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.<br>Rank atual: <b class="gd">'+rank(nv)+'</b>'+(nvAntes<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
+        if(nv>nvAntes){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();renderLog();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.<br>Rank atual: <b class="gd">'+rank(nv)+'</b>'+(nvAntes<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Rank D: Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
         else toast('+'+ganho+' XP')
       }
     };
@@ -1554,7 +1554,7 @@ function arenaGanhar(xp,pilar,nome){
   const d=arenaDia();d.feitos++;
   const livre=Math.max(0,ARENA_CAP-d.xp),q=Math.min(xp,livre);
   if(q>0){const nvA=nivel();d.xp+=q;S.xp[pilar]+=q;registrar('🎮 Arena: '+nome+' (+'+q+' XP)');salvar();renderHeader();arenaTopo();
-    const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.'+(nvA<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
+    const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.'+(nvA<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Rank D: Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
     else{try{SFX.sucesso()}catch(e){}toast('+'+q+' XP · '+PIL[pilar])}}
   else{salvar();arenaTopo();if(!d.avisado){d.avisado=1;salvar();toast('Limite diário de XP da Arena atingido. Continue treinando à vontade!')}}
   return q;
@@ -3254,7 +3254,7 @@ function ganharEquilibrio(){
 }
 function renderClasse(){
   const el=$('#classeCard');
-  if(nivel()<NV_CLASSE){const f=NV_CLASSE-nivel();el.innerHTML='<div class="h cy" style="font-size:13px">🔒 Ritual de Classe</div><p class="mut" style="margin:8px 0 6px;line-height:1.45">As Classes revelam seu estilo natural, suas forças e o seu ponto cego, e trazem missões e títulos próprios.</p><p style="font-size:15px">Liberado no <b class="gd">nível '+NV_CLASSE+'</b>. Faltam <b class="cy">'+f+'</b> nível(is).</p>'+(S.classe?'<p class="mut" style="font-size:13px;margin-top:8px">Seu ritual anterior fica guardado e volta a valer no nível '+NV_CLASSE+'.</p>':'');return}
+  if(nivel()<NV_CLASSE){const f=NV_CLASSE-nivel();el.innerHTML='<div class="h cy" style="font-size:13px">🔒 Ritual de Classe</div><p class="mut" style="margin:8px 0 6px;line-height:1.45">As Classes revelam seu estilo natural, suas forças e o seu ponto cego, e trazem missões e títulos próprios.</p><p style="font-size:15px">Liberado ao chegar no <b class="gd">Rank D</b> (nível '+NV_CLASSE+'). Faltam <b class="cy">'+f+'</b> nível(is).</p>'+(S.classe?'<p class="mut" style="font-size:13px;margin-top:8px">Seu ritual anterior fica guardado e volta a valer no Rank D.</p>':'');return}
   if(!S.classe){el.innerHTML='<div class="h cy" style="font-size:13px">Ritual de Classe</div><p class="mut" style="margin:8px 0 14px;line-height:1.45">Descubra sua Classe: seu estilo natural, suas forças e o seu ponto cego. São 24 escolhas rápidas, uns 3 minutos.</p><button class="btn" id="btnRit">⚔️ INICIAR RITUAL</button>';$('#btnRit').onclick=ritualIntro;return}
   const sc=S.classe.scores,ci=classeInfo(sc),c=CLASSES[ci.prim];
   const proxN=EQ_NIVEIS.find(([n])=>S.equil<n),base=[0,...EQ_NIVEIS.map(x=>x[0])].filter(n=>n<=S.equil).pop();
