@@ -319,6 +319,7 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .foco-it{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;font-size:14px}
 .foco-it.on{border-color:var(--gold);background:rgba(255,201,74,.06)}.foco-it.alt{opacity:.6;justify-content:space-between;font-size:13px}
 .foco-it .btn.sm{width:auto;flex:0 0 auto;min-height:36px;padding:0 12px;font-size:12px}
+.teste-fx{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav,64px) + 18px);z-index:150;padding:8px 14px;border-radius:20px;border:1px solid var(--gold);background:rgba(20,16,4,.92);color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.06em}
 .fin-linha{display:flex;align-items:center;gap:6px;width:100%;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--txt);font-size:13.5px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fin-linha span{margin-left:auto;color:var(--mut);font-size:18px}.fin-linha.alerta,.fin-linha.preso{border-color:var(--gold)}.fin-linha.alerta{background:rgba(255,201,74,.07)}
 .fin-aviso{display:flex;gap:10px;align-items:center;margin:2px 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:rgba(255,201,74,.07);font-size:13.5px;line-height:1.4}
@@ -1275,7 +1276,21 @@ function render(){
   try{MUS.modo(pen?'penal':'normal')}catch(e){}
   renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
-function renderHeader(){
+
+/* ===== Modo teste (código especial): perfil SS temporário, o perfil real fica guardado ===== */
+const COD_TESTE='EVO-SS-TESTE';
+function codigoTela(){abrir('<h3 class="cy">🔑 CÓDIGO ESPECIAL</h3><div class="field"><label>DIGITE O CÓDIGO</label><input id="cdIn" autocapitalize="characters" placeholder="XXX-XX-XXXXX"></div><p class="rd" id="cdM" style="font-size:13px;min-height:18px"></p><div class="row"><button class="btn ghost" id="cdX">CANCELAR</button><button class="btn" id="cdOk">USAR</button></div>');
+  $('#cdX').onclick=fechar;$('#cdOk').onclick=()=>{const c=$('#cdIn').value.trim().toUpperCase();if(c!==COD_TESTE){$('#cdM').textContent='Código inválido.';return}if(S.modoTeste){$('#cdM').textContent='O modo teste já está ativo.';return}entrarTeste()}}
+function entrarTeste(){
+  try{localStorage.setItem('evo_perfil_real',JSON.stringify(S))}catch(e){toast('Não foi possível guardar o perfil real');return}
+  const alvo=xpParaNivel(70)+5000;S.xp=[.2,.2,.2,.2,.2].map(f=>Math.round(alvo*f));
+  S.fin={d:Date.now(),r:FIN_DEGRAUS.map(g=>g[1].map(()=>true))};S.chk={};[0,1,4].forEach(p=>S.chk[p]={d:Date.now(),r:CHK[p].deg.map(g=>g[1].map(()=>true))});
+  S.logica={ac:320,er:0};S.modoTeste=1;S.focos={sel:[],troca:0};
+  registrar('🧪 Modo teste ativado (perfil SS)');salvar();fechar();render();sistema('MODO TESTE','<span style="font-size:44px">🧪</span><br>Perfil <b class="gd">SS</b> liberado para testes.<br><br>Seu perfil real está guardado. Para voltar, toque em <b class="cy">SAIR DO TESTE</b> no topo ou use ⚙️ → Código especial.')}
+function sairTeste(){let r=null;try{r=JSON.parse(localStorage.getItem('evo_perfil_real')||'null')}catch(e){}if(!r){toast('Perfil real não encontrado');return}
+  S=r;delete S.modoTeste;salvar();try{localStorage.removeItem('evo_perfil_real')}catch(e){}location.reload()}
+function testeFaixa(){let f=$('#testeFx');if(!S.modoTeste){if(f)f.remove();return}if(!f){document.body.insertAdjacentHTML('beforeend','<button id="testeFx" class="teste-fx">🧪 MODO TESTE · SAIR DO TESTE</button>');f=$('#testeFx');f.onclick=()=>{if(!f.dataset.c){f.dataset.c=1;f.textContent='TOQUE DE NOVO PARA VOLTAR AO PERFIL REAL';setTimeout(()=>{f.dataset.c='';f.textContent='🧪 MODO TESTE · SAIR DO TESTE'},4000);return}sairTeste()}}}
+function renderHeader(){testeFaixa();
   const n=nivel(),x=Math.max(0,xpTotal())-xpParaNivel(n),cust=xpParaNivel(n+1)-xpParaNivel(n);
   $('#hLvl').textContent=n;
   $('#hRank').textContent='RANK '+rank(n)+' · '+(S.titulo?S.titulo.toUpperCase():S.classe&&n>=NV_CLASSE?classeInfo(S.classe.scores).nome.toUpperCase():MODOS[S.modo].nome);
@@ -1603,6 +1618,7 @@ $('#btnCfg').onclick=()=>{
     '<div class="row" style="margin-top:10px"><button class="btn ghost" id="cBk">BACKUP</button><button class="btn ghost" id="cRs">RESTAURAR</button></div>'+
     '<button class="btn ghost" style="margin-top:10px" id="cRe">REFAZER O DESPERTAR</button>'+
     '<button class="btn ghost" style="margin-top:10px" id="cZr">♻️ REDEFINIR PERFIL</button>'+
+    '<button class="btn ghost" style="margin-top:10px" id="cCod">🔑 CÓDIGO ESPECIAL</button>'+
     '<p class="mut" style="font-size:12px;margin-top:14px;text-align:center">'+(ref?'☁ Progresso salvo na sua conta Claude':'💾 Progresso salvo neste aparelho — faça backup de vez em quando')+'</p>');
   const info=()=>{const m=MODOS[modo];$('#cmInfo').textContent=m.qtd+' missões/dia · XP ×'+m.mult+' · mínimo '+Math.round(m.limite*100)+'% para evitar penalidade'+(modo!==S.modo?' · vale a partir de amanhã':'')};info();
   $('#cm').querySelectorAll('button').forEach(b=>b.onclick=()=>{modo=b.dataset.k;$('#cm').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));info()});
@@ -1613,6 +1629,7 @@ $('#btnCfg').onclick=()=>{
   $('#cPf').onclick=prefsTela;$('#cBk').onclick=backup;$('#cRs').onclick=restaurar;if($('#cInst'))$('#cInst').onclick=instalar;
   $('#cX').onclick=fechar;
   $('#cOk').onclick=()=>{S.nome=$('#cn').value.trim()||S.nome;S.linkBase=$('#cl').value.trim();if(modo!==S.modo){S.modo=modo;registrar('⚙️ Dificuldade alterada para '+MODOS[modo].nome)}fechar();salvar();render()};
+  $('#cCod').onclick=codigoTela;
   $('#cZr').onclick=()=>abrir('<h3 class="rd">♻️ REDEFINIR PERFIL</h3><p style="font-size:15px;line-height:1.5;margin:8px 0 12px">Você vai começar do zero e refazer o teste do Despertar.</p>'+
     '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:10px"><b class="rd">Será apagado:</b> nível, rank, XP, status, sequência, metas, tarefas, conquistas, títulos, histórico, progresso da Arena, das matérias, da lógica e dos idiomas.</div>'+
     '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:14px"><b class="cy">Será mantido:</b> a visão que outras pessoas deram sobre você (avaliações externas e o seu link de avaliação), a sua guilda, o seu nome, as preferências de missões e as configurações de som.</div>'+
@@ -1944,7 +1961,7 @@ const JG_TAG=nv=>nv<=2?['FÁCIL','cy']:nv<=4?['MÉDIO','gd']:['DIFÍCIL','rd'];
 function jgCab(el,ico,nome,nv,xp,pil){const t=JG_TAG(nv);cabecalho(el,ico,nome+' · Nível '+nv,t[0],t[1],'até +'+xpA(xp)+' XP · '+(pil||'MENTE'))}
 const jgXP=nv=>Math.min(45,12+nv*4);
 function jgFim(fim,ok,nv,q){fim(ok,(q==null?1:q)*jgXP(nv)/30)}
-function jgWin(J,txt,sobe){J.querySelector('.ar-msg').innerHTML='<b class="cy">'+txt+'</b>'+(sobe?' Próxima vez: <b class="gd">nível acima</b>.':'')}
+function jgWin(J,txt,sobe){let m=J.querySelector('.ar-msg');if(!m){J.insertAdjacentHTML('beforeend','<p class="ar-msg"></p>');m=J.querySelector('.ar-msg')}m.innerHTML='<b class="cy">'+txt+'</b>'+(sobe?' Próxima vez: <b class="gd">nível acima</b>.':'')}
 
 /* ---------- 1. Torre de Hanói ---------- */
 function cardHanoi(el,fim){
@@ -1992,7 +2009,7 @@ function cardLabirinto(el,fim){
   let pos=0,mov=0,acabou=false,t0=Date.now();jgCab(el,'🌀','Labirinto',nv,jgXP(nv));const J=el.querySelector('.jogo');const fimC=N*N-1;
   const passo=w=>{if(acabou||W[pos][w])return false;pos+=D[w][0];mov++;draw();if(pos===fimC){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('labirinto',6);jgWin(J,'Saiu do labirinto em '+Math.round((Date.now()-t0)/1000)+' s!',s);jgFim(fim,true,nv)}return true};
   const draw=()=>{J.innerHTML='<p class="ar-inst">Leve o 🔵 até a 🏁 usando as setas.</p><div class="lb" style="grid-template-columns:repeat('+N+',1fr)">'+W.map((w,i)=>'<i style="border-width:'+w.map(x=>x?'2px':'0').join(' ')+'">'+(i===pos?'🔵':i===fimC?'🏁':'')+'</i>').join('')+'</div>'+
-    '<div class="lb-ctl"><span></span><button data-w="0">▲</button><span></span><button data-w="3">◀</button><button data-w="2">▼</button><button data-w="1">▶</button></div>';
+    '<div class="lb-ctl"><span></span><button data-w="0">▲</button><span></span><button data-w="3">◀</button><button data-w="2">▼</button><button data-w="1">▶</button></div><p class="ar-msg"></p>';
     J.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const w=+b.dataset.w;if(!passo(w))try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}})};draw();
 }
 /* ---------- 5. Matriz de memória ---------- */
@@ -4115,10 +4132,11 @@ function gSyncMembro(force){
   const j=JSON.stringify(Object.assign({},d,{at:0}));
   if(!force&&(j===_gSync||Date.now()-_gSyncT<4000))return;
   _gSync=j;_gSyncT=Date.now();
+  if(S.modoTeste)return;   // perfil de teste não vai para a guilda
   G.db.set('guildas/'+G.gid+'/membros/'+G.uid,d,true).catch(gErro);
 }
 async function gPostar(txt){
-  if(!G.db||!G.gid)return;
+  if(!G.db||!G.gid||S.modoTeste)return;
   await G.db.add('guildas/'+G.gid+'/feed',{uid:G.uid,nome:S.nome.slice(0,24),txt:String(txt).slice(0,140),reacoes:{}});
 }
 /* Missão da Guilda (semanal) */
