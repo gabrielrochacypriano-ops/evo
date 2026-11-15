@@ -316,6 +316,9 @@ body.zen .toast{background:#fff}
 body.zen .sys .box{background:rgba(255,255,255,.97);box-shadow:0 10px 40px rgba(40,70,60,.2)}
 body.zen .sheet{background:#fff}
 body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
+.fin-aviso{display:flex;gap:10px;align-items:center;margin:2px 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:rgba(255,201,74,.07);font-size:13.5px;line-height:1.4}
+.fin-aviso span{flex:1}.fin-aviso .btn.sm{width:auto;flex:0 0 auto;min-height:38px;padding:0 12px;font-size:12px}
+.fin-aviso.ok{border-color:var(--line);background:transparent}
 .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0 0 14px}
 .subtabs::-webkit-scrollbar{display:none}
 .subtabs button{min-width:0;border:1px solid var(--line);border-radius:12px;padding:7px 2px 6px;font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}
@@ -764,9 +767,68 @@ const pesoExt=n=>Math.min(.5,.4+.05*(n-EXT_MIN));
 const realNota=i=>{const a=S.realAuto[i],e=extNotas()[i];return e?a*(1-pesoExt(e.n))+e.nota*pesoExt(e.n):a};
 /* evolui com XP, aproximando de 100 sem nunca chegar */
 const N=v=>Math.round(v);
-const atual=i=>{const ini=realNota(i),x=S.xp[i];
+const atualBruto=i=>{const ini=realNota(i),x=S.xp[i];
   const v=x>=0?100-(100-ini)*Math.exp(-x/K_EVOL):ini*Math.exp(x/K_EVOL);
   return Math.max(0,Math.min(NOTA_TETO,v))};
+const atual=i=>{const v=atualBruto(i);return i===3?Math.min(v,tetoFin()):v};   // Recursos respeita o teto financeiro
+
+/* ============ TETOS FINANCEIROS (Recursos) — check-in mensal obrigatório ============ */
+const FIN_TETOS=[40,55,65,75,85,95,99];
+const FIN_DEGRAUS=[
+ ['Renda e contas básicas',['Você tem renda própria regular (salário, negócio, bicos, aposentadoria ou pensão)?','As contas essenciais deste mês (moradia, comida, luz e água) estão pagas?']],
+ ['Contas em dia',['Todas as suas contas estão em dia há pelo menos 3 meses?','Você está sem dívidas atrasadas (ou com um acordo sendo pago em dia)?','Você sabe quanto ganha e quanto gasta por mês?']],
+ ['Sobra e reserva inicial',['Você gasta menos do que ganha (sobra dinheiro no fim do mês)?','Você está sem usar cheque especial e sem pagar o rotativo do cartão?','Você tem reserva de emergência de pelo menos 1 mês dos seus gastos?']],
+ ['Reserva de 3 meses',['Sua reserva cobre pelo menos 3 meses de gastos?','Você guarda 10% ou mais da sua renda há pelo menos 6 meses?','Seus gastos essenciais ficam em até 60% da sua renda?']],
+ ['Reserva de 6 meses',['Sua reserva cobre pelo menos 6 meses de gastos?','Você investe todos os meses?','Seu patrimônio é maior que as suas dívidas (e financiamentos, se houver, estão em dia)?']],
+ ['Renda de investimentos',['Seus investimentos geram renda que cobre pelo menos 25% dos seus gastos?','Sua reserva cobre 12 meses de gastos?','Você tem um plano para a aposentadoria?']]
+];
+const FIN_VALIDADE=31;   // dias
+function finValido(){const f=S.fin;return f&&f.d&&(Date.now()-f.d)/864e5<FIN_VALIDADE}
+function finDegrau(r){let n=0;for(let g=0;g<FIN_DEGRAUS.length;g++){if(r&&r[g]&&r[g].every(Boolean))n=g+1;else break}return n}
+function tetoFin(){return finValido()?FIN_TETOS[finDegrau(S.fin.r)]:FIN_TETOS[0]}
+function finFalta(){if(!finValido())return null;const g=finDegrau(S.fin.r);if(g>=FIN_DEGRAUS.length)return null;
+  return{nome:FIN_DEGRAUS[g][0],itens:FIN_DEGRAUS[g][1].filter((q,i)=>!(S.fin.r[g]||[])[i])}}
+function finCheckin(){
+  const r=FIN_DEGRAUS.map((g,i)=>g[1].map((q,j)=>!!(finValido()&&S.fin.r[i]&&S.fin.r[i][j])));
+  const draw=()=>{abrir('<h3 class="gd">💰 CHECK-IN FINANCEIRO</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:12px">Responda com sinceridade. As respostas ficam só no seu celular e definem até onde o seu status de <b>Recursos</b> pode subir. Vale por '+FIN_VALIDADE+' dias.</p>'+
+    FIN_DEGRAUS.map(([nome,qs],g)=>'<div class="card" style="margin-bottom:10px;padding:12px 14px"><div class="h cy" style="font-size:11px;margin-bottom:8px">PARA PASSAR DE '+FIN_TETOS[g]+' · '+nome.toUpperCase()+'</div>'+
+      qs.map((q,j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+q+'</span><div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div></div>').join('')+'</div>').join('')+
+    '<p class="cy" style="font-size:15px;margin:4px 0 12px;text-align:center">Com essas respostas, seu teto de Recursos fica em <b>'+FIN_TETOS[finDegrau(r)]+'</b>.</p>'+
+    '<div class="row"><button class="btn ghost" id="fqX">CANCELAR</button><button class="btn" id="fqOk">SALVAR</button></div>');
+    $('#sheet').querySelectorAll('[data-fq]').forEach(b=>b.onclick=()=>{const[g,j,v]=b.dataset.fq.split('-').map(Number);const sc=$('#sheet').scrollTop;r[g][j]=!!v;draw();$('#sheet').scrollTop=sc});
+    $('#fqX').onclick=fechar;
+    $('#fqOk').onclick=()=>{const antes=finValido()?tetoFin():FIN_TETOS[0],vAntes=atual(3);S.fin={d:Date.now(),r};const t=tetoFin();
+      registrar('💰 Check-in financeiro: teto de Recursos em '+t);salvar();fechar();render();
+      if(t>antes&&atualBruto(3)>antes)sistema('TETO LIBERADO','<span style="font-size:44px">💰</span><br>Seu teto de Recursos subiu para <b class="gd">'+t+'</b>.<br>Recursos: '+N(vAntes)+' → <b class="cy">'+N(atual(3))+'</b>');
+      else toast('Check-in salvo · teto de Recursos: '+t)};
+  };draw();
+}
+function finLinha(){const t=tetoFin(),v=atualBruto(3),preso=v>=t-0.5,f=finFalta();
+  if(!finValido())return'<div class="fin-aviso"><span>🔒 Recursos limitado a <b>'+FIN_TETOS[0]+'</b> até você fazer o check-in financeiro do mês.</span><button class="btn sm" data-fin>FAZER CHECK-IN</button></div>';
+  return'<div class="fin-aviso ok"><span>💰 Teto de Recursos: <b>'+t+'</b>'+(preso&&f?' · <span class="gd">travado no teto</span>':'')+'. '+(f?'Para passar: '+esc(f.itens[0]).replace(/\?$/,'')+(f.itens.length>1?' (+'+(f.itens.length-1)+')':'')+'.':'Teto máximo liberado.')+' Próximo check-in em '+Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5))+' dia(s).</span><button class="btn sm ghost" data-fin>REVER</button></div>'}
+
+/* ============ SUB-HABILIDADES (a partir do Rank C) — versão inicial ============ */
+const SUBS=[
+ [['Força',/flex|agach|muscul|peso|forca|prancha|abdomin|barra|halter/],['Resistência',/corr|camin|bike|pedal|nad|cardio|escada|trilha|km|polichinelo/],['Saúde',/sono|dorm|agua|fruta|verdura|legume|acucar|alonga|medic|exame|postura|refri|aliment/]],
+ [['Foco',/foco|pomodoro|celular|distra|concentr|tela|notifica/],['Aprendizado',/ler |leia|livro|curso|aula|estud|idioma|pagina|aprend|podcast/],['Raciocínio',/logic|problema|xadrez|sudoku|ideia|planej|decid|analis|estrateg/]],
+ [['Equilíbrio emocional',/respir|medit|emoc|calma|ansied|diario|sentir|sentimento/],['Propósito',/proposito|valor|missao|sentido|objetivo|legado|sonho/],['Gratidão e fé',/grat|orar|oracao|fe |agradec|igreja|biblia|reza/]],
+ [['Renda',/renda|cliente|venda|vender|negocio|trabalh|curriculo|promoc|freela|ganhar/],['Controle financeiro',/gasto|orcamento|anot|conta|planilha|cortar|economi|fatura/],['Patrimônio e reserva',/reserva|invest|guardar|poup|patrim|divida|aplica/]],
+ [['Família',/famili|mae|pai |filh|esposa|marido|parceir|irma|irmao|avo/],['Amizades',/amig|mensagem|ligar|encontr|convers|conhec/],['Contribuição',/ajud|voluntar|doar|doe |comunidade|ensin|mentor/]]
+];
+const SUB_RANKS=['C','B','A','S','SS'];   // cada um desses ranks abre 1 habilidade
+const semAcento=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')+' ';
+function subsLiberadas(){const r=rank(nivel()),ord=['E','D','C','B','A','S','SS'];return SUB_RANKS.filter(x=>ord.indexOf(r)>=ord.indexOf(x)).length}
+function subValores(p){const c=[0,0,0];for(const d of Object.values(S.dias||{})){if(!d.lista)continue;for(const m of d.lista)if(m.p===p&&d.feitas.includes(m.id)){const t=semAcento(m.t+' '+(m.como||''));SUBS[p].forEach(([n,re],i)=>{if(re.test(t))c[i]++})}}
+  const tot=c[0]+c[1]+c[2],v=atual(p);return SUBS[p].map(([n],i)=>({n,v:Math.max(0,Math.min(p===3?tetoFin():NOTA_TETO,v*(.82+.54*((c[i]+1)/(tot+3))))),c:c[i]}))}
+function subsHtml(){
+  const lib=subsLiberadas(),ab=(S.subs&&S.subs.abertos)||[];
+  if(!lib)return'<div class="card" style="margin-top:12px"><div class="h cy" style="font-size:12px">🧬 Sub-habilidades</div><p class="mut" style="font-size:14px;margin-top:6px">🔒 Liberadas no <b class="gd">Rank C</b> (nível 16). Cada habilidade se divide em 3 partes, como Força, Resistência e Saúde no Físico.</p></div>';
+  let h='<div class="card" style="margin-top:12px"><div class="h cy" style="font-size:12px;margin-bottom:6px">🧬 Sub-habilidades <span class="mut" style="font-size:10px">· versão inicial</span></div>';
+  ab.forEach(p=>{h+='<div style="margin:8px 0 4px;font-weight:700">'+PIL[p]+'</div>'+subValores(p).map(x=>'<div class="stat" style="padding:4px 0"><div class="nm" style="font-size:13px">'+x.n+'</div><div><div class="bar"><i style="width:'+x.v+'%"></i></div><small>'+x.c+' missão(ões) feita(s)</small></div><div class="vl cy">'+N(x.v)+'</div></div>').join('')});
+  if(ab.length<lib)h+='<p style="font-size:14px;margin:8px 0">Você pode abrir <b class="gd">'+(lib-ab.length)+'</b> habilidade(s):</p><div class="seg" style="grid-template-columns:repeat(5,1fr)">'+PIL.map((n,i)=>ab.includes(i)?'':'<button data-sub="'+i+'" style="font-size:11px;padding:8px 0">'+n+'</button>').join('')+'</div>';
+  else if(lib<SUB_RANKS.length)h+='<p class="mut" style="font-size:13px;margin-top:8px">Próxima habilidade no Rank '+SUB_RANKS[lib]+'.</p>';
+  return h+'</div>';
+}
 function migrar(s){
   const x10=a=>(a||[]).map(v=>Math.round(v*10));
   if(!s.v||s.v<2){ // v1: real era 1..5 (uma pergunta por pilar), ego 0..10
@@ -1037,7 +1099,7 @@ $('#btnEgo').onclick=()=>{
     ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','subs'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1063,7 +1125,7 @@ function render(){
   const pen=S.dias[hoje()]&&S.dias[hoje()].penal&&!S.dias[hoje()].penal.feita;
   document.body.classList.toggle('penal',!!pen);
   try{MUS.modo(pen?'penal':'normal')}catch(e){}
-  renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
+  renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
 function renderHeader(){
   const n=nivel(),x=Math.max(0,xpTotal())-xpParaNivel(n),cust=xpParaNivel(n+1)-xpParaNivel(n);
@@ -1099,7 +1161,9 @@ function renderRadar(){
   $('#kStreak').textContent=sequencia()+' 🔥';
   $('#stats').innerHTML=PIL.map((p,i)=>{
     const lv=1+Math.floor(Math.max(0,S.xp[i])/300), d=S.ego[i]-realNota(i);
-    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'}).join('');
+    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(i===3?finLinha():'')}).join('')+subsHtml();
+  $('#stats').querySelectorAll('[data-fin]').forEach(b=>b.onclick=finCheckin);
+  $('#stats').querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const p=+b.dataset.sub;S.subs=S.subs||{abertos:[]};if(S.subs.abertos.length>=subsLiberadas())return;S.subs.abertos.push(p);registrar('🧬 Sub-habilidades de '+PIL[p]+' abertas');salvar();render();toast(PIL[p]+' dividido em 3 sub-habilidades')});
   const f=fraco();let maior=0;for(let i=1;i<5;i++)if(S.ego[i]-realNota(i)>S.ego[maior]-realNota(maior))maior=i;
   const gap=S.ego[maior]-realNota(maior);
   renderEvol();
@@ -3448,6 +3512,8 @@ function renderConquistas(){
 
 /* ============ RELATÓRIO SEMANAL ============ */
 function segunda(d=new Date()){const t=new Date(d);t.setHours(12,0,0,0);t.setDate(t.getDate()-((t.getDay()+6)%7));return t}
+function finLembrete(){const k=hoje();if(S.finAviso===k)return false;if(finValido())return false;S.finAviso=k;salvar();
+  setTimeout(()=>sistema('CHECK-IN FINANCEIRO','<span style="font-size:44px">💰</span><br>'+(S.fin?'Seu check-in financeiro venceu.':'Agora o status de <b>Recursos</b> tem tetos.')+'<br><br>Sem o check-in do mês, Recursos fica limitado a <b class="gd">'+FIN_TETOS[0]+'</b>. Faça em <b class="cy">Perfil → Status</b>, logo abaixo de Recursos.'),1500);return true}
 function relatorioAuto(){
   if(!S.nome)return;
   const seg=hoje(segunda());
