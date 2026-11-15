@@ -316,6 +316,8 @@ body.zen .toast{background:#fff}
 body.zen .sys .box{background:rgba(255,255,255,.97);box-shadow:0 10px 40px rgba(40,70,60,.2)}
 body.zen .sheet{background:#fff}
 body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
+.fin-linha{display:flex;align-items:center;gap:6px;width:100%;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--txt);font-size:13.5px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-linha span{margin-left:auto;color:var(--mut);font-size:18px}.fin-linha.alerta,.fin-linha.preso{border-color:var(--gold)}.fin-linha.alerta{background:rgba(255,201,74,.07)}
 .fin-aviso{display:flex;gap:10px;align-items:center;margin:2px 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:rgba(255,201,74,.07);font-size:13.5px;line-height:1.4}
 .fin-aviso span{flex:1}.fin-aviso .btn.sm{width:auto;flex:0 0 auto;min-height:38px;padding:0 12px;font-size:12px}
 .fin-aviso.ok{border-color:var(--line);background:transparent}
@@ -804,8 +806,16 @@ function finCheckin(){
   };draw();
 }
 function finLinha(){const t=tetoFin(),v=atualBruto(3),preso=v>=t-0.5,f=finFalta();
-  if(!finValido())return'<div class="fin-aviso"><span>🔒 Recursos limitado a <b>'+FIN_TETOS[0]+'</b> até você fazer o check-in financeiro do mês.</span><button class="btn sm" data-fin>FAZER CHECK-IN</button></div>';
-  return'<div class="fin-aviso ok"><span>💰 Teto de Recursos: <b>'+t+'</b>'+(preso&&f?' · <span class="gd">travado no teto</span>':'')+'. '+(f?'Para passar de '+t+', falta: <b>'+f.itens.join('</b>, <b>')+'</b>.':'Teto máximo liberado.')+' Próximo check-in em '+Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5))+' dia(s).</span><button class="btn sm ghost" data-fin>REVER</button></div>'}
+  if(!finValido())return'<button class="fin-linha alerta" data-fin-det>🔒 Limitado a <b>'+FIN_TETOS[0]+'</b> · faça o check-in financeiro <span>›</span></button>';
+  return'<button class="fin-linha'+(preso&&f?' preso':'')+'" data-fin-det>💰 Teto <b>'+t+'</b>'+(f?' · falta'+(f.itens.length>1?'m':'')+' '+f.itens.length+' condiç'+(f.itens.length>1?'ões':'ão'):' · máximo')+(preso&&f?' · travado':'')+' <span>›</span></button>'}
+function finDetalhe(){const t=tetoFin(),f=finFalta(),val=finValido(),dias=val?Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5)):0,g=val?finDegrau(S.fin.r):0;
+  abrir('<h3 class="gd">💰 TETO DE RECURSOS</h3><p style="font-size:15px;line-height:1.5;margin:6px 0 12px">Recursos só sobe até o teto liberado pelas suas condições financeiras reais. O XP continua acumulando: quando o teto sobe, o valor sobe na hora.</p>'+
+    '<div class="card" style="margin-bottom:10px">'+(val?'<p style="font-size:15px">Teto atual: <b class="gd">'+t+'</b> · Recursos: <b class="cy">'+N(atual(3))+'</b>'+(atualBruto(3)>t+0.5?' <span class="mut">(sem o teto seria '+N(atualBruto(3))+')</span>':'')+'</p>'+
+      (f?'<p style="font-size:14.5px;margin-top:8px">Para passar de '+t+', falta:</p><ul style="margin:6px 0 0 18px;font-size:14.5px;line-height:1.6">'+f.itens.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p class="cy" style="margin-top:8px">Você liberou o teto máximo.</p>')+
+      '<p class="mut" style="font-size:13px;margin-top:10px">Check-in válido por mais '+dias+' dia(s).</p>':'<p style="font-size:15px">Sem check-in neste mês, Recursos fica limitado a <b class="gd">'+FIN_TETOS[0]+'</b>.</p>')+'</div>'+
+    '<div class="card" style="margin-bottom:14px"><div class="h cy" style="font-size:11px;margin-bottom:6px">OS DEGRAUS</div>'+FIN_DEGRAUS.map(([nome,qs],k)=>'<div style="display:flex;gap:8px;font-size:13.5px;padding:5px 0;border-top:'+(k?'1px solid var(--line)':'0')+'"><span style="width:18px">'+(val&&k<g?'✅':'⬜')+'</span><span style="flex:1"><b>Passar de '+FIN_TETOS[k]+'</b>: '+qs.map(q=>q[1]).join(', ')+'</span></div>').join('')+'</div>'+
+    '<div class="row"><button class="btn ghost" id="fdX">FECHAR</button><button class="btn" id="fdOk">'+(val?'REVER CHECK-IN':'FAZER CHECK-IN')+'</button></div>');
+  $('#fdX').onclick=fechar;$('#fdOk').onclick=finCheckin}
 
 /* ============ SUB-HABILIDADES (a partir do Rank C) — versão inicial ============ */
 const SUBS=[
@@ -1162,7 +1172,7 @@ function renderRadar(){
   $('#stats').innerHTML=PIL.map((p,i)=>{
     const lv=1+Math.floor(Math.max(0,S.xp[i])/300), d=S.ego[i]-realNota(i);
     return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(i===3?finLinha():'')}).join('')+subsHtml();
-  $('#stats').querySelectorAll('[data-fin]').forEach(b=>b.onclick=finCheckin);
+  $('#stats').querySelectorAll('[data-fin-det]').forEach(b=>b.onclick=finDetalhe);
   $('#stats').querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const p=+b.dataset.sub;S.subs=S.subs||{abertos:[]};if(S.subs.abertos.length>=subsLiberadas())return;S.subs.abertos.push(p);registrar('🧬 Sub-habilidades de '+PIL[p]+' abertas');salvar();render();toast(PIL[p]+' dividido em 3 sub-habilidades')});
   const f=fraco();let maior=0;for(let i=1;i<5;i++)if(S.ego[i]-realNota(i)>S.ego[maior]-realNota(maior))maior=i;
   const gap=S.ego[maior]-realNota(maior);
