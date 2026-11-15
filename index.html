@@ -1652,7 +1652,12 @@ const ARENA_CAP=500;   // limite diário maior…
 const ARENA_FATOR=.7;  // …mas cada desafio vale ~30% menos
 const xpA=n=>Math.max(1,Math.round(n*ARENA_FATOR));   // XP máximo por dia vindo da Arena (o resto vira treino livre)
 const DIF={facil:['FÁCIL','cy'],medio:['MÉDIO','gd'],dificil:['DIFÍCIL','rd']};
-function arenaDia(){const k=hoje();S.arena=S.arena||{};S.arena[k]=S.arena[k]||{xp:0,feitos:0};return S.arena[k]}
+const ARENA_VIRADA=4;   // o dia da Arena vira às 4h: jogar de madrugada conta para o dia anterior
+const arenaChave=()=>hoje(new Date(Date.now()-ARENA_VIRADA*36e5));
+function arenaMigrar4h(){if(!S||S.arenaMig4)return;S.arenaMig4=1;S.arena=S.arena||{};
+  (S.log||[]).forEach(l=>{const m=/^🎮 Arena: .*\(\+(\d+) XP\)$/.exec(l.t||'');if(!m)return;const dt=new Date(l.d);if(dt.getHours()>=ARENA_VIRADA)return;
+    const de=hoje(dt),para=hoje(new Date(l.d-ARENA_VIRADA*36e5)),q=+m[1];if(S.arena[de]){S.arena[de].xp=Math.max(0,S.arena[de].xp-q);S.arena[de].avisado=0}S.arena[para]=S.arena[para]||{xp:0,feitos:0};S.arena[para].xp+=q});salvar()}
+function arenaDia(){arenaMigrar4h();const k=arenaChave();S.arena=S.arena||{};S.arena[k]=S.arena[k]||{xp:0,feitos:0};return S.arena[k]}
 function arenaGanhar(xp,pilar,nome){
   const d=arenaDia();d.feitos++;
   const livre=Math.max(0,ARENA_CAP-d.xp),q=Math.min(xp,livre);
@@ -3571,8 +3576,8 @@ pages.addEventListener('scroll',()=>{
 window.addEventListener('resize',()=>pages.scrollLeft=pages.clientWidth*pagAtual);
 
 /* Vira o dia com o app aberto */
-let _diaVisto=hoje();
-function viradaDia(){if(!S||!S.nome)return;const k=hoje();if(S.ultimoDia!==k){processarDias();render()}if(_diaVisto!==k){_diaVisto=k;try{arenaTopo()}catch(e){}}}
+let _diaVisto='';
+function viradaDia(){if(!S||!S.nome)return;const k=hoje();if(S.ultimoDia!==k){processarDias();render()}const ka=arenaChave();if(_diaVisto!==ka){_diaVisto=ka;try{arenaTopo()}catch(e){}}}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)viradaDia()});
 addEventListener('focus',viradaDia);setInterval(viradaDia,60000);
 
