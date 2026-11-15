@@ -259,8 +259,8 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 .snum.n9{grid-template-columns:repeat(10,1fr);gap:4px}.snum.n9 button{padding:9px 0;font-size:17px}
 .snum button{border:1px solid var(--line);border-radius:8px;padding:10px 0;font-size:18px;font-weight:700;color:var(--cyan)}
 .mg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:340px;margin:0 auto}
-.mc{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--line);font-size:28px;background:linear-gradient(135deg,#132029,#0c1116);color:var(--mut)}
-.mc.on{border-color:var(--cyan);background:var(--cyan-d)}.mc.ok{border-color:var(--gold);background:rgba(255,201,74,.1)}
+.mc{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--mcor,var(--line));font-size:min(28px,7vw);background:color-mix(in srgb,var(--mcor,#132029) 30%,#0c1116);color:var(--mut);padding:0;filter:saturate(.9)}
+.mc:not(.on){font-size:min(20px,5vw);opacity:.85}.mc.on{border-color:var(--cyan);background:var(--cyan-d)}.mc.ok{border-color:var(--gold);background:rgba(255,201,74,.1)}
 .eg{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;max-width:250px;margin:0 auto;padding:6px;border:1px solid var(--line);border-radius:10px;background:#0d1318}
 .ec{aspect-ratio:1;font-size:18px;border-radius:6px;padding:0}
 .ec:disabled{opacity:1}.ec.ok{background:rgba(255,201,74,.25);outline:2px solid var(--gold)}
@@ -304,7 +304,7 @@ body.zen .xq.cla{background:#e9e2cf}body.zen .xq.esc{background:#a9bfae}
 body.zen .xq.sel{background:rgba(42,143,132,.45)!important}
 body.zen .xq .pb{color:#ffffff;text-shadow:0 0 2px #1d2b26,0 1px 2px #1d2b26}body.zen .xq .pp{color:#2c2c2c;text-shadow:none}
 body.zen .sc{border-color:#cfdcd4}body.zen .sc.fixo{background:#f1f5f2}body.zen .sc.sel{background:rgba(42,143,132,.18)}
-body.zen .mc{background:linear-gradient(135deg,#ffffff,#eef4f0)}
+body.zen .mc{background:color-mix(in srgb,var(--mcor,#2a8f84) 18%,#ffffff)}body.zen .mc.on{background:#fff}
 body.zen .eg{background:#f6faf7}
 body.zen .bola{background:radial-gradient(circle,rgba(42,143,132,.35),rgba(42,143,132,.05));box-shadow:0 0 30px rgba(42,143,132,.2)}
 body.zen .sim-b{background:color-mix(in srgb,var(--c) 22%,#ffffff)}
@@ -321,6 +321,35 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .fin-aviso{display:flex;gap:10px;align-items:center;margin:2px 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:rgba(255,201,74,.07);font-size:13.5px;line-height:1.4}
 .fin-aviso span{flex:1}.fin-aviso .btn.sm{width:auto;flex:0 0 auto;min-height:38px;padding:0 12px;font-size:12px}
 .fin-aviso.ok{border-color:var(--line);background:transparent}
+
+/* jogos de lógica */
+.hn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:min(230px,calc(var(--arH,600px) - 300px))}
+.hn-t{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;padding:8px 2px 6px;border:1px solid var(--line);border-radius:12px;background:transparent}
+.hn-t.sel{border-color:var(--gold);background:rgba(255,201,74,.08)}
+.hn-p{position:absolute;bottom:6px;top:14px;width:5px;border-radius:3px;background:var(--line)}
+.hn-t b{position:relative;display:block;height:min(18px,calc((var(--arH,600px) - 330px)/9));border-radius:6px}
+.lz,.dz,.mz,.sh,.sa{display:grid;gap:6px;margin:0 auto;max-width:min(330px,calc(var(--arH,600px) - 260px))}
+.lz-c{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.2)}.lz-c.on{background:#facc15;box-shadow:0 0 16px #facc15;border-color:#facc15}
+.dz-c{aspect-ratio:1;border-radius:10px;border:1px solid var(--cyan);font-family:Orbitron;font-size:22px;font-weight:700;color:var(--txt);background:var(--cyan-d,rgba(24,240,255,.08))}
+.dz-c.vazio{border:1px dashed var(--line);background:transparent}.dz-c.certo{border-color:var(--gold)}
+.lb{display:grid;margin:0 auto;max-width:min(330px,calc(var(--arH,600px) - 300px));border:2px solid var(--txt)}
+.lb i{aspect-ratio:1;border-style:solid;border-color:var(--txt);display:grid;place-items:center;font-size:min(16px,3vw);font-style:normal;line-height:1}
+.lb-ctl{display:grid;grid-template-columns:repeat(3,56px);gap:6px;justify-content:center;margin-top:10px}.lb-ctl button{height:46px;border:1px solid var(--cyan);border-radius:10px;font-size:20px;color:var(--cyan);background:transparent}
+.mz-c{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.15)}.mz-c.on{background:var(--cyan);box-shadow:0 0 14px var(--cyan)}.mz-c.ok{background:var(--gold)}.mz-c.err{background:var(--red,#ef4444)}
+.sh-c{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);font-family:Orbitron;font-size:20px;font-weight:700;color:var(--txt);background:transparent}.sh-c.ok{opacity:.25}
+.sn-h{display:flex;flex-direction:column;gap:5px;max-height:calc(var(--arH,600px) - 330px);overflow-y:auto}
+.sn-l{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:8px}.sn-l.cur{border:1px dashed var(--line)}
+.sn-l span{margin-left:auto;font-size:15px;letter-spacing:2px;color:var(--txt)}
+.sn-b{display:inline-block;width:26px;height:26px;border-radius:50%}.sn-b.vz{border:2px dashed var(--line)}
+.sn-p{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}.sn-p button{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.4)}
+.nn{display:grid;gap:2px;margin:0 auto;max-width:min(340px,calc(var(--arH,600px) - 220px))}
+.nn i{font-style:normal;font-size:11px;color:var(--mut);display:flex;align-items:flex-end;justify-content:center;text-align:center;line-height:1.15}
+.nn .nn-pl{justify-content:flex-end;align-items:center;padding-right:4px;white-space:nowrap}.nn i.ok{color:var(--cyan);font-weight:700}
+.nn-c{aspect-ratio:1;border:1px solid var(--line);border-radius:3px;background:transparent;padding:0;font-size:14px;color:var(--mut)}.nn-c.on{background:var(--cyan);border-color:var(--cyan)}
+.sa-alvo{text-align:center;font-family:Orbitron;font-size:30px;font-weight:900;color:var(--gold);margin:4px 0 10px}
+.sa-c{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);font-family:Orbitron;font-size:20px;font-weight:700;color:var(--txt);background:transparent}.sa-c.on{background:var(--cyan);color:#06131a;border-color:var(--cyan)}
+.ce-n{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.ce-c{min-width:64px;height:58px;border-radius:12px;border:1px solid var(--cyan);font-family:Orbitron;font-size:22px;font-weight:700;color:var(--txt);background:transparent;padding:0 10px}.ce-c.on{background:var(--cyan);color:#06131a}
+.ce-o{display:flex;gap:8px;justify-content:center;margin-top:12px}.ce-o button{width:58px;height:50px;border-radius:12px;border:1px solid var(--gold);font-size:24px;font-weight:700;color:var(--gold);background:transparent}.ce-o button.on{background:var(--gold);color:#1a1205}
 .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0 0 14px}
 .subtabs::-webkit-scrollbar{display:none}
 .subtabs button{min-width:0;border:1px solid var(--line);border-radius:12px;padding:7px 2px 6px;font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}
@@ -1109,7 +1138,7 @@ $('#btnEgo').onclick=()=>{
     ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','subs'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','subs','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1766,30 +1795,210 @@ function cardSudoku(el,fim,n){
 }
 
 /* ---------- Memória ---------- */
+const MEM_TEMAS=[
+ ['Animais','🐾','#16a34a',['🐶','🐱','🐰','🦊','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🐔','🐧','🦉']],
+ ['Frutas','🍓','#dc2626',['🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝']],
+ ['Oceano','🌊','#0284c7',['🐟','🐠','🐡','🦈','🐙','🦑','🦀','🦞','🐚','🐬','🐳','🦭','🪼','🐢','🪸']],
+ ['Espaço','🪐','#4f46e5',['🌍','🌙','☀️','⭐','🪐','☄️','🚀','🛸','🌌','🔭','👨‍🚀','🌠','🌑','🌕','🛰️']],
+ ['Esportes','⚽','#ea580c',['⚽','🏀','🏈','⚾','🎾','🏐','🏓','🏸','🥊','⛳','🏹','🎳','🛹','🥋','🏆']],
+ ['Comidas','🍔','#ca8a04',['🍔','🍕','🌭','🌮','🍣','🍜','🥗','🍩','🍪','🧁','🍫','🥐','🧀','🍿','🥨']],
+ ['Veículos','🚗','#475569',['🚗','🚕','🚌','🚑','🚒','🚓','🚜','🏍️','🚲','✈️','🚁','🚂','🚢','⛵','🛴']],
+ ['Natureza','🌿','#15803d',['🌲','🌴','🌵','🌷','🌻','🌹','🍄','🍁','🍀','🌾','🌸','🪨','🌈','❄️','🔥']],
+ ['Música','🎵','#9333ea',['🎸','🎹','🥁','🎺','🎻','🎷','🪗','🎤','🎧','🎼','🪘','📻','🔔','🎶','🪕']],
+ ['Aventura','⚔️','#b45309',['⚔️','🛡️','🐉','👑','🔥','⚡','🌙','💎','🏹','🧪','🗝️','🦅','🗺️','🏰','📜']]
+];
 function cardMemoria(el,fim){
-  const em=embaralhar(['⚔️','🛡️','🐉','👑','🔥','⚡','🌙','💎','🏹','🧪','🗝️','🦅']).slice(0,8);
+  const nv=jg('memoria').nv,L=[[3,3],[4,4],[6,4],[8,4],[10,4],[12,4],[15,5]][Math.min(nv,7)-1],[P,C]=L;
+  const tema=MEM_TEMAS[(nv*3+Math.floor(Math.random()*MEM_TEMAS.length))%MEM_TEMAS.length],em=embaralhar(tema[3]).slice(0,P);
   const cartas=embaralhar(em.concat(em)).map(e=>({e,v:false,ok:false}));let abertas=[],jog=0,trava=false;
+  jgCab(el,'🃏','Memória · '+tema[0],nv,jgXP(nv));
   const draw=()=>{
-    el.querySelector('.jogo').innerHTML='<p class="ar-inst">Encontre os 8 pares. Menos jogadas = mais XP.</p><div class="mg">'+
-      cartas.map((c,i)=>'<button class="mc'+(c.v||c.ok?' on':'')+(c.ok?' ok':'')+'" data-i="'+i+'">'+(c.v||c.ok?c.e:'?')+'</button>').join('')+'</div><p class="ar-msg">Jogadas: '+jog+'</p>';
+    el.querySelector('.jogo').innerHTML='<p class="ar-inst">Encontre os <b class="cy">'+P+' pares</b>. Até '+(P*2)+' jogadas para subir de nível.</p><div class="mg" style="grid-template-columns:repeat('+C+',1fr);--mcor:'+tema[2]+'">'+
+      cartas.map((c,i)=>'<button class="mc'+(c.v||c.ok?' on':'')+(c.ok?' ok':'')+'" data-i="'+i+'">'+(c.v||c.ok?c.e:'✦')+'</button>').join('')+'</div><p class="ar-msg">Jogadas: '+jog+'</p>';
     el.querySelectorAll('.mc').forEach(b=>b.onclick=()=>{if(trava)return;const c=cartas[+b.dataset.i];if(c.v||c.ok)return;c.v=true;abertas.push(c);
-      if(abertas.length===2){jog++;const[a,b2]=abertas;if(a.e===b2.e){a.ok=b2.ok=true;abertas=[];try{SFX.certo()}catch(e){}if(cartas.every(x=>x.ok)){draw();el.querySelector('.ar-msg').innerHTML='<b class="cy">Completo em '+jog+' jogadas!</b>';fim(true,jog<=12?1.5:jog<=16?1.2:1);return}}
+      if(abertas.length===2){jog++;const[a,b2]=abertas;if(a.e===b2.e){a.ok=b2.ok=true;abertas=[];try{SFX.certo()}catch(e){}if(cartas.every(x=>x.ok)){draw();const bom=jog<=P*2,sb=bom?jgSubir('memoria',7):false;el.querySelector('.ar-msg').innerHTML='<b class="cy">Completo em '+jog+' jogadas!</b>'+(sb?' Próxima vez: <b class="gd">mais cartas</b>.':bom?'':' Faça em até '+(P*2)+' para subir de nível.');jgFim(fim,true,nv,bom?1.2:1);return}}
         else{trava=true;try{SFX.erro()}catch(e){}draw();setTimeout(()=>{a.v=b2.v=false;abertas=[];trava=false;draw()},700);return}}
       draw()});
   };draw();
 }
 
 /* ---------- Jogo dos erros ---------- */
+/* ============ JOGOS DE LÓGICA E INTELIGÊNCIA (todos progressivos) ============ */
+function jg(id){S.jg=S.jg||{};return S.jg[id]=S.jg[id]||{nv:1,v:0,rec:0}}
+function jgSubir(id,max){const J=jg(id);J.v++;const antes=J.nv;if(J.nv<(max||20))J.nv++;salvar();return J.nv>antes}
+const JG_TAG=nv=>nv<=2?['FÁCIL','cy']:nv<=4?['MÉDIO','gd']:['DIFÍCIL','rd'];
+function jgCab(el,ico,nome,nv,xp,pil){const t=JG_TAG(nv);cabecalho(el,ico,nome+' · Nível '+nv,t[0],t[1],'até +'+xpA(xp)+' XP · '+(pil||'MENTE'))}
+const jgXP=nv=>Math.min(45,12+nv*4);
+function jgFim(fim,ok,nv,q){fim(ok,(q==null?1:q)*jgXP(nv)/30)}
+function jgWin(J,txt,sobe){J.querySelector('.ar-msg').innerHTML='<b class="cy">'+txt+'</b>'+(sobe?' Próxima vez: <b class="gd">nível acima</b>.':'')}
+
+/* ---------- 1. Torre de Hanói ---------- */
+function cardHanoi(el,fim){
+  const nv=jg('hanoi').nv,n=Math.min(8,nv+2),opt=2**n-1,T=[[...Array(n)].map((_,i)=>n-i),[],[]];let sel=null,mov=0,acabou=false;
+  jgCab(el,'🗼','Torre de Hanói',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const draw=()=>{J.innerHTML='<p class="ar-inst">Leve os '+n+' discos para a última torre. Toque numa torre para pegar o disco de cima e em outra para soltar. Um disco nunca fica sobre um menor.</p>'+
+    '<div class="hn">'+T.map((t,i)=>'<button class="hn-t'+(sel===i?' sel':'')+'" data-t="'+i+'"><i class="hn-p"></i>'+t.map(d=>'<b style="width:'+(28+d*(64/n))+'%;background:hsl('+(d*40)+',70%,55%)"></b>').reverse().join('')+'</button>').join('')+'</div>'+
+    '<p class="ar-msg">Movimentos: '+mov+' · mínimo possível: '+opt+'</p>';
+    J.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.t;
+      if(sel===null){if(T[i].length){sel=i;draw()}return}
+      if(sel===i){sel=null;draw();return}
+      const d=T[sel][T[sel].length-1],top=T[i][T[i].length-1];
+      if(top&&top<d){try{SFX.erro()}catch(e){}sel=null;draw();return}
+      T[i].push(T[sel].pop());mov++;sel=null;try{SFX.certo()}catch(e){}draw();
+      if(T[2].length===n){acabou=true;const s=jgSubir('hanoi',6);jgWin(J,'Torre completa em '+mov+' movimentos'+(mov===opt?' (perfeito!)':'')+'.',s);jgFim(fim,true,nv,mov<=opt*1.5?1:.8)}});
+  };draw();
+}
+/* ---------- 2. Apague as luzes ---------- */
+function cardLuzes(el,fim){
+  const nv=jg('luzes').nv,cfg=[[3,3],[3,5],[4,6],[5,7],[5,10],[5,13]][Math.min(nv,6)-1],N=cfg[0];let L,pres;
+  const tog=(L,r,c)=>[[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(([a,b])=>{const x=r+a,y=c+b;if(x>=0&&y>=0&&x<N&&y<N)L[x*N+y]^=1});
+  do{L=Array(N*N).fill(0);pres=embaralhar([...Array(N*N).keys()]).slice(0,cfg[1]);pres.forEach(i=>tog(L,Math.floor(i/N),i%N))}while(!L.some(Boolean));
+  let mov=0,acabou=false;jgCab(el,'💡','Apague as Luzes',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const draw=()=>{J.innerHTML='<p class="ar-inst">Tocar numa lâmpada inverte ela e as vizinhas (cima, baixo, lados). Apague todas. Dá para resolver em '+cfg[1]+' toques.</p><div class="lz" style="grid-template-columns:repeat('+N+',1fr)">'+L.map((v,i)=>'<button class="lz-c'+(v?' on':'')+'" data-i="'+i+'"></button>').join('')+'</div><p class="ar-msg">Toques: '+mov+'</p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i;tog(L,Math.floor(i/N),i%N);mov++;draw();
+      if(!L.some(Boolean)){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('luzes',6);jgWin(J,'Tudo apagado em '+mov+' toques!',s);jgFim(fim,true,nv,mov<=cfg[1]+2?1:.8)}})};draw();
+}
+/* ---------- 3. Quebra-cabeça deslizante ---------- */
+function cardDesliza(el,fim){
+  const nv=jg('desliza').nv,cfg=[[3,25],[3,70],[4,40],[4,90],[4,160],[4,250]][Math.min(nv,6)-1],N=cfg[0],M=N*N;let P=[...Array(M).keys()].map(i=>(i+1)%M),z=M-1,ant=-1;
+  const viz=i=>[i-N,i+N,i%N?i-1:-1,(i+1)%N?i+1:-1].filter(x=>x>=0&&x<M);
+  const resolvido=()=>P.every((v,i)=>v===(i+1)%M);
+  do{for(let k=0;k<cfg[1];k++){const op=viz(z).filter(x=>x!==ant);const x=pick(op);ant=z;[P[z],P[x]]=[P[x],P[z]];z=x}}while(resolvido());
+  let mov=0,acabou=false;jgCab(el,'🧩','Deslizante',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const draw=()=>{J.innerHTML='<p class="ar-inst">Coloque os números em ordem, de 1 a '+(M-1)+', deixando o espaço vazio no fim. Toque numa peça ao lado do espaço para deslizá-la.</p><div class="dz" style="grid-template-columns:repeat('+N+',1fr)">'+P.map((v,i)=>'<button class="dz-c'+(v?'':' vazio')+(v&&v===(i+1)?' certo':'')+'" data-i="'+i+'">'+(v||'')+'</button>').join('')+'</div><p class="ar-msg">Movimentos: '+mov+'</p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i;if(!viz(z).includes(i))return;[P[z],P[i]]=[P[i],P[z]];z=i;mov++;draw();
+      if(resolvido()){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('desliza',6);jgWin(J,'Montado em '+mov+' movimentos!',s);jgFim(fim,true,nv)}})};draw();
+}
+/* ---------- 4. Labirinto ---------- */
+function cardLabirinto(el,fim){
+  const nv=jg('labirinto').nv,N=Math.min(15,3+nv*2),W=[...Array(N*N)].map(()=>[1,1,1,1]),vis=Array(N*N).fill(0),st=[0];vis[0]=1; // paredes: cima, direita, baixo, esquerda
+  const D=[[-N,0,2],[1,1,3],[N,2,0],[-1,3,1]];
+  while(st.length){const c=st[st.length-1],op=D.filter(([d,w])=>{const x=c+d;if(x<0||x>=N*N||vis[x])return false;if(w===1&&(c%N)===N-1)return false;if(w===3&&c%N===0)return false;return true});
+    if(!op.length){st.pop();continue}const[d,w,o]=pick(op),x=c+d;W[c][w]=0;W[x][o]=0;vis[x]=1;st.push(x)}
+  let pos=0,mov=0,acabou=false,t0=Date.now();jgCab(el,'🌀','Labirinto',nv,jgXP(nv));const J=el.querySelector('.jogo');const fimC=N*N-1;
+  const passo=w=>{if(acabou||W[pos][w])return false;pos+=D[w][0];mov++;draw();if(pos===fimC){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('labirinto',6);jgWin(J,'Saiu do labirinto em '+Math.round((Date.now()-t0)/1000)+' s!',s);jgFim(fim,true,nv)}return true};
+  const draw=()=>{J.innerHTML='<p class="ar-inst">Leve o 🔵 até a 🏁 usando as setas.</p><div class="lb" style="grid-template-columns:repeat('+N+',1fr)">'+W.map((w,i)=>'<i style="border-width:'+w.map(x=>x?'2px':'0').join(' ')+'">'+(i===pos?'🔵':i===fimC?'🏁':'')+'</i>').join('')+'</div>'+
+    '<div class="lb-ctl"><span></span><button data-w="0">▲</button><span></span><button data-w="3">◀</button><button data-w="2">▼</button><button data-w="1">▶</button></div>';
+    J.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const w=+b.dataset.w;if(!passo(w))try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}})};draw();
+}
+/* ---------- 5. Matriz de memória ---------- */
+function cardMatriz(el,fim){
+  const nv=jg('matriz').nv,n=nv+2,N=n<=5?3:n<=8?4:5,alvo=new Set(embaralhar([...Array(N*N).keys()]).slice(0,n)),achou=new Set();let fase='ver',acabou=false;
+  jgCab(el,'🔲','Matriz de Memória',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Memorize os <b class="cy">'+n+' quadrados</b> que acendem e depois toque neles.</p><div class="mz" style="grid-template-columns:repeat('+N+',1fr)">'+[...Array(N*N).keys()].map(i=>'<button class="mz-c'+((fase==='ver'||acabou)&&alvo.has(i)?' on':'')+(achou.has(i)?' ok':'')+'" data-i="'+i+'"></button>').join('')+'</div><p class="ar-msg">'+(msg||(fase==='ver'?'Memorize…':'Encontrados: '+achou.size+'/'+n))+'</p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(fase!=='jogar'||acabou)return;const i=+b.dataset.i;if(achou.has(i))return;
+      if(alvo.has(i)){achou.add(i);try{SFX.certo()}catch(e){}if(achou.size===n){acabou=true;const s=jgSubir('matriz',12);draw();jgWin(J,'Memória perfeita!',s);jgFim(fim,true,nv)}else draw()}
+      else{acabou=true;try{SFX.erro()}catch(e){}b.classList.add('err');draw('Errou. Os certos estão acesos. Você achou '+achou.size+' de '+n+'.');J.querySelector('[data-i="'+i+'"]').classList.add('err');jgFim(fim,achou.size>=n-1,nv,achou.size/n)}})};
+  draw();setTimeout(()=>{fase='jogar';draw()},900+n*250);
+}
+/* ---------- 6. Tabela de Schulte ---------- */
+function cardSchulte(el,fim){
+  const nv=jg('schulte').nv,N=nv<=1?3:nv<=3?4:5,M=N*N,meta=Math.round(M*(nv<=2?1.6:nv<=4?1.3:1.05)),nums=embaralhar([...Array(M)].map((_,i)=>i+1));let prox=1,t0=0,err=0,acabou=false,tm;
+  jgCab(el,'🔢','Tabela de Schulte',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  J.innerHTML='<p class="ar-inst">Toque nos números de <b class="cy">1 a '+M+'</b>, em ordem, o mais rápido possível. Meta: '+meta+' s.</p><div class="sh" style="grid-template-columns:repeat('+N+',1fr)">'+nums.map(v=>'<button class="sh-c" data-v="'+v+'">'+v+'</button>').join('')+'</div><p class="ar-msg">Próximo: 1</p>';
+  const msg=J.querySelector('.ar-msg');
+  J.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{if(acabou)return;const v=+b.dataset.v;
+    if(v!==prox){err++;try{SFX.erro()}catch(e){}return}
+    if(prox===1){t0=Date.now();tm=setInterval(()=>{if(!acabou)msg.textContent='Próximo: '+prox+' · '+((Date.now()-t0)/1000).toFixed(1)+' s'},100)}
+    b.classList.add('ok');prox++;try{SFX.certo()}catch(e){}
+    if(prox>M){acabou=true;clearInterval(tm);const s=(Date.now()-t0)/1000,bom=s<=meta;const sub=bom?jgSubir('schulte',6):false;msg.innerHTML='<b class="cy">'+s.toFixed(1)+' s</b> · '+err+' erro(s). '+(bom?'Meta batida!'+(sub?' Próxima vez: <b class="gd">nível acima</b>.':''):'Meta: '+meta+' s. Tente de novo na próxima.');jgFim(fim,true,nv,bom?1:.7)}});
+}
+/* ---------- 7. Senha secreta (Mastermind) ---------- */
+function cardSenha(el,fim){
+  const nv=jg('senha').nv,cfg=[[3,4,0,8],[4,5,0,8],[4,6,1,9],[5,6,1,10],[5,7,1,10]][Math.min(nv,5)-1],[P,C,rep,T]=cfg;
+  const COR=['#ef4444','#f59e0b','#22c55e','#3b82f6','#a855f7','#ec4899','#14b8a6'];
+  let cod=[];if(rep)cod=[...Array(P)].map(()=>rr(0,C-1));else cod=embaralhar([...Array(C).keys()]).slice(0,P);
+  const hist=[];let cur=[],acabou=false;jgCab(el,'🔐','Senha Secreta',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const aval=g=>{let a=0;const rc=[],rg=[];g.forEach((x,i)=>{if(x===cod[i])a++;else{rc.push(cod[i]);rg.push(x)}});let b=0;rg.forEach(x=>{const k=rc.indexOf(x);if(k>=0){b++;rc.splice(k,1)}});return[a,b]};
+  const bola=c=>'<i class="sn-b" style="background:'+COR[c]+'"></i>';
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Descubra a senha de <b class="cy">'+P+' cores</b>'+(rep?' (pode repetir cor)':' (sem repetir)')+'. ● cor certa no lugar certo · ○ cor certa no lugar errado.</p>'+
+    '<div class="sn-h">'+hist.map(([g,[a,b]])=>'<div class="sn-l">'+g.map(bola).join('')+'<span>'+'●'.repeat(a)+'○'.repeat(b)+(a+b?'':'—')+'</span></div>').join('')+
+    (acabou?'':'<div class="sn-l cur">'+[...Array(P)].map((_,i)=>cur[i]!=null?bola(cur[i]):'<i class="sn-b vz"></i>').join('')+'<span>'+(hist.length+1)+'/'+T+'</span></div>')+'</div>'+
+    (acabou?'<div class="sn-l" style="justify-content:center">'+cod.map(bola).join('')+'</div>':'<div class="sn-p">'+COR.slice(0,C).map((c,i)=>'<button data-c="'+i+'" style="background:'+c+'"></button>').join('')+'</div><div class="row" style="margin-top:8px"><button class="btn ghost" id="snDel">⌫</button><button class="btn" id="snOk"'+(cur.length<P?' disabled':'')+'>TENTAR</button></div>')+
+    '<p class="ar-msg">'+(msg||'')+'</p>';
+    if(acabou)return;
+    J.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{if(cur.length>=P)return;const c=+b.dataset.c;if(!rep&&cur.includes(c)){toast('Nesta senha as cores não se repetem');return}cur.push(c);draw()});
+    J.querySelector('#snDel').onclick=()=>{cur.pop();draw()};
+    J.querySelector('#snOk').onclick=()=>{if(cur.length<P)return;const r=aval(cur);hist.push([cur,r]);cur=[];
+      if(r[0]===P){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('senha',5);draw();jgWin(J,'Senha descoberta em '+hist.length+' tentativa(s)!',s);jgFim(fim,true,nv,hist.length<=T*.6?1.2:1);return}
+      try{SFX.erro()}catch(e){}if(hist.length>=T){acabou=true;draw('Acabaram as tentativas. A senha era esta.');jgFim(fim,false,nv,.4);return}draw()}};draw();
+}
+/* ---------- 8. Nonograma ---------- */
+function cardNonograma(el,fim){
+  const nv=jg('nono').nv,N=Math.min(8,nv+3);let A;do{A=[...Array(N*N)].map(()=>Math.random()<.58?1:0)}while(A.filter(Boolean).length<N*1.5);
+  const pistas=v=>{const r=[];let k=0;v.forEach(x=>{if(x)k++;else if(k){r.push(k);k=0}});if(k)r.push(k);return r.length?r:[0]};
+  const lin=(G,i)=>G.slice(i*N,i*N+N),col=(G,j)=>[...Array(N)].map((_,i)=>G[i*N+j]);
+  const PL=[...Array(N)].map((_,i)=>pistas(lin(A,i))),PC=[...Array(N)].map((_,j)=>pistas(col(A,j)));
+  const G=Array(N*N).fill(0);let acabou=false,modoX=false;jgCab(el,'🖼️','Nonograma',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const okL=i=>pistas(lin(G.map(x=>x===1?1:0),i)).join()===PL[i].join(),okC=j=>pistas(col(G.map(x=>x===1?1:0),j)).join()===PC[j].join();
+  const draw=()=>{J.innerHTML='<p class="ar-inst">Os números dizem quantos quadrados seguidos pintar em cada linha e coluna, em ordem. Pinte até cumprir todas as pistas.</p>'+
+    '<div class="nn" style="grid-template-columns:auto repeat('+N+',1fr)"><i></i>'+PC.map((p,j)=>'<i class="nn-pc'+(okC(j)?' ok':'')+'">'+p.join('<br>')+'</i>').join('')+
+    [...Array(N)].map((_,i)=>'<i class="nn-pl'+(okL(i)?' ok':'')+'">'+PL[i].join(' ')+'</i>'+[...Array(N)].map((_,j)=>{const v=G[i*N+j];return'<button class="nn-c'+(v===1?' on':v===2?' x':'')+'" data-i="'+(i*N+j)+'">'+(v===2?'×':'')+'</button>'}).join('')).join('')+'</div>'+
+    '<div class="row" style="margin-top:8px"><button class="btn '+(modoX?'':'ghost')+'" id="nnX" style="min-height:40px">'+(modoX?'✕ MARCANDO VAZIO':'■ PINTANDO')+'</button></div>';
+    J.querySelector('#nnX').onclick=()=>{modoX=!modoX;draw()};
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i,alvo=modoX?2:1;G[i]=G[i]===alvo?0:alvo;draw();
+      if([...Array(N)].every((_,k)=>okL(k)&&okC(k))){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('nono',5);J.insertAdjacentHTML('beforeend','<p class="ar-msg"></p>');jgWin(J,'Imagem revelada!',s);jgFim(fim,true,nv)}})};draw();
+}
+/* ---------- 9. Soma alvo ---------- */
+function cardSoma(el,fim){
+  const nv=jg('soma').nv,N=nv<=2?3:nv<=4?4:5,mx=[9,9,15,20,25,30][Math.min(nv,6)-1],k=[2,3,3,4,4,5][Math.min(nv,6)-1],R=3;let rod=0,acabou=false,nums,alvo,sel;
+  jgCab(el,'➕','Soma Alvo',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const nova=()=>{nums=[...Array(N*N)].map(()=>rr(1,mx));alvo=embaralhar([...Array(N*N).keys()]).slice(0,k).reduce((a,i)=>a+nums[i],0);sel=new Set()};
+  const soma=()=>[...sel].reduce((a,i)=>a+nums[i],0);
+  const draw=()=>{const s=soma();J.innerHTML='<p class="ar-inst">Toque em números que somem exatamente o alvo. Rodada '+(rod+1)+' de '+R+'.</p><div class="sa-alvo">🎯 '+alvo+'</div><div class="sa" style="grid-template-columns:repeat('+N+',1fr)">'+nums.map((v,i)=>'<button class="sa-c'+(sel.has(i)?' on':'')+'" data-i="'+i+'">'+v+'</button>').join('')+'</div><p class="ar-msg">Soma: <b class="'+(s>alvo?'rd':'cy')+'">'+s+'</b>'+(s>alvo?' · passou do alvo!':'')+'</p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i;sel.has(i)?sel.delete(i):sel.add(i);
+      if(soma()===alvo){try{SFX.certo()}catch(e){}rod++;if(rod>=R){acabou=true;draw();const sb=jgSubir('soma',6);jgWin(J,'As 3 somas certas!',sb);jgFim(fim,true,nv);return}nova()}else if(soma()>alvo){try{SFX.erro()}catch(e){}}draw()})};
+  nova();draw();
+}
+/* ---------- 10. Conta exata ---------- */
+function cardConta(el,fim){
+  const nv=jg('conta').nv,cfg=[[3,'+-'],[3,'+-×'],[4,'+-×'],[4,'+-×÷'],[5,'+-×÷']][Math.min(nv,5)-1];
+  let ini,alvo;
+  for(let t=0;t<500;t++){ini=[...Array(cfg[0])].map(()=>rr(1,nv<=2?9:12));let pool=ini.slice(),ok=true;
+    while(pool.length>1){pool=embaralhar(pool);const a=pool.pop(),b=pool.pop(),op=pick([...cfg[1]]);let r;
+      if(op==='+')r=a+b;else if(op==='-')r=Math.abs(a-b);else if(op==='×')r=a*b;else{if(b&&a%b===0)r=a/b;else if(a&&b%a===0)r=b/a;else{ok=false;break}}
+      if(!r||r>200){ok=false;break}pool.push(r)}
+    if(ok&&pool[0]>=10&&!ini.includes(pool[0])){alvo=pool[0];break}}
+  if(alvo==null){ini=[2,3,4].slice(0,cfg[0]);alvo=ini.reduce((a,b)=>a+b,0)*2;ini=[2,3,4];alvo=(2+3)*4}
+  let vals=ini.map((v,i)=>({v,id:i})),selA=null,op=null,hist=[],acabou=false,prox=ini.length;
+  jgCab(el,'🧮','Conta Exata',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Combine os números com as operações para chegar ao alvo. Toque num número, numa operação e em outro número.</p><div class="sa-alvo">🎯 '+alvo+'</div>'+
+    '<div class="ce-n">'+vals.map(x=>'<button class="ce-c'+(selA===x.id?' on':'')+'" data-n="'+x.id+'">'+x.v+'</button>').join('')+'</div>'+
+    '<div class="ce-o">'+[...cfg[1]].map(o=>'<button class="'+(op===o?'on':'')+'" data-o="'+o+'">'+o+'</button>').join('')+'</div>'+
+    '<div class="row" style="margin-top:8px"><button class="btn ghost" id="ceU"'+(hist.length?'':' disabled')+'>↶ DESFAZER</button><button class="btn ghost" id="ceR">RECOMEÇAR</button></div><p class="ar-msg">'+(msg||'')+'</p>';
+    if(acabou)return;
+    J.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(selA==null){toast('Escolha um número primeiro');return}op=b.dataset.o;draw()});
+    J.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const id=+b.dataset.n;
+      if(selA==null||op==null||id===selA){selA=selA===id?null:id;op=null;draw();return}
+      const A=vals.find(x=>x.id===selA).v,B=vals.find(x=>x.id===id).v;let r;
+      if(op==='+')r=A+B;else if(op==='-')r=A-B;else if(op==='×')r=A*B;else{if(B===0||A%B){try{SFX.erro()}catch(e){}draw('Essa divisão não dá resultado inteiro.');return}r=A/B}
+      if(r<0){try{SFX.erro()}catch(e){}draw('O resultado não pode ficar negativo.');return}
+      hist.push(vals);vals=vals.filter(x=>x.id!==selA&&x.id!==id).concat({v:r,id:prox++});const nid=prox-1;selA=null;op=null;
+      if(r===alvo){acabou=true;try{SFX.certo()}catch(e){}draw();const s=jgSubir('conta',5);jgWin(J,'Chegou ao '+alvo+'!',s);jgFim(fim,true,nv);return}
+      if(vals.length===1){try{SFX.erro()}catch(e){}draw('Chegou a '+r+', não ao alvo. Desfaça ou recomece.');return}selA=nid;draw()});
+    J.querySelector('#ceU').onclick=()=>{if(hist.length){vals=hist.pop();selA=null;op=null;draw()}};
+    J.querySelector('#ceR').onclick=()=>{vals=ini.map((v,i)=>({v,id:i}));hist=[];selA=null;op=null;draw()};
+  };draw();
+}
+
+/* ---------- Jogo dos Erros progressivo ---------- */
+const ERROS_TEMAS=[
+ [['🌲','🍄','🌸','🪨','🐝','🌙'],['🐟','🐙','🦀','🐚','⭐','🌊'],['🍎','🍌','🍇','🥕','🧀','🍞'],['⚽','🏀','🎾','🎲','🎈','🎁']],
+ [['🌲','🌳','🍄','🌸','🌼','🪨'],['🐟','🐠','🐙','🦀','🐚','🪸'],['⭐','🌙','☁️','🪐','☄️','✨'],['🍎','🍐','🍊','🍋','🍇','🍓']],
+ [['🍎','🍅','🍒','🍓','🌶️','🫐'],['🐶','🐱','🐭','🐹','🐰','🦊'],['🚗','🚕','🚙','🚌','🚓','🚑'],['🌸','🌺','🌷','🌹','🌻','🌼']],
+ [['🕐','🕑','🕒','🕓','🕔','🕕'],['😀','😃','😄','😁','😆','😊'],['⬆️','↗️','➡️','↘️','⬇️','↙️'],['🔴','🟠','🟡','🟢','🔵','🟣']],
+ [['🕐','🕜','🕑','🕝','🕒','🕞'],['😀','😃','😄','😁','🙂','😊'],['◐','◑','◒','◓','◔','◕'],['▲','△','▶','▷','▼','▽']]
+];
 function cardErros(el,fim){
-  const set=pick([['🌲','🌳','🍄','🌸','🌼','🪨'],['🐟','🐠','🐙','🦀','🐚','🪸'],['⭐','🌙','☁️','🪐','☄️','✨'],['🍎','🍐','🍊','🍋','🍇','🍓']]);
-  const N=30,a=[...Array(N)].map(()=>pick(set)),b=a.slice(),dif=embaralhar([...Array(N).keys()]).slice(0,4);
-  dif.forEach(i=>{let x;do{x=pick(set)}while(x===a[i]);b[i]=x});
-  const achou=new Set();let erros=0,acabou=false;
-  const grid=(arr,click)=>'<div class="eg">'+arr.map((e,i)=>'<button class="ec'+(achou.has(i)?' ok':'')+'" '+(click?'data-i="'+i+'"':'disabled')+'>'+e+'</button>').join('')+'</div>';
+  const nv=jg('erros').nv,L=[[5,5,3],[6,5,4],[6,6,5],[6,7,6],[7,7,7]][Math.min(nv,5)-1],[C,Rw,ND]=L,N=C*Rw;
+  const set=pick(ERROS_TEMAS[Math.min(nv,5)-1]),a=[...Array(N)].map(()=>pick(set)),b=a.slice(),dif=embaralhar([...Array(N).keys()]).slice(0,ND);
+  dif.forEach(i=>{if(nv>=3&&Math.random()<.25)b[i]='';else{let x;do{x=pick(set)}while(x===a[i]);b[i]=x}});
+  const achou=new Set();let erros=0,acabou=false;jgCab(el,'🔍','Jogo dos Erros',nv,jgXP(nv));
+  const grid=(arr,click)=>'<div class="eg" style="grid-template-columns:repeat('+C+',1fr);max-width:min('+(C*44)+'px,calc((var(--arH,600px) - 215px)*'+(C/Rw/2).toFixed(3)+'))">'+arr.map((e,i)=>'<button class="ec'+(achou.has(i)?' ok':'')+'" '+(click?'data-i="'+i+'"':'disabled')+'>'+e+'</button>').join('')+'</div>';
   const draw=()=>{
-    el.querySelector('.jogo').innerHTML='<p class="ar-inst">Há <b class="cy">4 diferenças</b>. Toque nelas na imagem de baixo.</p>'+grid(a,false)+'<div style="height:8px"></div>'+grid(b,true)+'<p class="ar-msg">Achadas: '+achou.size+'/4 · Erros: '+erros+'</p>';
+    el.querySelector('.jogo').innerHTML='<p class="ar-inst">Há <b class="cy">'+ND+' diferenças</b>'+(nv>=3?' (algumas peças podem ter sumido)':'')+'. Toque nelas na imagem de baixo.</p>'+grid(a,false)+'<div style="height:8px"></div>'+grid(b,true)+'<p class="ar-msg">Achadas: '+achou.size+'/'+ND+' · Erros: '+erros+'</p>';
     el.querySelectorAll('.ec[data-i]').forEach(x=>x.onclick=()=>{if(acabou)return;const i=+x.dataset.i;
-      if(dif.includes(i)){if(!achou.has(i)){achou.add(i);try{SFX.certo()}catch(e){}}if(achou.size===4){acabou=true;draw();fim(true,erros===0?1.3:1);return}}
+      if(dif.includes(i)){if(!achou.has(i)){achou.add(i);try{SFX.certo()}catch(e){}}if(achou.size===ND){acabou=true;draw();const s=erros<=2?jgSubir('erros',5):false;el.querySelector('.ar-msg').innerHTML='<b class="cy">Todas achadas!</b>'+(s?' Próxima vez: <b class="gd">nível acima</b>.':erros>2?' Com até 2 erros você sobe de nível.':'');jgFim(fim,true,nv,erros===0?1.2:1);return}}
       else{erros++;try{SFX.erro()}catch(e){}}draw()});
   };draw();
 }
@@ -1812,8 +2021,9 @@ const LOGICA=[
   ['Se 3 gatos pegam 3 ratos em 3 minutos, quantos gatos pegam 100 ratos em 100 minutos?',['3','33','100','300'],0,'Cada gato pega 1 rato a cada 3 minutos.'],
   ['Qual número é o intruso: 2, 3, 5, 9, 11, 13',['2','9','11','13'],1,'Todos são primos, menos o 9.']
 ];
-function cardQuiz(el,fim,banco,inst){
-  const q=pick(banco),ops=q[1].map((t,i)=>({t,i}));let acabou=false;
+function cardFin(el,fim){cardQuiz(el,fim,null,'Uma pergunta rápida sobre dinheiro.',finPergunta())}
+function cardQuiz(el,fim,banco,inst,qq){
+  const q=qq||pick(banco),ops=q[1].map((t,i)=>({t,i}));let acabou=false;
   el.querySelector('.jogo').innerHTML='<p class="ar-inst">'+inst+'</p><div class="card" style="font-size:19px;font-weight:700;line-height:1.35;margin-bottom:14px">'+q[0]+'</div>'+
     ops.map(o=>'<button class="btn qbtn" data-i="'+o.i+'">'+o.t+'</button>').join('')+'<p class="ar-msg"></p>';
   el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;acabou=true;const ok=+b.dataset.i===q[2];
@@ -1842,8 +2052,43 @@ const LEITURAS=[
   {t:'Sono: o treino invisível',p:0,txt:'Durante o sono profundo o corpo libera hormônios de recuperação e o cérebro organiza o que foi aprendido no dia. Dormir pouco reduz a atenção, aumenta a fome por doces e torna as emoções mais reativas. Três atitudes simples ajudam: horário regular para deitar e acordar, quarto escuro e fresco, e telas desligadas um tempo antes de dormir. Muitas vezes, a melhor decisão para render mais amanhã é ir para a cama hoje.',q:['O que o texto NÃO cita como efeito de dormir pouco?',['Menos atenção','Mais fome por doces','Emoções mais reativas','Mais força muscular'],3]},
   {t:'Escutar para conectar',p:4,txt:'Escutar de verdade é diferente de esperar a sua vez de falar. Na escuta ativa você mantém a atenção na pessoa, faz perguntas para entender melhor e devolve com suas palavras o que ouviu: "então você está dizendo que…". Isso mostra respeito e evita mal-entendidos. Pessoas que se sentem ouvidas confiam mais, colaboram mais e voltam a procurar você. Uma boa conversa raramente é vencida; ela é construída pelos dois lados.',q:['O que caracteriza a escuta ativa?',['Dar conselhos logo','Esperar a vez de falar','Fazer perguntas e devolver o que ouviu','Mudar de assunto'],2]}
 ];
+LEITURAS.push(
+ {t:'A água que o corpo pede',p:0,txt:'A água participa de quase tudo no corpo: regula a temperatura, transporta nutrientes e ajuda os rins a eliminar resíduos. Uma perda pequena de líquidos já pode causar cansaço, dor de cabeça e queda de concentração. A sede é um sinal útil, mas em dias quentes ou de exercício vale beber antes de senti-la. Um jeito prático de acompanhar é a cor da urina: amarelo-claro costuma indicar boa hidratação.',q:['Segundo o texto, qual é um jeito prático de acompanhar a hidratação?',['Pesar-se todo dia','Observar a cor da urina','Contar os batimentos','Medir a temperatura'],1]},
+ {t:'Caminhar também é treino',p:0,txt:'Muita gente acha que só academia conta como exercício, mas caminhar com passo rápido já melhora o coração, o humor e o sono. As recomendações de saúde falam em cerca de 150 minutos de atividade moderada por semana, o que dá pouco mais de 20 minutos por dia. O segredo é a regularidade: dividir em blocos curtos, como 10 minutos depois de cada refeição, também funciona.',q:['Quantos minutos de atividade moderada por semana o texto cita como recomendação?',['50','90','150','300'],2]},
+ {t:'Força em qualquer idade',p:0,txt:'Depois dos 30 anos, sem estímulo, o corpo tende a perder massa muscular aos poucos. Treinar força duas vezes por semana ajuda a manter músculos, ossos e equilíbrio, o que faz diferença enorme na velhice. Não precisa de aparelhos: agachamentos, flexões apoiadas e exercícios com garrafas de água já são um começo. O importante é aumentar a dificuldade aos poucos e manter a técnica correta.',q:['Com que frequência semanal o texto sugere treinar força?',['Uma vez por mês','Duas vezes','Todos os dias, duas vezes','Só no fim de semana'],1]},
+ {t:'O que o açúcar esconde',p:0,txt:'Refrigerantes, sucos de caixinha e muitos alimentos industrializados têm bastante açúcar adicionado, às vezes onde nem esperamos, como em molhos e pães. O excesso está ligado a ganho de peso, cáries e maior risco de diabetes tipo 2. Ler o rótulo ajuda: os ingredientes aparecem em ordem de quantidade, então, se o açúcar está entre os primeiros, ele é um dos principais componentes.',q:['O que significa o açúcar aparecer entre os primeiros ingredientes do rótulo?',['Que há pouco açúcar','Que ele é um dos principais componentes','Que o produto é natural','Que não tem conservantes'],1]},
+ {t:'Respirar para acalmar',p:2,txt:'Quando ficamos ansiosos, a respiração fica curta e rápida. Fazer o contrário, de propósito, envia ao corpo um sinal de segurança. Um exercício simples: inspirar pelo nariz contando até quatro, segurar por um instante e soltar o ar devagar, contando até seis. Expirar mais longo do que inspirar ajuda a desacelerar os batimentos. Alguns ciclos já podem trazer mais calma antes de uma conversa difícil.',q:['Segundo o texto, qual detalhe da respiração ajuda a desacelerar?',['Inspirar mais longo que expirar','Expirar mais longo do que inspirar','Prender o ar por um minuto','Respirar pela boca rápido'],1]},
+ {t:'O poder de escrever o que sente',p:2,txt:'Colocar pensamentos no papel ajuda a organizar a cabeça. Pesquisas sobre escrita expressiva mostram que escrever por alguns minutos sobre o que nos preocupa pode reduzir a sensação de sobrecarga. Não precisa ser bonito nem ter regras: basta ser honesto. Ao ver o problema escrito, ele costuma parecer mais concreto e menor, e fica mais fácil pensar no próximo passo.',q:['Qual é a única regra importante da escrita sobre o que sentimos, segundo o texto?',['Escrever bonito','Ser honesto','Escrever todo dia uma página','Mostrar para alguém'],1]},
+ {t:'Gratidão não é ingenuidade',p:2,txt:'Praticar gratidão não significa fingir que tudo está bem. É treinar a atenção para notar também o que funciona. Nosso cérebro tende a dar mais peso ao que é negativo, porque isso ajudou nossos antepassados a sobreviver. Anotar três coisas boas do dia, mesmo pequenas, equilibra essa balança. Com o tempo, fica mais fácil perceber apoio, progresso e oportunidades que antes passavam despercebidos.',q:['Por que o texto diz que o cérebro dá mais peso ao negativo?',['Por preguiça','Porque isso ajudou nossos antepassados a sobreviver','Por falta de sono','Por causa das redes sociais'],1]},
+ {t:'Comparação: a armadilha da vitrine',p:2,txt:'Nas redes sociais, vemos os melhores momentos dos outros, editados e escolhidos, e comparamos com os nossos bastidores, com dúvidas e dias ruins. A comparação é injusta desde o começo. Uma alternativa mais útil é comparar você de hoje com você de alguns meses atrás. Esse é o único placar em que todas as informações estão disponíveis e em que a melhora depende das suas escolhas.',q:['Com quem o texto sugere se comparar?',['Com os amigos','Com famosos','Com você de alguns meses atrás','Com ninguém, nunca'],2]},
+ {t:'Foco é uma escolha de ambiente',p:1,txt:'Cada notificação interrompe o raciocínio, e voltar ao ponto em que estávamos leva tempo. Em vez de contar só com força de vontade, vale mudar o ambiente: deixar o celular em outro cômodo, fechar abas que não estão em uso e definir blocos de tempo para uma única tarefa. Uma técnica conhecida é trabalhar 25 minutos com foco total e descansar 5, repetindo o ciclo.',q:['Qual técnica de tempo o texto menciona?',['Trabalhar 2 horas sem parar','25 minutos de foco e 5 de descanso','10 minutos por dia','Fazer tudo ao mesmo tempo'],1]},
+ {t:'Aprender é revisar no momento certo',p:1,txt:'Esquecemos boa parte do que estudamos nos primeiros dias, mas cada revisão faz a memória durar mais. Essa é a ideia da repetição espaçada: revisar um conteúdo depois de um dia, depois de alguns dias e depois de algumas semanas. Testar a si mesmo, tentando lembrar sem olhar, funciona melhor do que só reler. O esforço de lembrar é justamente o que fortalece a memória.',q:['Segundo o texto, o que funciona melhor do que só reler?',['Sublinhar tudo','Testar a si mesmo tentando lembrar','Estudar com música alta','Copiar o texto'],1]},
+ {t:'Errar faz parte de aprender',p:1,txt:'Quando erramos, o cérebro presta mais atenção à resposta certa que vem depois. Por isso, tentar resolver antes de ver a solução, mesmo errando, costuma gerar aprendizado mais firme. O problema não é errar, mas repetir o mesmo erro sem entender a causa. Uma boa prática é anotar os erros mais frequentes e revisar justamente esses pontos.',q:['Qual é o verdadeiro problema com os erros, segundo o texto?',['Errar uma vez','Repetir o mesmo erro sem entender a causa','Tentar antes de ver a solução','Anotar os erros'],1]},
+ {t:'Ler um pouco todo dia',p:1,txt:'Ler 10 páginas por dia parece pouco, mas dá cerca de 3.650 páginas em um ano, o equivalente a mais de 10 livros médios. A leitura amplia o vocabulário, melhora a escrita e treina a concentração em um mundo de conteúdos curtos. Deixar um livro sempre à vista e ler sempre no mesmo momento do dia, como antes de dormir, ajuda a transformar a leitura em hábito.',q:['Quantas páginas por ano dão 10 páginas por dia, segundo o texto?',['365','1.000','3.650','10.000'],2]},
+ {t:'Dívidas: comece pela mais cara',p:3,txt:'Quem tem várias dívidas costuma se sentir perdido. O primeiro passo é listar todas, com valor, parcela e taxa de juros. Em geral, faz mais sentido quitar primeiro as de juros mais altos, como cartão de crédito rotativo e cheque especial, porque são elas que crescem mais rápido. Outra opção é negociar: muitas empresas oferecem descontos para quitação ou trocam a dívida por outra mais barata.',q:['Quais dívidas o texto sugere priorizar?',['As menores','As de juros mais altos','As mais antigas','As do banco onde recebe o salário'],1]},
+ {t:'Reserva de emergência primeiro',p:3,txt:'Antes de pensar em investimentos arriscados, muitos educadores financeiros sugerem montar uma reserva de emergência, guardando o equivalente a alguns meses de gastos. Esse dinheiro deve ficar em um lugar seguro e fácil de resgatar. Sem reserva, qualquer imprevisto, como um conserto ou uma demissão, pode virar dívida cara. Com ela, o imprevisto vira só um problema a resolver.',q:['Como deve ser o lugar onde fica a reserva de emergência?',['Arriscado e com alto retorno','Seguro e fácil de resgatar','Em imóveis','Em ações de uma empresa só'],1]},
+ {t:'O preço real do parcelado',p:3,txt:'Parcelar parece aliviar o bolso, mas cada parcela é um pedaço da renda futura que já está comprometido. Várias compras parceladas ao mesmo tempo podem ocupar uma fatia grande do salário por meses. Antes de parcelar, vale perguntar se existe desconto à vista e se a parcela cabe com folga no orçamento junto com as outras. Se há desconto à vista, o parcelado "sem juros" na verdade está custando mais.',q:['O que significa haver desconto à vista em uma compra "sem juros" parcelada?',['Que o parcelado é mais barato','Que o parcelado na verdade custa mais','Que a loja está perdendo dinheiro','Nada'],1]},
+ {t:'Pequenos gastos, grandes somas',p:3,txt:'Um café de R$ 8 por dia parece inofensivo, mas em um ano soma cerca de R$ 2.900. Não se trata de cortar todos os prazeres, e sim de escolher conscientemente. Anotar todos os gastos por um mês costuma surpreender: muita gente descobre valores que não imaginava em entregas, assinaturas esquecidas e compras por impulso. Só dá para ajustar aquilo que se enxerga.',q:['Qual é a proposta do texto em relação aos pequenos prazeres?',['Cortar todos','Escolher conscientemente','Parcelar','Ignorar os gastos'],1]},
+ {t:'Escutar de verdade',p:4,txt:'Muitas vezes, enquanto o outro fala, já estamos preparando a nossa resposta. Escutar de verdade é diferente: é prestar atenção ao que a pessoa diz e ao que ela sente, fazer perguntas e só depois opinar. Uma técnica simples é repetir com suas palavras o que entendeu, por exemplo: "então você ficou chateado porque…". Isso mostra respeito e evita mal-entendidos.',q:['Qual técnica simples o texto sugere para escutar melhor?',['Interromper para ajudar','Repetir com suas palavras o que entendeu','Dar conselhos rápidos','Mudar de assunto'],1]},
+ {t:'Amizades precisam de tempo',p:4,txt:'Amizades próximas são um dos fatores mais ligados a saúde e felicidade ao longo da vida, mas elas não se mantêm sozinhas. Com trabalho e família, é fácil passar meses sem falar com quem gostamos. Gestos pequenos ajudam: uma mensagem lembrando algo engraçado, um áudio de parabéns, um café marcado com antecedência. A regularidade importa mais do que grandes encontros raros.',q:['Segundo o texto, o que importa mais para manter amizades?',['Grandes encontros raros','A regularidade dos contatos','Presentes caros','Morar perto'],1]},
+ {t:'Elogiar bem é uma habilidade',p:4,txt:'Um elogio vago, como "bom trabalho", agrada, mas ensina pouco. Um elogio específico diz exatamente o que foi bom e por quê: "a forma como você organizou os dados deixou a decisão fácil". Assim a pessoa sabe o que repetir e sente que foi realmente notada. O mesmo vale para críticas: falar do comportamento concreto, e não da pessoa, torna a conversa mais produtiva.',q:['O que torna um elogio mais útil, segundo o texto?',['Ser feito em público','Ser específico','Ser curto','Ser feito por escrito'],1]},
+ {t:'Pedir desculpas do jeito certo',p:4,txt:'Um bom pedido de desculpas reconhece o que foi feito, sem justificativas que diminuam a responsabilidade. Frases como "desculpa se você se sentiu mal" passam a culpa para o outro. Melhor dizer o que aconteceu, reconhecer o impacto e, quando possível, propor uma forma de reparar. Desculpar-se não é fraqueza: é uma forma de proteger a confiança.',q:['Por que "desculpa se você se sentiu mal" é um pedido fraco?',['Porque é longo','Porque passa a culpa para o outro','Porque é formal','Porque é dito por mensagem'],1]},
+ {t:'O cérebro no escuro da noite',p:0,txt:'A luz forte de telas à noite pode atrasar o relógio biológico e dificultar o sono. Além da luz, o conteúdo agitado mantém o cérebro em alerta. Criar um ritual de desaceleração ajuda: diminuir as luzes da casa, deixar o celular longe da cama e trocar a rolagem infinita por leitura ou alongamento leve. Repetir o ritual todo dia ensina o corpo que é hora de descansar.',q:['O que o texto sugere trocar pela rolagem infinita antes de dormir?',['Videogame','Leitura ou alongamento leve','Exercício intenso','Café'],1]},
+ {t:'Postura e pausas',p:0,txt:'Ficar muitas horas na mesma posição sobrecarrega costas e pescoço, mesmo com boa cadeira. O corpo gosta de movimento: levantar-se a cada hora para alongar, beber água ou caminhar um pouco já reduz o desconforto. Deixar a tela na altura dos olhos e os pés apoiados no chão também ajuda. Pequenas pausas melhoram até a concentração na volta.',q:['Com que frequência o texto sugere levantar-se?',['A cada hora','Uma vez por dia','A cada 10 minutos','Só no almoço'],0]},
+ {t:'Metas que cabem na semana',p:1,txt:'Metas grandes demais assustam e acabam adiadas. Um caminho é dividi-las até chegar a algo que caiba na semana, com uma ação clara e um prazo. "Ficar em forma" vira "caminhar 30 minutos às segundas, quartas e sextas". Ao fim da semana, vale revisar: o que funcionou, o que atrapalhou e o que ajustar. A meta grande continua no horizonte, mas é a semana que você realmente controla.',q:['Segundo o texto, o que a pessoa realmente controla?',['A meta grande','A semana','O resultado final','O ano inteiro'],1]},
+ {t:'Decidir cansa',p:1,txt:'Ao longo do dia fazemos centenas de pequenas escolhas, e isso consome energia mental. Por isso, decisões importantes costumam sair melhores quando estamos descansados. Reduzir escolhas repetitivas ajuda: separar a roupa na noite anterior, planejar as refeições da semana e criar rotinas para tarefas comuns. Assim sobra energia para o que exige mais atenção.',q:['Qual é uma forma de poupar energia mental citada no texto?',['Decidir tudo na hora','Separar a roupa na noite anterior','Dormir menos','Fazer várias coisas ao mesmo tempo'],1]},
+ {t:'Propósito no dia comum',p:2,txt:'Propósito não precisa ser uma grande missão descoberta de repente. Ele pode estar em como fazemos as coisas comuns: tratar bem um cliente, ensinar algo a um filho, cuidar da saúde para estar presente para quem amamos. Uma pergunta útil no fim do dia é: "a quem o que eu fiz hoje ajudou?". A resposta costuma mostrar mais sentido do que imaginamos.',q:['Qual pergunta o texto sugere fazer no fim do dia?',['Quanto ganhei hoje?','A quem o que eu fiz hoje ajudou?','O que deu errado?','Quem me elogiou?'],1]},
+ {t:'Natureza para a mente',p:2,txt:'Passar tempo em parques, praias ou trilhas está associado a menos estresse e melhor humor. Mesmo poucos minutos observando árvores, céu ou água podem ajudar a mente a descansar da sobrecarga de estímulos. Para quem mora em cidade grande, vale aproveitar praças, cuidar de plantas em casa ou fazer o trajeto a pé por ruas mais arborizadas.',q:['Para quem mora em cidade grande, o que o texto sugere?',['Mudar de cidade','Aproveitar praças e cuidar de plantas','Evitar sair de casa','Ver vídeos de natureza o dia todo'],1]},
+ {t:'Renda: aprender a vender o que sabe',p:3,txt:'Aumentar a renda muitas vezes passa por transformar uma habilidade em algo que resolve o problema de alguém. Pode ser cozinhar, organizar, consertar, ensinar ou usar bem o computador. O primeiro passo é perguntar: "o que as pessoas já me pedem ajuda para fazer?". Começar pequeno, com poucos clientes e preço justo, permite testar a ideia sem grandes riscos.',q:['Qual pergunta o texto sugere para descobrir uma fonte de renda extra?',['O que está na moda?','O que as pessoas já me pedem ajuda para fazer?','Quanto os outros ganham?','Qual curso é mais caro?'],1]},
+ {t:'Golpes: desconfie da pressa',p:3,txt:'Golpes financeiros costumam usar a mesma receita: urgência, promessa boa demais e pedido de sigilo. Mensagens dizendo que sua conta será bloqueada, que você ganhou um prêmio ou que um parente precisa de dinheiro agora pedem ação imediata para impedir que você pense. Bancos não pedem senhas por mensagem. Antes de qualquer pagamento, confirme por um canal oficial ou ligando para a pessoa.',q:['Segundo o texto, o que os bancos não pedem por mensagem?',['Atualização de endereço','Senhas','Avaliações do atendimento','Nada'],1]},
+ {t:'Ajudar faz bem para quem ajuda',p:4,txt:'Atos de generosidade, como ajudar um vizinho, doar tempo ou ensinar algo, estão ligados a mais bem-estar para quem ajuda. Ajudar dá sensação de utilidade e fortalece laços. Não precisa ser algo grande: segurar a porta, indicar alguém para uma vaga ou ouvir um amigo com atenção já contam. O importante é que seja genuíno, e não pela expectativa de receber algo em troca.',q:['Segundo o texto, como deve ser a ajuda?',['Grande e pública','Genuína, sem esperar algo em troca','Sempre em dinheiro','Só para a família'],1]},
+ {t:'Conflitos sem guerra',p:4,txt:'Discordar faz parte de qualquer relação. O problema é quando a conversa vira ataque. Algumas atitudes ajudam: falar de como você se sente em vez de acusar ("eu fiquei preocupado" em vez de "você nunca avisa"), tratar um assunto por vez e fazer uma pausa se os ânimos esquentarem. O objetivo não é vencer a discussão, mas resolver o problema juntos.',q:['Qual é o objetivo de uma boa discussão, segundo o texto?',['Vencer','Resolver o problema juntos','Provar que o outro errou','Evitar falar do assunto'],1]}
+);
+
 function cardLeitura(el,fim){
-  const L=pick(LEITURAS);let lido=false;
+  S.leVistos=S.leVistos||[];let livres=LEITURAS.map((x,i)=>i).filter(i=>!S.leVistos.includes(i));if(!livres.length){S.leVistos=[];livres=LEITURAS.map((x,i)=>i)}
+  const li=pick(livres),L=LEITURAS[li];S.leVistos.push(li);salvar();let lido=false;
+  cabecalho(el,'📖','Leitura de 2 min','FÁCIL','cy','até +'+xpA(ARENA_TIPOS.leitura.xp)+' XP · '+PIL[L.p]);
   el.querySelector('.jogo').innerHTML='<p class="ar-inst">Leitura de 2 minutos · '+PIL[L.p]+'</p><div class="card" style="margin-bottom:12px"><div class="h gd" style="font-size:13px;margin-bottom:8px">'+L.t+'</div><p style="font-size:16.5px;line-height:1.55">'+L.txt+'</p></div><button class="btn" id="lrOk">LI, QUERO A PERGUNTA</button><div id="lrQ"></div>';
   el.querySelector('#lrOk').onclick=()=>{if(lido)return;lido=true;el.querySelector('#lrOk').remove();const q=L.q;let r=false;
     el.querySelector('#lrQ').innerHTML='<div class="card" style="font-weight:700;margin:4px 0 10px">'+q[0]+'</div>'+q[1].map((t,i)=>'<button class="btn qbtn" data-i="'+i+'">'+t+'</button>').join('')+'<p class="ar-msg"></p>';
@@ -1874,7 +2119,70 @@ function cardRespira(el,fim){
   el.querySelector('#rGo').onclick=e=>{e.target.remove();const fases=[['INSPIRE',1.6],['SEGURE',1.6],['SOLTE',1],['SEGURE',1]];let n=0;
     const passo=()=>{if(n>=16){el.querySelector('#rtxt').textContent='Muito bem.';fim(true);return}const[f,s]=fases[n%4];el.querySelector('#rtxt').textContent=f+' · '+(Math.floor(n/4)+1)+'/4';el.querySelector('#rbola').style.transform='scale('+s+')';n++;setTimeout(passo,4000)};passo()};
 }
-const FINANCAS=[['Qual é a função principal de uma reserva de emergência?',['Investir em ações','Cobrir imprevistos sem dívidas','Viajar','Pagar o cartão mínimo'],1,'Ela evita que um imprevisto vire dívida.'],['Pagar só o mínimo do cartão de crédito…',['é uma boa estratégia','gera juros muito altos sobre o resto','zera a dívida','aumenta o limite'],1,'Os juros do rotativo estão entre os mais caros.'],['"Pague-se primeiro" significa…',['comprar algo para você','guardar uma parte antes de gastar','pagar as contas primeiro','pedir aumento'],1,'Separar a poupança assim que o dinheiro entra.'],['Inflação alta faz o dinheiro parado…',['valer mais','perder poder de compra','render juros','ficar igual'],1,'Os preços sobem e o mesmo dinheiro compra menos.']];
+/* ============ QUIZ DE FINANÇAS: banco grande + geradores com contas sempre calculadas ============ */
+const FIN_Q=[
+ ['Qual é a função principal de uma reserva de emergência?',['Investir em ações','Cobrir imprevistos sem fazer dívidas','Viajar','Pagar o mínimo do cartão'],1,'Ela evita que um imprevisto (perda de renda, conserto, saúde) vire dívida cara.'],
+ ['O que acontece quando você paga só o valor mínimo da fatura do cartão?',['A dívida some','O restante entra no crédito rotativo, com juros muito altos','O banco perdoa o resto','Nada muda'],1,'O saldo não pago vira rotativo, uma das linhas de crédito mais caras do país.'],
+ ['Juros compostos são…',['juros calculados só sobre o valor inicial','juros sobre juros: rendem sobre o valor inicial e sobre os juros já acumulados','um tipo de imposto','uma taxa do banco'],1,'Por isso o tempo faz tanta diferença: o rendimento passa a render também.'],
+ ['O que significa "pagar-se primeiro"?',['Comprar algo para você no dia do pagamento','Separar uma parte da renda para guardar antes de gastar','Pagar as contas atrasadas primeiro','Receber adiantado'],1,'Guardar logo que o dinheiro entra evita depender da "sobra" do fim do mês.'],
+ ['Inflação é…',['o aumento geral dos preços ao longo do tempo','o aumento do salário','a queda dos juros','um imposto sobre compras'],0,'Com inflação, o mesmo dinheiro compra menos coisas com o passar do tempo.'],
+ ['Qual índice é usado oficialmente para medir a inflação no Brasil?',['IPCA','PIB','Selic','CDI'],0,'O IPCA, calculado pelo IBGE, é o índice oficial usado nas metas de inflação.'],
+ ['Quem define a taxa Selic?',['O Congresso','O Copom, do Banco Central','Os bancos privados','O IBGE'],1,'O Comitê de Política Monetária (Copom) do Banco Central se reúne periodicamente para definir a Selic.'],
+ ['O Tesouro Selic é um título…',['de empresa privada','público, que rende acompanhando a taxa Selic','de criptomoeda','de ações'],1,'É emitido pelo Tesouro Nacional e costuma ser usado para reserva de emergência por ter baixa oscilação.'],
+ ['O que é o FGC?',['Um imposto','Um fundo que garante parte de investimentos como CDB e poupança se o banco quebrar','Um tipo de ação','Um cartão de crédito'],1,'O Fundo Garantidor de Créditos cobre até R$ 250 mil por CPF por instituição (com limite global), em produtos como CDB, LCI, LCA e poupança.'],
+ ['A poupança tem imposto de renda para pessoa física?',['Sim, 15%','Não, é isenta','Sim, 22,5%','Só acima de R$ 1.000'],1,'A poupança é isenta de IR para pessoas físicas, mas costuma render menos que outras opções seguras.'],
+ ['LCI e LCA são isentas de imposto de renda para pessoa física?',['Sim','Não','Só LCA','Só LCI'],0,'Ambas são isentas de IR para pessoas físicas e também têm cobertura do FGC.'],
+ ['Na renda fixa tributada (como CDB), a alíquota de IR…',['é sempre 27,5%','diminui quanto mais tempo o dinheiro fica aplicado','aumenta com o tempo','não existe'],1,'A tabela regressiva vai de 22,5% (até 180 dias) a 15% (acima de 720 dias).'],
+ ['Qual é a menor alíquota da tabela regressiva de IR da renda fixa?',['10%','15%','20%','22,5%'],1,'15%, para aplicações mantidas por mais de 720 dias.'],
+ ['O IOF em investimentos de renda fixa incide quando o resgate é feito…',['depois de 1 ano','nos primeiros 30 dias','só em dólar','nunca'],1,'O IOF é regressivo e zera a partir do 30º dia da aplicação.'],
+ ['O que é CDI?',['Um imposto','Uma taxa ligada aos empréstimos entre bancos, usada como referência de rendimento','Um tipo de ação','Um fundo imobiliário'],1,'Muitos investimentos de renda fixa rendem um percentual do CDI, como "100% do CDI".'],
+ ['Diversificar investimentos significa…',['colocar tudo num só lugar','distribuir o dinheiro entre diferentes tipos de investimento','trocar de banco todo mês','investir só em dólar'],1,'Diversificar reduz o impacto de um único investimento ruim.'],
+ ['Liquidez é…',['a facilidade de transformar um investimento em dinheiro rapidamente, sem perder valor','o lucro de um investimento','o risco de um investimento','um tipo de taxa'],0,'Reserva de emergência precisa de alta liquidez: o dinheiro deve estar disponível quando você precisar.'],
+ ['Qual destas opções costuma ter MAIOR risco?',['Tesouro Selic','Poupança','Ações de uma única empresa','CDB de banco grande'],2,'Ações oscilam bastante, e concentrar em uma só empresa aumenta o risco.'],
+ ['Na regra 50/30/20, os 20% vão para…',['lazer','necessidades básicas','poupança, investimentos ou quitar dívidas','impostos'],2,'A regra sugere 50% necessidades, 30% desejos e 20% para o futuro (guardar ou quitar dívidas).'],
+ ['O que é um orçamento pessoal?',['Um empréstimo','O planejamento de quanto entra e quanto sai de dinheiro','Um tipo de investimento','A fatura do cartão'],1,'Saber para onde vai o dinheiro é o primeiro passo para controlá-lo.'],
+ ['Antes de investir, o mais indicado geralmente é…',['pegar empréstimo para investir','quitar dívidas caras, como o rotativo do cartão','comprar ações da moda','esperar ficar rico'],1,'Nenhum investimento seguro rende tanto quanto os juros de dívidas caras custam.'],
+ ['Juros de cheque especial e rotativo do cartão costumam ser…',['os mais baixos do mercado','dos mais altos do mercado','iguais à poupança','zero'],1,'Por isso devem ser evitados ou usados só por pouquíssimos dias.'],
+ ['O que é "patrimônio líquido" de uma pessoa?',['Seu salário','O que ela tem (bens e investimentos) menos o que ela deve','Só o dinheiro na conta','O limite do cartão'],1,'Se as dívidas são maiores que os bens, o patrimônio líquido é negativo.'],
+ ['O que é renda passiva?',['Dinheiro que entra sem que você precise trabalhar diretamente por ele naquele momento, como aluguéis ou rendimentos','O salário','Um empréstimo','Uma dívida'],0,'Investimentos que pagam rendimentos, aluguéis e direitos autorais são exemplos.'],
+ ['Comprar parcelado "sem juros" vale a pena quando…',['o preço à vista é igual ao parcelado e você tem o dinheiro planejado','você não tem como pagar as parcelas','tem desconto grande à vista','sempre'],0,'Se há desconto à vista, o "sem juros" na verdade embute juros. E parcelas comprometem a renda futura.'],
+ ['O que é o 13º salário?',['Um bônus opcional','Um pagamento extra garantido por lei aos trabalhadores com carteira assinada','Um empréstimo','Um imposto'],1,'É pago até dezembro, em uma ou duas parcelas, proporcional aos meses trabalhados.'],
+ ['O que é o score de crédito?',['O saldo da sua conta','Uma pontuação que indica a probabilidade de você pagar suas contas em dia','O limite do cartão','Um investimento'],1,'Pagar contas em dia e manter cadastro positivo ajudam a melhorar o score.'],
+ ['Uma dívida "boa" geralmente é aquela que…',['financia consumo por impulso','tem juros baixos e ajuda a aumentar renda ou patrimônio, como estudo ou negócio planejado','usa o cheque especial','é feita para viajar'],1,'Mesmo assim, toda dívida precisa caber no orçamento.'],
+ ['O que é inflação "comendo" o dinheiro guardado?',['Dinheiro parado perdendo poder de compra quando rende menos que a inflação','Um golpe bancário','Uma taxa da conta','O IR'],0,'Se o rendimento é menor que a inflação, o ganho real é negativo.'],
+ ['Rendimento real é…',['o rendimento total menos a inflação','o rendimento antes do IR','o valor investido','a taxa Selic'],0,'É o que de fato aumenta seu poder de compra.'],
+ ['Um fundo imobiliário (FII) investe principalmente em…',['ouro','imóveis ou títulos ligados a imóveis','criptomoedas','ações de bancos'],1,'Os FIIs costumam distribuir rendimentos mensais aos cotistas.'],
+ ['O que é um dividendo?',['Uma dívida da empresa','Parte do lucro de uma empresa distribuída aos acionistas','Um imposto','A queda de uma ação'],1,'Empresas lucrativas podem distribuir parte do lucro a quem tem suas ações.'],
+ ['Promessa de "lucro garantido e muito alto, sem risco" geralmente é sinal de…',['ótimo investimento','possível golpe ou pirâmide financeira','investimento do governo','poupança'],1,'Retorno alto sempre vem com risco alto. Promessas de ganho fácil e garantido são um grande sinal de alerta.'],
+ ['Pirâmide financeira é…',['um investimento seguro','um esquema que paga os antigos com o dinheiro de novos participantes e acaba desmoronando','um tipo de ação','uma conta digital'],1,'Quando entram menos pessoas novas, o esquema quebra e a maioria perde dinheiro.'],
+ ['Qual atitude ajuda a evitar compras por impulso?',['Comprar logo para não perder a promoção','Esperar alguns dias antes de compras não planejadas','Usar sempre o cartão','Parcelar tudo'],1,'Dar um tempo ajuda a separar vontade passageira de necessidade real.'],
+ ['O que é o "efeito latte"?',['Pequenos gastos diários que, somados, viram um valor grande ao longo do ano','Um investimento em café','Um tipo de juros','Um imposto'],0,'R$ 10 por dia são cerca de R$ 3.650 por ano.'],
+ ['Quanto da renda é razoável comprometer com parcelas de dívidas, segundo uma referência comum de educação financeira?',['Até cerca de 30%','70%','100%','Não existe referência'],0,'Ultrapassar cerca de 30% da renda com dívidas aumenta muito o risco de aperto financeiro.'],
+ ['O que é renda variável?',['Investimentos cujo retorno não é conhecido de antemão, como ações','Salário','Poupança','Tesouro Selic'],0,'O valor pode subir ou cair, por isso exige mais tempo e tolerância ao risco.'],
+ ['O que é um CDB?',['Um título emitido por bancos para captar dinheiro, que paga juros ao investidor','Uma ação','Um imposto','Um seguro'],0,'Você empresta dinheiro ao banco e recebe juros. É coberto pelo FGC dentro dos limites.'],
+ ['O que acontece com o preço dos produtos quando o real se desvaloriza frente ao dólar?',['Produtos importados tendem a ficar mais caros','Tudo fica mais barato','Nada muda','Só a gasolina cai'],0,'Produtos e insumos cotados em dólar ficam mais caros em reais.'],
+ ['Qual é o primeiro passo para sair das dívidas?',['Pegar mais empréstimos','Listar todas as dívidas com valores e juros','Ignorar as cobranças','Usar o cheque especial'],1,'Com a lista, dá para priorizar as de juros mais altos e negociar.'],
+ ['Trocar uma dívida cara por uma mais barata (como consignado no lugar do rotativo) é chamado de…',['portabilidade ou troca de dívida','pirâmide','dividendo','inflação'],0,'Desde que não se volte a usar a linha cara, reduz bastante os juros pagos.'],
+ ['O que é previdência privada?',['Um investimento de longo prazo pensado para a aposentadoria','O INSS','Um seguro de carro','Uma conta corrente'],0,'Existem os planos PGBL e VGBL, com regras de tributação diferentes.'],
+ ['A taxa de administração de um fundo de investimento…',['é cobrada todo ano e reduz o rendimento','não existe','só é cobrada se o fundo der lucro','é um bônus'],0,'Comparar taxas é importante: uma taxa alta pode consumir boa parte do ganho.'],
+ ['O que é educação financeira?',['Aprender a lidar bem com o dinheiro: ganhar, gastar, poupar e investir com consciência','Fazer faculdade de economia','Ficar rico rápido','Ter muitos cartões'],0,'É uma habilidade prática que pode ser aprendida por qualquer pessoa.']
+];
+const GEN_FIN=[
+ ()=>{const c=pick([1000,2000,5000,10000]),t=pick([5,10,12]),n=2,r=Math.round(c*((100+t)/100)**n*100)/100,js=c*(100+t*n)/100;return qNum('R$ '+c.toLocaleString('pt-BR')+' aplicados a '+t+'% ao ano, com juros compostos. Quanto haverá depois de 2 anos (R$)?',r,()=>pick([js,c+c*t/100,Math.round(r*1.05),Math.round(r*.95)]),'Ano 1: '+c.toLocaleString('pt-BR')+' × '+String(1+t/100).replace('.',',')+'. Ano 2: × '+String(1+t/100).replace('.',',')+' de novo = '+r.toLocaleString('pt-BR',{minimumFractionDigits:r%1?2:0})+'. Com juros simples seriam só '+js.toLocaleString('pt-BR')+'.',x=>x.toLocaleString('pt-BR',{minimumFractionDigits:x%1?2:0}))},
+ ()=>{const p=pick([80,120,150,200,250,400]),d=pick([10,15,20,25]),r=p*(100-d)/100;return qNum('Um produto de R$ '+p+' está com '+d+'% de desconto. Qual o preço final (R$)?',r,()=>pick([p-d,r+p/20,r-p/20,p*d/100]),d+'% de '+p+' = '+(p*d/100)+'. '+p+' − '+(p*d/100)+' = '+r+'.',fmt)},
+ ()=>{const vista=pick([900,1200,1500,2000]),n=pick([10,12]),parc=Math.round(vista*1.2/n),tot=parc*n;return qNum('À vista: R$ '+vista+'. A prazo: '+n+' × R$ '+parc+'. Quanto você paga A MAIS no parcelado (R$)?',tot-vista,()=>pick([parc,tot,Math.round((tot-vista)/2),tot-vista+parc]),n+' × '+parc+' = '+tot+'. '+tot+' − '+vista+' = '+(tot-vista)+' a mais.')},
+ ()=>{const r=pick([2000,2500,3000,4000,5000]);return qNum('Pela regra 50/30/20, quanto de uma renda de R$ '+r.toLocaleString('pt-BR')+' iria para poupar ou quitar dívidas (R$)?',r*.2,()=>pick([r*.3,r*.5,r*.1,r*.25]),'20% de '+r+' = '+(r*.2)+'.',x=>x.toLocaleString('pt-BR'))},
+ ()=>{const g=pick([10,15,20,30]),d=pick([30,365]);return qNum('Gastar R$ '+g+' por dia com lanches dá quanto em '+(d===365?'um ano':'um mês de 30 dias')+' (R$)?',g*d,()=>pick([g*30,g*12,g*100,g*d/2].filter(x=>x!==g*d)),g+' × '+d+' = '+(g*d).toLocaleString('pt-BR')+'. Pequenos gastos somam muito.',x=>x.toLocaleString('pt-BR'))},
+ ()=>{const gasto=pick([2000,2500,3000,4000]),m=pick([3,6]);return qNum('Quem gasta R$ '+gasto.toLocaleString('pt-BR')+' por mês precisa de quanto para uma reserva de '+m+' meses (R$)?',gasto*m,()=>pick([gasto*(m+1),gasto*(m-1),gasto*12,gasto*m/2]),gasto+' × '+m+' = '+(gasto*m).toLocaleString('pt-BR')+'.',x=>x.toLocaleString('pt-BR'))},
+ ()=>{const rend=pick([10,12,13]),inf=pick([4,5,6]);return qNum('Um investimento rendeu '+rend+'% no ano e a inflação foi '+inf+'%. Qual foi o ganho real aproximado (%)?',rend-inf,()=>pick([rend,inf,rend+inf,rend-inf+2]),'Ganho real ≈ rendimento − inflação = '+rend+' − '+inf+' = '+(rend-inf)+'% (a conta exata dá um pouco menos).')}
+];
+function finPergunta(){
+  S.finVistos=S.finVistos||[];
+  if(Math.random()<.3)for(let t=0;t<10;t++){const q=pick(GEN_FIN)();if(q&&new Set(q[1]).size===q[1].length)return q}
+  let livres=FIN_Q.map((x,i)=>i).filter(i=>!S.finVistos.includes(i));if(!livres.length){S.finVistos=[];livres=FIN_Q.map((x,i)=>i)}
+  const i=pick(livres);S.finVistos.push(i);salvar();const q=FIN_Q[i],ord=embaralhar(q[1].map((t,k)=>k));return[q[0],ord.map(k=>q[1][k]),ord.indexOf(q[2]),q[3]];
+}
+
 
 /* ============ CONHECIMENTOS: perguntas por matéria com níveis ============ */
 /* [pergunta, opções, índice correto, explicação] — nível 1 básico, 2 intermediário, 3 avançado */
@@ -2929,33 +3237,6 @@ function cardIdioma(el,fim){
 }
 
 /* ---------- Reflexo e agilidade (FÍSICO) ---------- */
-function cardAlvos(el,fim){
-  const J=el.querySelector('.jogo');let pts=0,err=0,t=20,on=false,tm,mv;
-  J.innerHTML='<p class="ar-inst">Toque nos alvos o mais rápido que puder. 20 segundos!</p><div class="rf-area" id="rfA"><button class="rf-alvo" id="rfT" style="display:none">🎯</button><div class="rf-cent" id="rfC"><button class="btn" id="rfGo">▶ COMEÇAR</button></div></div><p class="ar-msg">Acertos: 0 · Tempo: 20s</p>';
-  const A=J.querySelector('#rfA'),T=J.querySelector('#rfT'),msg=J.querySelector('.ar-msg');
-  const mover=()=>{const w=A.clientWidth-64,h=A.clientHeight-64;T.style.left=rr(4,Math.max(5,w))+'px';T.style.top=rr(4,Math.max(5,h))+'px';
-    clearTimeout(mv);mv=setTimeout(mover,Math.max(450,1100-pts*25))};
-  T.onpointerdown=e=>{e.stopPropagation();if(!on)return;pts++;try{SFX.certo();navigator.vibrate&&navigator.vibrate(15)}catch(x){}mover();msg.textContent='Acertos: '+pts+' · Tempo: '+t+'s'};
-  A.onpointerdown=()=>{if(on){err++;try{SFX.erro()}catch(e){}}};
-  J.querySelector('#rfGo').onclick=()=>{J.querySelector('#rfC').remove();on=true;T.style.display='block';mover();
-    tm=setInterval(()=>{t--;msg.textContent='Acertos: '+pts+' · Tempo: '+t+'s';if(t<=0){clearInterval(tm);clearTimeout(mv);on=false;T.style.display='none';
-      const nota=pts-Math.floor(err/2);msg.innerHTML='<b class="cy">'+pts+' alvos</b> · '+err+' toques fora. '+(nota>=25?'Reflexo de elite!':nota>=15?'Muito bom!':'Continue treinando!');
-      fim(nota>=8,nota>=25?1.5:nota>=15?1.2:1)}},1000)};
-}
-function cardReacao(el,fim){
-  const J=el.querySelector('.jogo'),tempos=[];let est='pronto',t0=0,to,r=0;
-  J.innerHTML='<p class="ar-inst">5 rodadas. Quando a tela ficar <b class="cy">VERDE</b>, toque o mais rápido possível. Tocar antes conta como queimada.</p><button class="rf-reac" id="rfR">TOQUE PARA COMEÇAR</button><p class="ar-msg"></p>';
-  const B=J.querySelector('#rfR'),msg=J.querySelector('.ar-msg');
-  const espera=()=>{est='espera';B.className='rf-reac esp';B.textContent='Espere o verde…';to=setTimeout(()=>{est='vai';B.className='rf-reac vai';B.textContent='TOQUE!';t0=performance.now()},rr(1200,3500))};
-  B.onpointerdown=()=>{
-    if(est==='pronto'){espera();return}
-    if(est==='espera'){clearTimeout(to);try{SFX.erro()}catch(e){}est='pronto';B.className='rf-reac';B.textContent='Queimou! Toque para repetir a rodada';return}
-    if(est==='vai'){const ms=Math.round(performance.now()-t0);tempos.push(ms);r++;try{SFX.certo()}catch(e){}
-      if(r>=5){est='fim';const md=Math.round(tempos.reduce((a,b)=>a+b,0)/tempos.length);B.className='rf-reac';B.textContent='Média: '+md+' ms';
-        msg.innerHTML='Tempos: '+tempos.join(' · ')+' ms<br>'+(md<280?'<b class="cy">Reflexo excelente!</b>':md<380?'<b class="cy">Bom reflexo.</b>':'Treine mais: dormir bem e se exercitar melhora o tempo de reação.');
-        fim(true,md<280?1.5:md<380?1.2:1);return}
-      est='pronto';B.className='rf-reac';B.textContent=ms+' ms · toque para a rodada '+(r+1)}};
-}
 function cardSimon(el,fim){
   S.simon=S.simon||{alvo:5,rec:0};const alvo=S.simon.alvo;
   const J=el.querySelector('.jogo'),cores=['#22d3ee','#f5c542','#ef4444','#a3e635'],seq=[];let pos=0,trava=true,acabou=false;
@@ -2974,14 +3255,44 @@ function cardSimon(el,fim){
       if(seq.length>=alvo){acabou=true;S.simon.alvo=alvo+1;S.simon.rec=Math.max(S.simon.rec,alvo);salvar();msg.innerHTML='<b class="cy">Venceu as '+alvo+' fases!</b> Na próxima vez serão <b class="gd">'+(alvo+1)+'</b>.';fim(true,1);return}
       trava=true;setTimeout(rodada,750)}});
 }
+/* ---------- Reflexo e agilidade (FÍSICO) · 20 níveis, sobem devagar ---------- */
+const RF_MAX=20,rfTag=nv=>nv<=5?['FÁCIL','cy']:nv<=12?['MÉDIO','gd']:['DIFÍCIL','rd'];
+function rfCab(el,ico,nome,nv){const t=rfTag(nv);cabecalho(el,ico,nome+' · Nível '+nv,t[0],t[1],'até +'+xpA(jgXP(Math.ceil(nv/3)))+' XP · FÍSICO')}
+function rfFim(fim,id,passou,nv,J){const s=passou?jgSubir(id,RF_MAX):false;const m=J.querySelector('.ar-msg');if(m)m.insertAdjacentHTML('beforeend',passou?(s?'<br><b class="gd">Nível '+(nv+1)+' liberado para a próxima vez.</b>':'<br><b class="gd">Nível máximo!</b>'):'<br><span class="mut">Bata a meta para subir de nível.</span>');jgFim(fim,true,Math.ceil(nv/3),passou?1:.6)}
+function cardAlvos(el,fim){
+  const nv=jg('alvos').nv,vida=Math.round(1700-(nv-1)*65),tam=Math.round(78-(nv-1)*1.9),meta=Math.round(8+nv*0.9);
+  const J=el.querySelector('.jogo');let pts=0,err=0,t=20,on=false,tm,mv;rfCab(el,'🎯','Toque Rápido',nv);
+  J.innerHTML='<p class="ar-inst">Toque nos alvos antes que eles fujam. Meta: <b class="cy">'+meta+' acertos</b> em 20 s.</p><div class="rf-area" id="rfA"><button class="rf-alvo" id="rfT" style="display:none;width:'+tam+'px;height:'+tam+'px;font-size:'+Math.round(tam*.55)+'px">🎯</button><div class="rf-cent" id="rfC"><button class="btn" id="rfGo">▶ COMEÇAR</button></div></div><p class="ar-msg">Acertos: 0/'+meta+' · Tempo: 20s</p>';
+  const A=J.querySelector('#rfA'),T=J.querySelector('#rfT'),msg=J.querySelector('.ar-msg');
+  const mover=()=>{const w=A.clientWidth-tam-4,h=A.clientHeight-tam-4;T.style.left=rr(4,Math.max(5,w))+'px';T.style.top=rr(4,Math.max(5,h))+'px';clearTimeout(mv);mv=setTimeout(mover,vida)};
+  T.onpointerdown=e=>{e.stopPropagation();if(!on)return;pts++;try{SFX.certo()}catch(x){}mover();msg.textContent='Acertos: '+pts+'/'+meta+' · Tempo: '+t+'s'};
+  A.onpointerdown=()=>{if(on){err++;try{SFX.erro()}catch(e){}}};
+  J.querySelector('#rfGo').onclick=()=>{J.querySelector('#rfC').remove();on=true;T.style.display='block';mover();
+    tm=setInterval(()=>{t--;msg.textContent='Acertos: '+pts+'/'+meta+' · Tempo: '+t+'s';if(t<=0){clearInterval(tm);clearTimeout(mv);on=false;T.style.display='none';
+      const passou=pts>=meta&&err<=Math.max(3,pts/2);msg.innerHTML='<b class="cy">'+pts+' alvos</b> · '+err+' toques fora. '+(passou?'Meta batida!':'Meta: '+meta+(err>Math.max(3,pts/2)?' com menos toques fora.':'.'));rfFim(fim,'alvos',passou,nv,J)}},1000)};
+}
+function cardReacao(el,fim){
+  const nv=jg('reacao').nv,lim=Math.round(720-(nv-1)*25),J=el.querySelector('.jogo'),tempos=[];let est='pronto',t0=0,to,r=0;rfCab(el,'⚡','Tempo de Reação',nv);
+  J.innerHTML='<p class="ar-inst">5 rodadas. Quando ficar <b class="cy">VERDE</b>, toque o mais rápido possível. Meta: média abaixo de <b class="cy">'+lim+' ms</b>. Tocar antes do verde queima a rodada.</p><button class="rf-reac" id="rfR">TOQUE PARA COMEÇAR</button><p class="ar-msg"></p>';
+  const B=J.querySelector('#rfR'),msg=J.querySelector('.ar-msg');
+  const espera=()=>{est='espera';B.className='rf-reac esp';B.textContent='Espere o verde…';to=setTimeout(()=>{est='vai';B.className='rf-reac vai';B.textContent='TOQUE!';t0=performance.now()},rr(1200,3500))};
+  B.onpointerdown=()=>{
+    if(est==='pronto'){espera();return}
+    if(est==='espera'){clearTimeout(to);try{SFX.erro()}catch(e){}est='pronto';B.className='rf-reac';B.textContent='Queimou! Toque para repetir a rodada';return}
+    if(est==='vai'){const ms=Math.round(performance.now()-t0);tempos.push(ms);r++;try{SFX.certo()}catch(e){}
+      if(r>=5){est='fim';const md=Math.round(tempos.reduce((a,b)=>a+b,0)/tempos.length),passou=md<=lim;B.className='rf-reac';B.textContent='Média: '+md+' ms';
+        msg.innerHTML='Tempos: '+tempos.join(' · ')+' ms<br>'+(passou?'<b class="cy">Meta batida!</b>':'Meta: '+lim+' ms. Dormir bem e se exercitar melhora o tempo de reação.');rfFim(fim,'reacao',passou,nv,J);return}
+      est='pronto';B.className='rf-reac';B.textContent=ms+' ms · toque para a rodada '+(r+1)}};
+}
 function cardVaiNao(el,fim){
-  const J=el.querySelector('.jogo');let k=0,ok=0,err=0,estim=null,tocou=false;const N=20;
-  J.innerHTML='<p class="ar-inst">Toque só no <b class="cy">círculo VERDE</b>. Se aparecer <b class="rd">VERMELHO</b>, não toque!</p><button class="vn-alvo" id="vnA"></button><button class="btn" id="vnGo">▶ COMEÇAR</button><p class="ar-msg"></p>';
+  const nv=jg('vainao').nv,dur=Math.round(1150-(nv-1)*40),pctR=Math.min(.45,.2+nv*.012),meta=nv<=10?75:80;
+  const J=el.querySelector('.jogo');let k=0,ok=0,err=0,estim=null,tocou=false;const N=20;rfCab(el,'🚦','Vai / Não Vai',nv);
+  J.innerHTML='<p class="ar-inst">Toque só no <b class="cy">círculo VERDE</b>. No <b class="rd">VERMELHO</b>, não toque! Meta: '+meta+'% de acerto.</p><button class="vn-alvo" id="vnA"></button><button class="btn" id="vnGo">▶ COMEÇAR</button><p class="ar-msg"></p>';
   const A=J.querySelector('#vnA'),msg=J.querySelector('.ar-msg');
   const passo=()=>{if(estim!==null){if(estim==='g'&&!tocou)err++;if(estim==='r'&&!tocou)ok++}
-    if(k>=N){A.className='vn-alvo';const pc=Math.round(ok/N*100);msg.innerHTML='<b class="cy">'+pc+'% de acerto</b> ('+err+' erro'+(err===1?'':'s')+').';fim(pc>=70,pc>=95?1.5:pc>=85?1.2:1);return}
-    k++;tocou=false;estim=Math.random()<.7?'g':'r';A.className='vn-alvo '+estim;
-    setTimeout(()=>{A.className='vn-alvo';setTimeout(passo,250)},Math.max(450,850-k*15))};
+    if(k>=N){A.className='vn-alvo';const pc=Math.round(ok/N*100),passou=pc>=meta;msg.innerHTML='<b class="cy">'+pc+'% de acerto</b> ('+err+' erro'+(err===1?'':'s')+'). '+(passou?'Meta batida!':'Meta: '+meta+'%.');rfFim(fim,'vainao',passou,nv,J);return}
+    k++;tocou=false;estim=Math.random()<1-pctR?'g':'r';A.className='vn-alvo '+estim;
+    setTimeout(()=>{A.className='vn-alvo';setTimeout(passo,Math.max(150,300-nv*6))},dur)};
   A.onpointerdown=()=>{if(tocou||!estim||!A.classList.contains(estim))return;tocou=true;
     if(estim==='g'){ok++;try{SFX.certo()}catch(e){}}else{err++;try{SFX.erro();navigator.vibrate&&navigator.vibrate(80)}catch(e){}}A.className='vn-alvo';};
   J.querySelector('#vnGo').onclick=e=>{e.target.remove();passo()};
@@ -3148,7 +3459,7 @@ function cardCientista(el,fim){
     salvar();renderSaber();fim(ok)});
 }
 /* ---------- Feed sempre aleatório (com pesos e sem repetir em sequência) ---------- */
-const ARENA_PESO={saber:6,logica:4,cientista:3,livro:2,idioma:2,leitura:1,biblia:1,xadrez:1,sudoku9:1,sudoku4:1,memoria:1,erros:1,calculo:1,fisico:1,respira:1,financas:1,alvos:1,reacao:1,simon:1,vainao:1};
+const ARENA_PESO={saber:6,logica:4,cientista:3,livro:2,idioma:2,leitura:1,biblia:1,xadrez:1,sudoku9:1,sudoku4:1,memoria:1,erros:1,calculo:1,fisico:1,respira:1,financas:1,alvos:1,reacao:1,simon:1,vainao:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,senha:1,nono:1,soma:1,conta:1};
 function arenaProxTipo(){
   const ult=arenaUlt;let t,tent=0;
   do{const tot=Object.values(ARENA_PESO).reduce((a,b)=>a+b,0);let r=Math.random()*tot;for(const[k,w]of Object.entries(ARENA_PESO)){r-=w;if(r<0){t=k;break}}tent++}
@@ -3163,9 +3474,19 @@ const ARENA_TIPOS={
   sudoku9:{nome:'Sudoku 9×9',ico:'🔢',dif:'dificil',xp:60,pilar:1,run:(e,f)=>cardSudoku(e,f,9)},
   sudoku4:{nome:'Sudoku Relâmpago 4×4',ico:'🔢',dif:'facil',xp:10,pilar:1,run:(e,f)=>cardSudoku(e,f,4)},
   memoria:{nome:'Memória',ico:'🃏',dif:'medio',xp:20,pilar:1,run:cardMemoria},
-  erros:{nome:'Jogo dos Erros',ico:'🔍',dif:'medio',xp:25,pilar:1,run:cardErros},
+  erros:{nome:'Jogo dos Erros',ico:'🔍',dif:'medio',xp:30||25,pilar:1,run:cardErros},
   logica:{nome:'Desafio de Lógica',ico:'🧩',dif:'medio',xp:60,pilar:1,run:cardLogica},
   cientista:{nome:'Grandes nomes da ciência',ico:'🔬',dif:'medio',xp:15,pilar:1,run:cardCientista},
+  hanoi:{nome:'Torre de Hanói',ico:'🗼',dif:'medio',xp:30,pilar:1,run:cardHanoi},
+  luzes:{nome:'Apague as Luzes',ico:'💡',dif:'medio',xp:30,pilar:1,run:cardLuzes},
+  desliza:{nome:'Deslizante',ico:'🧩',dif:'medio',xp:30,pilar:1,run:cardDesliza},
+  labirinto:{nome:'Labirinto',ico:'🌀',dif:'medio',xp:30,pilar:1,run:cardLabirinto},
+  matriz:{nome:'Matriz de Memória',ico:'🔲',dif:'medio',xp:30,pilar:1,run:cardMatriz},
+  schulte:{nome:'Tabela de Schulte',ico:'🔢',dif:'medio',xp:30,pilar:1,run:cardSchulte},
+  senha:{nome:'Senha Secreta',ico:'🔐',dif:'medio',xp:30,pilar:1,run:cardSenha},
+  nono:{nome:'Nonograma',ico:'🖼️',dif:'medio',xp:30,pilar:1,run:cardNonograma},
+  soma:{nome:'Soma Alvo',ico:'➕',dif:'medio',xp:30,pilar:1,run:cardSoma},
+  conta:{nome:'Conta Exata',ico:'🧮',dif:'medio',xp:30,pilar:1,run:cardConta},
   livro:{nome:'Ideia de livro',ico:'📖',dif:'facil',xp:8,pilar:2,run:cardLivro},
   biblia:{nome:'Palavra do dia',ico:'✝️',dif:'facil',xp:8,pilar:2,run:cardBiblia},
   idioma:{nome:'Lição de idioma',ico:'🌍',dif:'facil',xp:15,pilar:1,run:cardIdioma},
@@ -3177,7 +3498,7 @@ const ARENA_TIPOS={
   leitura:{nome:'Leitura de 2 min',ico:'📖',dif:'facil',xp:15,pilar:1,run:cardLeitura},
   fisico:{nome:'Desafio Físico',ico:'💪',dif:'facil',xp:10,pilar:0,run:cardFisico},
   respira:{nome:'Respiração Guiada',ico:'🌬️',dif:'facil',xp:10,pilar:2,run:cardRespira},
-  financas:{nome:'Quiz de Finanças',ico:'💰',dif:'facil',xp:10,pilar:3,run:(e,f)=>cardQuiz(e,f,FINANCAS,'Uma pergunta rápida sobre dinheiro.')}
+  financas:{nome:'Quiz de Finanças',ico:'💰',dif:'facil',xp:10,pilar:3,run:cardFin}
 };
 const ARENA_ORDEM=['saber','logica','livro','memoria','saber','idioma','alvos','xadrez','saber','leitura','logica','reacao','saber','biblia','calculo','idioma','saber','erros','livro','simon','saber','sudoku4','financas','logica','saber','vainao','fisico','livro','saber','respira','idioma','sudoku9'];
 let arenaN=0,arenaUlt=[];
