@@ -244,8 +244,8 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 .ar-swipe{text-align:center;font-size:11px;color:var(--mut);letter-spacing:.15em;padding-top:8px;animation:sobe 2s infinite}
 @keyframes sobe{50%{transform:translateY(-4px);opacity:.6}}
 .btn.red{border-color:var(--red)!important;color:var(--red)!important}
-.xb{display:grid;grid-template-columns:repeat(8,1fr);width:100%;max-width:360px;margin:0 auto;border:2px solid var(--line);border-radius:6px;overflow:hidden;aspect-ratio:1}
-.xq{display:grid;place-items:center;font-size:clamp(26px,9.5vw,40px);line-height:1;padding:0}
+.xb{container-type:inline-size;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:100%;max-width:360px;margin:0 auto;border:2px solid var(--line);border-radius:6px;overflow:hidden;aspect-ratio:1}
+.xq{display:grid;place-items:center;font-size:clamp(20px,9.5vw,40px);font-size:min(40px,10.5cqw);line-height:1;padding:0;min-width:0;min-height:0;overflow:hidden;aspect-ratio:1}
 .xq.cla{background:#4a6472}.xq.esc{background:#22323d}
 .xq.sel{background:rgba(24,240,255,.35)!important}
 .xq .pb{color:#ffffff;text-shadow:0 0 3px #000,0 2px 3px #000}.xq .pp{color:#ff3d5a;text-shadow:0 0 3px #000,0 2px 3px #000}
@@ -285,6 +285,37 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 }
 .ar-sair{display:none;flex:0 0 auto;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:.05em}
 .ar-card.preso .ar-sair{display:block}.ar-card.preso .ar-swipe{visibility:hidden}
+details.feitas{margin:4px 0 8px}details.feitas summary{cursor:pointer;list-style:none;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-weight:700;font-size:14px}
+details.feitas summary::-webkit-details-marker{display:none}details.feitas[open] summary{margin-bottom:8px;color:var(--cyan)}
+
+/* ===== Arena em modo zen: claro, suave, sem neon ===== */
+body.zen{--bg:#eef3ef;--panel:#ffffff;--panel2:#f4f8f5;--line:#d6e2da;--cyan:#2a8f84;--cyan-d:rgba(42,143,132,.12);--gold:#b07a1e;--red:#c0504d;--red-d:rgba(192,80,77,.12);--txt:#25363b;--mut:#6e8187;
+  background:linear-gradient(180deg,#f3f7f2 0%,#e8f1ee 100%)!important;transition:background .6s}
+body.zen.scan::after{display:none}
+body.zen #app header,body.zen nav{background:rgba(250,252,250,.94)}
+body.zen .glow,body.zen .ar-nome,body.zen .h{text-shadow:none}
+body.zen .lvl,body.zen .ar-ico,body.zen .classe-ico{box-shadow:none}
+body.zen nav button.on::before{box-shadow:none}
+body.zen .btn{background:rgba(42,143,132,.05)}body.zen .btn.ghost{border-color:rgba(42,143,132,.35)}
+body.zen .card{background:#fff;box-shadow:0 1px 3px rgba(40,70,60,.06)}
+body.zen .card.holo::before{display:none}
+body.zen .ar-ok{color:#8a5d10;border-color:rgba(176,122,30,.45);background:rgba(176,122,30,.08)}
+body.zen .xq.cla{background:#e9e2cf}body.zen .xq.esc{background:#a9bfae}
+body.zen .xq.sel{background:rgba(42,143,132,.45)!important}
+body.zen .xq .pb{color:#ffffff;text-shadow:0 0 2px #1d2b26,0 1px 2px #1d2b26}body.zen .xq .pp{color:#2c2c2c;text-shadow:none}
+body.zen .sc{border-color:#cfdcd4}body.zen .sc.fixo{background:#f1f5f2}body.zen .sc.sel{background:rgba(42,143,132,.18)}
+body.zen .mc{background:linear-gradient(135deg,#ffffff,#eef4f0)}
+body.zen .eg{background:#f6faf7}
+body.zen .bola{background:radial-gradient(circle,rgba(42,143,132,.35),rgba(42,143,132,.05));box-shadow:0 0 30px rgba(42,143,132,.2)}
+body.zen .sim-b{background:color-mix(in srgb,var(--c) 22%,#ffffff)}
+body.zen .sim-b.on{background:var(--c);box-shadow:0 0 24px var(--c)}
+body.zen .rf-area{background:rgba(42,143,132,.05)}
+body.zen .rf-reac{color:var(--txt)}
+body.zen .idi-som{background:rgba(42,143,132,.08)}
+body.zen .toast{background:#fff}
+body.zen .sys .box{background:rgba(255,255,255,.97);box-shadow:0 10px 40px rgba(40,70,60,.2)}
+body.zen .sheet{background:#fff}
+body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0 0 14px}
 .subtabs::-webkit-scrollbar{display:none}
 .subtabs button{min-width:0;border:1px solid var(--line);border-radius:12px;padding:7px 2px 6px;font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}
@@ -315,9 +346,9 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
     <button class="btn ghost" id="btnRecomecar" style="display:none">RECOMEÇAR DO ZERO</button>
     <button class="h mut" style="font-size:12px;margin-top:16px;padding:8px" id="btnTenhoBk">JÁ TENHO UM BACKUP</button>
     <div class="card" style="text-align:left;margin-top:22px;font-size:14px;line-height:1.45">
-      <div class="h cy" style="font-size:12px;margin-bottom:8px">SUA AVALIAÇÃO INICIAL TEM 2 TESTES</div>
+      <div class="h cy" style="font-size:12px;margin-bottom:8px">SUA JORNADA</div>
       <p><b>📊 1. Teste de Status</b> · 60 perguntas · ~10 min<br><span class="mut">Mede seus 5 pilares: Físico, Mente, Espírito, Recursos e Comunidade.</span></p>
-      <p style="margin-top:10px"><b>⚔️ 2. Teste de Classe</b> · 24 escolhas · ~3 min<br><span class="mut">Revela seu estilo natural, forças e ponto cego. Liberado logo após o primeiro.</span></p>
+      <p style="margin-top:10px"><b>⚔️ 2. Teste de Classe</b> · liberado no nível 10<br><span class="mut">Revela seu estilo natural, forças e ponto cego, com missões e títulos próprios.</span></p>
       <p class="mut" style="margin-top:10px;font-size:13px">Responda pelo que você <b>faz</b>, não pelo que gostaria de fazer.</p>
     </div>
   </div>
@@ -664,7 +695,8 @@ const PENAL={
  3:'ZONA DE PENALIDADE: 48h sem nenhum gasto supérfluo (comece hoje)',
  4:'ZONA DE PENALIDADE: ligar para 2 pessoas que você não fala há tempos'
 };
-const RANKS=[[1,'E'],[5,'D'],[10,'C'],[18,'B'],[28,'A'],[40,'S'],[60,'SS']];
+const RANKS=[[1,'E'],[8,'D'],[16,'C'],[26,'B'],[38,'A'],[52,'S'],[70,'SS']];
+const NV_CLASSE=10;   // classes liberadas a partir deste nível
 const XP_MISSAO=20, XP_PENAL=40, XP_NIVEL=150;
 
 /* ============ ESTADO ============ */
@@ -759,7 +791,9 @@ function migrar(s){
   return s;
 }
 const xpTotal=()=>S.xp.reduce((a,b)=>a+Math.max(0,b),0);
-const nivel=()=>1+Math.floor(xpTotal()/XP_NIVEL);
+/* curva de nível: subir do nível n para n+1 custa 200 × n XP (cada nível pede mais que o anterior) */
+const xpParaNivel=n=>100*n*(n-1);   // XP total para alcançar o nível n
+const nivel=()=>{const x=Math.max(0,xpTotal());let n=Math.floor((1+Math.sqrt(1+x/25))/2);while(xpParaNivel(n+1)<=x)n++;while(n>1&&xpParaNivel(n)>x)n--;return Math.max(1,n)};
 const rank=n=>{let r='E';for(const[l,k]of RANKS)if(n>=l)r=k;return r};
 const fraco=()=>{let m=0;for(let i=1;i<5;i++)if(atual(i)<atual(m))m=i;return m};
 
@@ -795,6 +829,37 @@ function missoesDoDia(k){
   S.dias[k]={lista,feitas:[],trocas:0,penal:S.dias[k]&&S.dias[k].penal||null};
   return lista;
 }
+
+/* ===== Minhas missões (criadas pelo jogador) ===== */
+function minhasLimite(){const n=nivel(),r=rank(n),porRank={E:0,D:1,C:2,B:3,A:4,S:5}[r]||0;const total=Math.min(10,2+Math.floor(n/5)+porRank);
+  const prox=[...Array(60)].map((_,i)=>n+1+i).find(l=>Math.min(10,2+Math.floor(l/5)+({E:0,D:1,C:2,B:3,A:4,S:5}[rank(l)]||0))>total);return{total,prox}}
+function minhaEditar(id){
+  S.minhas=S.minhas||[];const ml=minhasLimite();
+  if(!id&&S.minhas.length>=ml.total){abrir('<h3 class="gd">ESPAÇOS ESGOTADOS</h3><p style="font-size:15px;line-height:1.5;margin-bottom:14px">Você está usando todos os '+ml.total+' espaços de missões próprias.'+(ml.prox?' Ganhe mais um no <b class="cy">nível '+ml.prox+'</b>.':'')+' Subir de nível e de rank libera mais espaços.<br><br>Você pode apagar ou editar uma das suas missões.</p><button class="btn" id="mlOk">VER MINHAS MISSÕES</button>');$('#mlOk').onclick=minhasTela;return}
+  const t=id?JSON.parse(JSON.stringify(S.minhas.find(x=>x.id===id))):{t:'',desc:'',dias:[1,2,3,4,5],p:0};
+  const draw=()=>{abrir('<h3 class="cy">'+(id?'EDITAR':'NOVA')+' MISSÃO</h3>'+
+    '<div class="field"><label>NOME</label><input id="mnT" maxlength="60" placeholder="Ex.: Ler 10 páginas" value="'+esc(t.t)+'"></div>'+
+    '<div class="field"><label>DESCRIÇÃO (OPCIONAL)</label><input id="mnD" maxlength="120" placeholder="Como fazer, onde, quanto…" value="'+esc(t.desc||'')+'"></div>'+
+    '<div class="field"><label>DIAS DA SEMANA</label><div class="seg" style="grid-template-columns:repeat(7,1fr)">'+DIAS_SEM.map((n,i)=>'<button data-dw="'+i+'" class="'+(t.dias.includes(i)?'on':'')+'">'+n+'</button>').join('')+'</div></div>'+
+    '<div class="field"><label>HABILIDADE</label><div class="seg" style="grid-template-columns:repeat(5,1fr)">'+PIL.map((n,i)=>'<button data-pl="'+i+'" class="'+(t.p===i?'on':'')+'" style="font-size:11px;padding:8px 0">'+n+'</button>').join('')+'</div></div>'+
+    '<p class="mut" style="font-size:13px;margin:-4px 0 12px">Vale o XP padrão de uma missão (+'+xpDe({p:t.p})+' XP).</p>'+
+    '<div class="row"><button class="btn ghost" id="mnX">'+(id?'APAGAR':'CANCELAR')+'</button><button class="btn" id="mnOk">SALVAR</button></div>')
+    const sync=()=>{t.t=$('#mnT').value;t.desc=$('#mnD').value};
+    $('#sheet').querySelectorAll('[data-dw]').forEach(b=>b.onclick=()=>{sync();const i=+b.dataset.dw;t.dias=t.dias.includes(i)?t.dias.filter(x=>x!==i):t.dias.concat(i);draw()});
+    $('#sheet').querySelectorAll('[data-pl]').forEach(b=>b.onclick=()=>{sync();t.p=+b.dataset.pl;draw()});
+    $('#mnX').onclick=()=>{if(!id){fechar();return}const b=$('#mnX');if(!b.dataset.c){b.dataset.c=1;b.textContent='CONFIRMAR';return}S.minhas=S.minhas.filter(x=>x.id!==id);sincronizarHoje();salvar();fechar();render()};
+    $('#mnOk').onclick=()=>{sync();t.t=t.t.trim();if(t.t.length<3){toast('Dê um nome para a missão');return}if(!t.dias.length){toast('Escolha pelo menos um dia');return}
+      if(id)Object.assign(S.minhas.find(x=>x.id===id),{t:t.t,desc:t.desc.trim(),dias:t.dias,p:t.p});
+      else{S.minhas.push({id:'mm'+novoToken(6),t:t.t,desc:t.desc.trim(),dias:t.dias.sort(),p:t.p,criada:Date.now()});registrar('✍️ Nova missão própria: '+t.t)}
+      sincronizarHoje();salvar();fechar();render();toast(id?'Missão atualizada':'Missão criada')};
+  };draw();
+}
+function minhasTela(){const ml=minhasLimite(),L=S.minhas||[];
+  abrir('<h3 class="cy">✍️ MINHAS MISSÕES</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Usando '+L.length+' de '+ml.total+' espaços.'+(ml.prox?' Próximo espaço no nível '+ml.prox+'.':'')+'</p>'+
+    (L.length?L.map(m=>'<button class="mis" data-mm="'+m.id+'" style="width:100%;text-align:left"><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div><div class="ms">'+PIL[m.p]+' · '+m.dias.map(i=>DIAS_SEM[i]).join(' ')+'</div></div><span class="mut">✎</span></button>').join(''):'<p class="mut">Nenhuma ainda.</p>')+
+    '<div class="row" style="margin-top:8px"><button class="btn ghost" id="mtX">FECHAR</button><button class="btn" id="mtN">＋ NOVA</button></div>');
+  $('#mtX').onclick=fechar;$('#mtN').onclick=()=>minhaEditar(null);$('#sheet').querySelectorAll('[data-mm]').forEach(b=>b.onclick=()=>minhaEditar(b.dataset.mm));
+}
 /* ===== Tarefas das metas ===== */
 const DIAS_SEM=['D','S','T','Q','Q','S','S'];
 const TAREFAS_POR_META=2, TAXA_LIBERAR=.7;
@@ -802,19 +867,20 @@ function metaAtiva(m){return m&&!okMeta(m)}
 function tarefasDoDia(k){
   const dw=new Date(k+'T12:00:00').getDay();
   return missaoClasse(k).concat((S.tarefas||[]).filter(t=>t.dias.includes(dw)&&metaAtiva(S.metas.find(m=>m.id===t.mid)))
-    .map(t=>{const m=S.metas.find(x=>x.id===t.mid);return{id:t.id,p:m.p,t:t.t,meta:1}}));
+    .map(t=>{const m=S.metas.find(x=>x.id===t.mid);return{id:t.id,p:m.p,t:t.t,meta:1}}))
+    .concat((S.minhas||[]).filter(t=>t.dias.includes(dw)).map(t=>({id:t.id,p:t.p,t:t.t,como:t.desc||'',minha:1})));
 }
 /* coloca/retira tarefas de meta na lista de hoje quando você muda algo */
 function sincronizarHoje(){
   const k=hoje(),d=S.dias[k];if(!d||!d.lista)return;
   const quer=tarefasDoDia(k),ids=new Set(quer.map(x=>x.id));
   d.lista.forEach(x=>{if(!x.meta&&!x.cls){const inf=missao(x.id);if(inf)x.t=inf.t}});   // textos atualizados
-  d.lista=d.lista.filter(x=>!(x.meta||x.cls)||ids.has(x.id)||d.feitas.includes(x.id));
+  d.lista=d.lista.filter(x=>!(x.meta||x.cls||x.minha)||ids.has(x.id)||d.feitas.includes(x.id));
   for(const q of quer){const ex=d.lista.find(x=>x.id===q.id);if(ex){ex.t=q.t;ex.p=q.p;if(q.como)ex.como=q.como}else{
     d.lista.unshift(q);
     // mantém a carga do dia: tira uma missão do Sistema não feita
-    const sist=d.lista.filter(x=>!x.meta&&!x.cls),max=Math.max(MODOS[S.modo].qtd,d.lista.filter(x=>x.meta||x.cls).length+2);
-    if(d.lista.length>max&&sist.length>2){const j=d.lista.map((x,i)=>[x,i]).reverse().find(([x])=>!x.meta&&!x.cls&&!d.feitas.includes(x.id));if(j)d.lista.splice(j[1],1)}
+    const sist=d.lista.filter(x=>!x.meta&&!x.cls&&!x.minha),max=Math.max(MODOS[S.modo].qtd,d.lista.filter(x=>x.meta||x.cls||x.minha).length+2);
+    if(d.lista.length>max&&sist.length>2){const j=d.lista.map((x,i)=>[x,i]).reverse().find(([x])=>!x.meta&&!x.cls&&!x.minha&&!d.feitas.includes(x.id));if(j)d.lista.splice(j[1],1)}
   }}
 }
 function taxaTarefa(t,dias=7){
@@ -824,8 +890,8 @@ function taxaTarefa(t,dias=7){
   return ag?{ok,ag,tx:ok/ag}:null;
 }
 function slotsTarefas(){
-  const n=nivel();let s=1;for(const l of [5,10,18,28])if(n>=l)s++;
-  const prox=[5,10,18,28].find(l=>n<l);
+  const n=nivel();let s=1;for(const l of [8,16,26,38])if(n>=l)s++;
+  const prox=[8,16,26,38].find(l=>n<l);
   return{total:s,prox};
 }
 function podeNovaTarefa(mid){
@@ -967,16 +1033,16 @@ $('#btnEgo').onclick=()=>{
   let zerar=false;try{zerar=localStorage.getItem('evo_reset')==='1';localStorage.removeItem('evo_reset')}catch(x){}
   S=novoEstado();
   if(antigo&&zerar){ // redefinir: só mantém a visão dos outros, a guilda e as configurações
-    S.token=antigo.token||S.token;S.ext=antigo.ext||[];S.extArq=antigo.extArq||[];S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.modo=antigo.modo||S.modo;
+    S.token=antigo.token||S.token;S.ext=antigo.ext||[];S.extMes=antigo.extMes||[];S.extArq=antigo.extArq||[];S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.modo=antigo.modo||S.modo;
     ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
   registrar(zerar?'♻️ Perfil redefinido. Um novo começo para '+nome+'.':'🌀 Despertar concluído. O Sistema reconhece '+nome+'.');
-  processarDias();salvar();if(!S.classe)avaliacoesTela();else iniciar();
+  processarDias();salvar();iniciar();
   const dis=dissonancia();
   setTimeout(()=>sistema('DESPERTAR CONCLUÍDO','Bem-vindo, <b class="cy">'+esc(nome)+'</b>.<br><br>Dissonância do ego: <b class="'+(dis>=20?'rd':'cy')+'">'+N(dis)+'</b> pontos.<br>'+(dis>=20?'Sua percepção está acima da sua realidade. O Sistema vai te corrigir.':'Sua percepção está alinhada com a realidade. Bom começo.')),400);
 };
@@ -1000,11 +1066,11 @@ function render(){
   renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
 function renderHeader(){
-  const n=nivel(),x=xpTotal()%XP_NIVEL;
+  const n=nivel(),x=Math.max(0,xpTotal())-xpParaNivel(n),cust=xpParaNivel(n+1)-xpParaNivel(n);
   $('#hLvl').textContent=n;
-  $('#hRank').textContent='RANK '+rank(n)+' · '+(S.titulo?S.titulo.toUpperCase():S.classe?classeInfo(S.classe.scores).nome.toUpperCase():MODOS[S.modo].nome);
+  $('#hRank').textContent='RANK '+rank(n)+' · '+(S.titulo?S.titulo.toUpperCase():S.classe&&n>=NV_CLASSE?classeInfo(S.classe.scores).nome.toUpperCase():MODOS[S.modo].nome);
   $('#hNome').textContent=S.nome;
-  $('#hXp').style.width=(x/XP_NIVEL*100)+'%';
+  $('#hXp').style.width=(x/cust*100)+'%';
 }
 function renderRadar(){
   const W=340,H=300,cx=W/2,cy=152,R=112;
@@ -1072,14 +1138,21 @@ function renderMissoes(){
   const dt=new Date();$('#misDate').textContent=dt.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
   const xp=Math.round(XP_MISSAO*MODOS[S.modo].mult);
   const rest=trocasRestantes();
-  $('#misList').innerHTML=lista.map((m,i)=>{const ok=d.feitas.includes(m.id);
-    return'<div class="mis'+(ok?' done':'')+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'}).join('')+
+  const card=(m,i)=>{const ok=d.feitas.includes(m.id);
+    return'<div class="mis'+(ok?' done':'')+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.minha?'✍️ MINHA · ':'')+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls||m.minha?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'};
+  const pend=lista.map((m,i)=>[m,i]).filter(([m])=>!d.feitas.includes(m.id)),feitasL=lista.map((m,i)=>[m,i]).filter(([m])=>d.feitas.includes(m.id));
+  const ml=minhasLimite();
+  $('#misList').innerHTML=(pend.length?pend.map(([m,i])=>card(m,i)).join(''):'<div class="card" style="text-align:center;margin-bottom:10px"><div style="font-size:30px">🏆</div><b class="cy">Todas as missões de hoje concluídas!</b></div>')+
+    (feitasL.length?'<details class="feitas"><summary>✓ Feitas hoje ('+feitasL.length+')</summary>'+feitasL.map(([m,i])=>card(m,i)).join('')+'</details>':'')+
+    '<button class="btn ghost" id="minhaNova" style="margin:6px 0 4px;min-height:46px">＋ MINHA MISSÃO <span class="mut" style="font-size:13px">('+(S.minhas||[]).length+'/'+ml.total+')</span></button>'+
+    ((S.minhas||[]).length?'<button class="h mut" id="minhaVer" style="display:block;margin:6px auto 2px;font-size:11px;letter-spacing:.1em">GERENCIAR MINHAS MISSÕES</button>':'')+
     '<p class="mut" style="font-size:13px;text-align:center;margin:4px 0 0">⇄ Trocas restantes hoje: <b class="cy">'+(rest>50?'ilimitadas':rest)+'</b> · lesões não contam</p>';
   $('#misList').querySelectorAll('.swap').forEach(b=>b.onclick=()=>trocar(+b.dataset.i));
+  $('#minhaNova').onclick=()=>minhaEditar(null);if($('#minhaVer'))$('#minhaVer').onclick=minhasTela;
   $('#misList').querySelectorAll('.valbtn').forEach(b=>b.onclick=()=>pedirValidacao(+b.dataset.v));
 }
 function xpDe(m){return Math.round(XP_MISSAO*MODOS[S.modo].mult*(valorPilar(m.p)?1.25:1))}
-function dicaHtml(m){const x=m.cls?m:missao(m.id);return x&&x.como?'<div class="mdica">'+esc(x.como)+'</div>':''}
+function dicaHtml(m){const x=m.cls||m.minha?m:missao(m.id);return x&&x.como?'<div class="mdica">'+esc(x.como)+'</div>':''}
 function trocasRestantes(){const d=S.dias[hoje()]||{};return TROCAS_DIA[S.modo]-(d.trocas||0)}
 function trocar(i){
   const k=hoje(),d=S.dias[k],m=d.lista[i];if(!m||d.feitas.includes(m.id))return;
@@ -1176,7 +1249,7 @@ function checkin(){
       fechar();salvar();render();
       if(ganho){try{SFX.sucesso()}catch(e){}
         const nv=nivel();
-        if(nv>nvAntes){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();renderLog();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.<br>Rank atual: <b class="gd">'+rank(nv)+'</b>')}
+        if(nv>nvAntes){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();renderLog();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.<br>Rank atual: <b class="gd">'+rank(nv)+'</b>'+(nvAntes<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
         else toast('+'+ganho+' XP')
       }
     };
@@ -1363,6 +1436,7 @@ const SFX={
   ok(){return AUD.sons&&ctx()&&(AC.state!=='suspended'||AC.resume(),true)},
   /* toques, rolagem e abrir/fechar janelas ficam em silêncio: som e vibração só para notificações e ganho/perda */
   tap(){},tick(){},abrir(){},fechar(){},
+  nota(i){if(!SFX.ok())return;const t=AC.currentTime,n=[64,69,73,76][i];tom(SFXG,'sine',NF(n),t,.32,.16,.01);tom(SFXG,'triangle',NF(n+12),t,.2,.04,.01)},
   certo(){vibrar(12);if(!SFX.ok())return;const t=AC.currentTime;tom(SFXG,'sine',NF(84),t,.07,.13,.003);tom(SFXG,'sine',NF(91),t+.05,.12,.11,.003)},
   ping(){vibrar(15);if(!SFX.ok())return;sino(SFXG,NF(88),AC.currentTime,.5,.12)},
   xp(){vibrar([12,30,12]);if(!SFX.ok())return;const t=AC.currentTime;tom(SFXG,'square',NF(83),t,.08,.05);tom(SFXG,'square',NF(88),t+.07,.25,.05)},
@@ -1391,16 +1465,31 @@ const FAIXAS=[
 ];
 /* Dia de penalidade: trilha sombria — "Na Gruta do Rei da Montanha" (Grieg), Orquestra Sinfônica Nacional Tcheca para o Musopen,
    liberada em domínio público pelo Musopen; alterna com Marte. */
+const FAIXAS_ZEN=[
+  {id:'gymno1',nome:'Gymnopédie nº 1',sub:'Satie',src:'https://upload.wikimedia.org/wikipedia/commons/9/90/Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg'},
+  {id:'gnoss1',nome:'Gnossienne nº 1',sub:'Satie · La Pianista',src:'https://upload.wikimedia.org/wikipedia/commons/9/91/Satie_-_Gnossienne_1.ogg'},
+  {id:'noct92',nome:'Noturno op. 9 nº 2',sub:'Chopin · Martha Goldstein',src:'https://upload.wikimedia.org/wikipedia/commons/5/5c/Frederic_Chopin_-_Nocturne_Eb_major_Opus_9,_number_2.ogg'},
+  {id:'air',nome:'Ária (Suíte nº 3)',sub:'Bach · USAF Strings',src:'https://upload.wikimedia.org/wikipedia/commons/5/55/Air.ogg'},
+  {id:'gnoss2',nome:'Gnossienne nº 2',sub:'Satie · La Pianista',src:'https://upload.wikimedia.org/wikipedia/commons/c/c8/Gnossienne_2_(Satie).ogg'},
+  {id:'canon',nome:'Cânone em Ré',sub:'Pachelbel',src:'https://upload.wikimedia.org/wikipedia/commons/6/62/Pachelbel\'s_Canon.ogg'},
+  {id:'noct91',nome:'Noturno op. 9 nº 1',sub:'Chopin · Patrizia Prati',src:'https://upload.wikimedia.org/wikipedia/commons/3/33/Fryderyk_Chopin_-_Nocturne_op._9_n.1_b-moll_-_Patrizia_Prati.ogg'},
+  {id:'gnoss5',nome:'Gnossienne nº 5',sub:'Satie',src:'https://upload.wikimedia.org/wikipedia/commons/0/07/Gnossienne_5_(Satie).ogg'},
+  {id:'manha',nome:'A Manhã (Peer Gynt)',sub:'Grieg · Musopen',src:'https://upload.wikimedia.org/wikipedia/commons/1/1a/Musopen_-_Morning.ogg'},
+  {id:'noct272',nome:'Noturno op. 27 nº 2',sub:'Chopin · Patrizia Prati',src:'https://upload.wikimedia.org/wikipedia/commons/4/42/Fryderyk_Chopin_-_Nocturne_op._27_n.2_Des-dur_-_Patrizia_Prati.ogg'},
+  {id:'gnoss6',nome:'Gnossienne nº 6',sub:'Satie · La Pianista',src:'https://upload.wikimedia.org/wikipedia/commons/2/2b/Gnossienne_6_(Satie).ogg'},
+  {id:'noct721',nome:'Noturno op. 72 nº 1',sub:'Chopin · Patrizia Prati',src:'https://upload.wikimedia.org/wikipedia/commons/1/19/Fryderyk_Chopin_-_Nocturne_op._post._72_n.1_e-moll_-_Patrizia_Prati.ogg'}
+];
+const AVES_SRC='https://upload.wikimedia.org/wikipedia/commons/7/7d/0426AM_Dawn_Chorus_07-May-2023_(edit).ogg';
 const FAIXAS_PENAL=[
   {id:'novomundo',nome:'Sinfonia do Novo Mundo (I)',sub:'Dvořák · Musopen',inicio:105,src:'https://upload.wikimedia.org/wikipedia/commons/5/5c/Antonin_Dvorak_-_symphony_no._9_in_e_minor_%27from_the_new_world%27,_op._95_-_i._adagio_-_allegro_molto.ogg'}
 ];
 const urlFaixa=f=>{if(/\.mp3$/.test(f.src))return f.src;const a=document.createElement('audio');return a.canPlayType('audio/ogg; codecs="vorbis"')?f.src:f.src.replace('/commons/','/commons/transcoded/')+'/'+f.src.split('/').pop()+'.mp3'};
 const MUS=(()=>{
-  let el=null,tocando=false,idx=0,fadeT=null,modo='normal';
-  const lista=()=>modo==='penal'?FAIXAS_PENAL:FAIXAS;
-  function alvo(){return Math.min(1,AUD.volM*.9)}
+  let el=null,tocando=false,idx=0,fadeT=null,modo='normal',zenOn=false;
+  const lista=()=>zenOn?FAIXAS_ZEN:modo==='penal'?FAIXAS_PENAL:FAIXAS;
+  function alvo(){return Math.min(1,AUD.volM*(zenOn?.6:.9))}
   function fade(para,ms,fim){clearInterval(fadeT);const passos=Math.max(1,ms/50),ini=el.volume,d=(para-ini)/passos;let n=0;fadeT=setInterval(()=>{n++;el.volume=Math.max(0,Math.min(1,ini+d*n));if(n>=passos){clearInterval(fadeT);fim&&fim()}},50)}
-  function escolha(){return modo==='penal'?AUD.faixaPen:AUD.faixa}
+  function escolha(){return zenOn?'alternar':modo==='penal'?AUD.faixaPen:AUD.faixa}
   function faixaAtual(){const e=escolha();if(e&&e!=='alternar'){const i=lista().findIndex(f=>f.id===e);if(i>=0)return i}return idx%lista().length}
   function carregar(){idx=faixaAtual();const f=lista()[idx];el.src=urlFaixa(f);el.load();
     if(f.inicio){const pular=()=>{try{el.currentTime=f.inicio}catch(e){}};el.addEventListener('loadedmetadata',pular,{once:true})}}
@@ -1409,21 +1498,41 @@ const MUS=(()=>{
     const proxima=()=>{const e=escolha();if(!e||e==='alternar')idx++;carregar();if(tocando)el.play().catch(()=>{})};
     el.addEventListener('ended',proxima);
     el.addEventListener('timeupdate',()=>{const f=lista()[idx];if(f&&f.fim&&el.currentTime>=f.fim)proxima()});
-    el.addEventListener('error',()=>{if(tocando){toast('Não foi possível carregar a música agora');tocando=false;btnSomIco()}});
+    let errSeq=0;el.addEventListener('playing',()=>errSeq=0);el.addEventListener('error',()=>{if(zenOn&&tocando&&errSeq<FAIXAS_ZEN.length){errSeq++;proxima();return}if(tocando){toast('Não foi possível carregar a música agora');tocando=false;btnSomIco()}});
     carregar();
   }
   return{
-    play(){if(!AUD.musica||tocando)return;if(!el)criar();tocando=true;el.volume=0;
+    play(){if(!AUD.musica||tocando)return;if(!el)criar();tocando=true;el.volume=0;try{NAT.ajustar()}catch(e){}
       el.play().then(()=>fade(alvo(),2500)).catch(()=>{tocando=false;btnSomIco()});btnSomIco()},
-    stop(){if(!tocando||!el)return;tocando=false;fade(0,700,()=>el.pause());btnSomIco()},
+    stop(){try{NAT.ajustar(true)}catch(e){}if(!tocando||!el)return;tocando=false;fade(0,700,()=>el.pause());btnSomIco()},
     vol(){if(el&&tocando){clearInterval(fadeT);el.volume=alvo()}},
     trocar(){if(!el)return;const t=tocando;el.pause();carregar();if(t){el.volume=0;el.play().then(()=>fade(alvo(),1500)).catch(()=>{})}},
     /* troca para a trilha da penalidade (ou volta ao normal) com transição suave */
-    modo(m){if(m===modo)return;modo=m;idx=0;if(!el)return;if(tocando){fade(0,900,()=>{el.pause();carregar();el.volume=0;el.play().then(()=>fade(alvo(),2000)).catch(()=>{})})}else carregar()},
+    zen(b){b=!!b;if(b===zenOn)return;zenOn=b;idx=b?Math.floor(Math.random()*FAIXAS_ZEN.length):0;try{NAT.ajustar()}catch(e){}if(!el)return;if(tocando){fade(0,1200,()=>{el.pause();carregar();el.volume=0;el.play().then(()=>fade(alvo(),3000)).catch(()=>{})})}else carregar()},
+    get zenOn(){return zenOn},
+    modo(m){if(m===modo)return;modo=m;if(zenOn)return;idx=0;if(!el)return;if(tocando){fade(0,900,()=>{el.pause();carregar();el.volume=0;el.play().then(()=>fade(alvo(),2000)).catch(()=>{})})}else carregar()},
     abafar(ms){if(!el||!tocando)return;clearInterval(fadeT);const v=el.volume;el.volume=v*.25;setTimeout(()=>{if(tocando)fade(alvo(),1200)},ms)},
-    pausaTemp(){if(el&&tocando)el.pause()},retoma(){if(el&&tocando)el.play().catch(()=>{})},
+    pausaTemp(){try{NAT.pausa()}catch(e){}if(el&&tocando)el.pause()},retoma(){try{NAT.ajustar()}catch(e){}if(el&&tocando)el.play().catch(()=>{})},
     get on(){return tocando},get faixa(){return lista()[faixaAtual()]}
   };
+})();
+
+/* ===== Sons da natureza na Arena: pássaros (gravação real) + riacho suave (sintetizado) ===== */
+const NAT=(()=>{let aves=null,agua=null,gAgua=null,ligado=false;
+  function riacho(){if(!ctx())return null;const sr=AC.sampleRate,buf=AC.createBuffer(2,sr*4,sr);
+    for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);let last=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.2}}
+    const src=AC.createBufferSource();src.buffer=buf;src.loop=true;
+    const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=900;bp.Q.value=.5;
+    const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;
+    const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=.13;lg.gain.value=350;lfo.connect(lg);lg.connect(bp.frequency);lfo.start();
+    gAgua=AC.createGain();gAgua.gain.value=0;src.connect(bp);bp.connect(lp);lp.connect(gAgua);gAgua.connect(AC.destination);src.start();return src}
+  function ajustar(forcarOff){const quer=!forcarOff&&AUD.musica&&MUS.zenOn&&!document.hidden;
+    if(quer){if(!aves){aves=new Audio(urlFaixa({src:AVES_SRC}));aves.loop=true;aves.volume=0}
+      aves.volume=Math.min(1,AUD.volM*.35);aves.play().catch(()=>{});
+      if(!agua)agua=riacho();if(gAgua){gAgua.gain.cancelScheduledValues(AC.currentTime);gAgua.gain.linearRampToValueAtTime(Math.min(.12,AUD.volM*.09),AC.currentTime+3)}
+      ligado=true}
+    else if(ligado){if(aves)aves.pause();if(gAgua&&AC){gAgua.gain.cancelScheduledValues(AC.currentTime);gAgua.gain.linearRampToValueAtTime(0,AC.currentTime+1)}ligado=false}}
+  return{ajustar,pausa(){if(aves)aves.pause();if(gAgua&&AC)gAgua.gain.value=0;ligado=false}};
 })();
 function btnSomIco(){const b=$('#btnSom');if(b)b.textContent=AUD.musica&&MUS.on?'🔊':'🔇'}
 $('#btnSom').onclick=()=>{AUD.musica=!(AUD.musica&&MUS.on);audSalvar();AUD.musica?MUS.play():MUS.stop();toast(AUD.musica?'🎵 Música ligada':'Música desligada')};
@@ -1445,7 +1554,7 @@ function arenaGanhar(xp,pilar,nome){
   const d=arenaDia();d.feitos++;
   const livre=Math.max(0,ARENA_CAP-d.xp),q=Math.min(xp,livre);
   if(q>0){const nvA=nivel();d.xp+=q;S.xp[pilar]+=q;registrar('🎮 Arena: '+nome+' (+'+q+' XP)');salvar();renderHeader();arenaTopo();
-    const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.')}
+    const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.'+(nvA<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
     else{try{SFX.sucesso()}catch(e){}toast('+'+q+' XP · '+PIL[pilar])}}
   else{salvar();arenaTopo();if(!d.avisado){d.avisado=1;salvar();toast('Limite diário de XP da Arena atingido. Continue treinando à vontade!')}}
   return q;
@@ -1453,29 +1562,104 @@ function arenaGanhar(xp,pilar,nome){
 const rr=(a,b)=>a+Math.floor(Math.random()*(b-a+1)), pick=a=>a[Math.floor(Math.random()*a.length)], embaralhar=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
 /* ---------- Xadrez: mate em 1 ---------- */
-const MATES=[
-  {fen:'6k1/5ppp/8/8/8/8/5PPP/R5K1',sol:'a1a8',dica:'A última fileira do rei está presa pelos próprios peões.'},
-  {fen:'6k1/5ppp/8/8/8/8/5PPP/3Q2K1',sol:'d1d8',dica:'Coluna d aberta até a 8ª fileira.'},
-  {fen:'6rk/6pp/8/6N1/8/8/8/1K6',sol:'g5f7',dica:'Mate sufocado: o rei está cercado pelas próprias peças.'},
-  {fen:'k7/8/1K6/8/8/8/8/2Q5',sol:'c1c8',dica:'O seu rei já controla a7 e b7.'},
-  {fen:'7k/R7/8/8/8/8/8/1R4K1',sol:'b1b8',dica:'Uma torre fecha a 7ª, a outra ataca a 8ª.'},
-  {fen:'7k/8/5N2/8/8/8/8/6KR',sol:'h1h7',dica:'Mate árabe: o cavalo protege a torre e cobre g8.'}
+/* ============ XADREZ: motor simples (sem roque/en passant) e desafios por nível ============ */
+const XZ={
+  ler(fen){const bd=[];fen.split('/').forEach(l=>{const row=[];for(const c of l){if(/\d/.test(c))for(let i=0;i<+c;i++)row.push('');else row.push(c)}bd.push(row)});return bd},
+  branca:p=>p&&p===p.toUpperCase(),preta:p=>p&&p===p.toLowerCase(),
+  dentro:(r,c)=>r>=0&&r<8&&c>=0&&c<8,
+  /* casas que a peça em (r,c) ataca */
+  ataques(bd,r,c){const p=bd[r][c],w=XZ.branca(p),t=p.toLowerCase(),out=[];
+    const raio=(dr,dc)=>{let rr=r+dr,cc=c+dc;while(XZ.dentro(rr,cc)){out.push([rr,cc]);if(bd[rr][cc])break;rr+=dr;cc+=dc}};
+    if(t==='p'){const d=w?-1:1;[[d,-1],[d,1]].forEach(([a,b])=>{if(XZ.dentro(r+a,c+b))out.push([r+a,c+b])})}
+    else if(t==='n')[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]].forEach(([a,b])=>{if(XZ.dentro(r+a,c+b))out.push([r+a,c+b])});
+    else if(t==='k')[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([a,b])=>{if(XZ.dentro(r+a,c+b))out.push([r+a,c+b])});
+    else{if(t!=='b')[[1,0],[-1,0],[0,1],[0,-1]].forEach(([a,b])=>raio(a,b));if(t!=='r')[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([a,b])=>raio(a,b))}
+    return out},
+  atacada(bd,r,c,porBrancas){for(let i=0;i<8;i++)for(let j=0;j<8;j++){const p=bd[i][j];if(!p||XZ.branca(p)!==porBrancas)continue;if(XZ.ataques(bd,i,j).some(([a,b])=>a===r&&b===c))return true}return false},
+  rei(bd,brancas){for(let i=0;i<8;i++)for(let j=0;j<8;j++)if(bd[i][j]===(brancas?'K':'k'))return[i,j];return null},
+  xeque(bd,brancas){const k=XZ.rei(bd,brancas);return k?XZ.atacada(bd,k[0],k[1],!brancas):false},
+  /* lances pseudo-legais da peça */
+  lancesPeca(bd,r,c){const p=bd[r][c],w=XZ.branca(p),out=[];
+    if(p.toLowerCase()==='p'){const d=w?-1:1,ini=w?6:1;
+      if(XZ.dentro(r+d,c)&&!bd[r+d][c]){out.push([r+d,c]);if(r===ini&&!bd[r+2*d][c])out.push([r+2*d,c])}
+      XZ.ataques(bd,r,c).forEach(([a,b])=>{const q=bd[a][b];if(q&&XZ.branca(q)!==w)out.push([a,b])})}
+    else XZ.ataques(bd,r,c).forEach(([a,b])=>{const q=bd[a][b];if(!q||XZ.branca(q)!==w)out.push([a,b])});
+    return out},
+  mover(bd,r,c,a,b){const n=bd.map(x=>x.slice());let p=n[r][c];if(p==='P'&&a===0)p='Q';if(p==='p'&&a===7)p='q';n[a][b]=p;n[r][c]='';return n},
+  legais(bd,brancas){const out=[];for(let i=0;i<8;i++)for(let j=0;j<8;j++){const p=bd[i][j];if(!p||XZ.branca(p)!==brancas)continue;
+    XZ.lancesPeca(bd,i,j).forEach(([a,b])=>{const n=XZ.mover(bd,i,j,a,b);if(!XZ.xeque(n,brancas))out.push([i,j,a,b])})}return out},
+  mate(bd){return XZ.xeque(bd,false)&&!XZ.legais(bd,false).length},
+  /* captura que não pode ser respondida com recaptura */
+  capturaLimpa(bd,r,c,a,b){const alvo=bd[a][b];if(!XZ.preta(alvo))return false;const n=XZ.mover(bd,r,c,a,b);return !XZ.atacada(n,a,b,false)},
+  valido(bd,tipo,r,c,a,b){if(!XZ.legais(bd,true).some(m=>m[0]===r&&m[1]===c&&m[2]===a&&m[3]===b))return false;
+    const n=XZ.mover(bd,r,c,a,b);return tipo==='cap'?XZ.capturaLimpa(bd,r,c,a,b):XZ.mate(n)}
+};
+/* nível 1: capture a peça desprotegida · níveis 2–4: mate em 1, cada vez mais escondido */
+const XZ_NOMES=['Capture a peça','Mate em 1 · fácil','Mate em 1 · médio','Mate em 1 · difícil'];
+const XZ_NIVEIS=[0,4,10,18];   // acertos para chegar a cada nível
+const XZ_XP=[15,25,35,50];
+const XZ_DESAFIOS=[
+ [ // capture a peça solta
+  {fen:'k7/8/8/3q4/8/8/8/3R2K1',dica:'Sua torre enxerga a coluna inteira.'},
+  {fen:'k7/8/8/8/4r3/8/8/K6B',dica:'O bispo anda na diagonal até a torre.'},
+  {fen:'k7/8/8/8/8/2b5/8/1N4K1',dica:'O cavalo pula em "L".'},
+  {fen:'k7/8/8/1n6/8/8/8/1Q4K1',dica:'A dama sobe pela coluna b.'},
+  {fen:'k7/8/8/8/3r4/4P3/8/6K1',dica:'O peão captura na diagonal, para frente.'},
+  {fen:'k7/8/2p5/1n6/7r/8/8/1R2B1K1',dica:'O cavalo está protegido pelo peão. Procure a outra peça.'},
+  {fen:'k7/8/8/8/2n5/1P6/8/6K1',dica:'O peão captura na diagonal, para frente.'},
+  {fen:'7k/8/8/8/8/5q2/6P1/6K1',dica:'A dama preta está ao alcance do seu peão.'}
+ ],
+ [ // mate em 1 fácil
+  {fen:'6k1/5ppp/8/8/8/8/5PPP/R5K1',dica:'O rei preto está preso pelos próprios peões na última fileira.'},
+  {fen:'6k1/5ppp/8/8/8/8/5PPP/3Q2K1',dica:'A coluna d está aberta até a 8ª fileira.'},
+  {fen:'k7/8/1K6/8/8/8/8/2Q5',dica:'Seu rei já cobre a7 e b7.'},
+  {fen:'k7/8/1K6/8/8/8/8/7R',dica:'A torre fecha a 8ª fileira.'},
+  {fen:'6k1/5ppp/8/8/8/8/8/4R1K1',dica:'Última fileira sem defesa.'},
+  {fen:'7k/6pp/8/8/8/8/8/Q5K1',dica:'A dama atravessa o tabuleiro pela fileira 8.'}
+ ],
+ [ // mate em 1 médio
+  {fen:'6rk/6pp/8/6N1/8/8/8/1K6',dica:'Mate sufocado: o rei está cercado pelas próprias peças.'},
+  {fen:'7k/R7/8/8/8/8/8/1R4K1',dica:'Uma torre fecha a 7ª, a outra ataca a 8ª.'},
+  {fen:'7k/1R6/5N2/8/8/8/8/6K1',dica:'Mate árabe: o cavalo protege a casa h7 e cobre g8.'},
+  {fen:'k7/2K5/8/8/8/8/8/1Q6',dica:'Seu rei protege a casa ao lado do rei preto.'},
+  {fen:'6k1/5p1p/6pB/8/8/8/8/3Q2K1',dica:'O bispo em h6 já cobre g7 e f8.'}
+ ],
+ [ // mate em 1 difícil (o lance óbvio não funciona)
+  {fen:'3r2k1/5ppp/8/8/8/8/5PPP/3RR1K1',dica:'Torre em e8 é capturada. Elimine o defensor primeiro.'},
+  {fen:'2r3k1/5ppp/8/8/8/8/5PPP/2R1R1K1',dica:'Torre em e8 seria capturada. Elimine o defensor da última fileira.'},
+  {fen:'6k1/1q3ppp/8/8/8/8/5PPP/1R2R1K1',dica:'Capturar a dama parece bom, mas existe algo melhor: a última fileira.'},
+  {fen:'6k1/5p1p/5Bp1/8/8/8/5PPP/3Q2K1',dica:'O bispo cobre g7 e h8. Leve a dama até a última fileira.'}
+ ]
 ];
+function xzNivel(){const a=(S.xadrez&&S.xadrez.ac)||0;let n=1;XZ_NIVEIS.forEach((v,i)=>{if(a>=v)n=i+1});return n}
+
 const PECA={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
 function cardXadrez(el,fim){
-  const pz=pick(MATES),bd=[];pz.fen.split('/').forEach(l=>{const row=[];for(const c of l){if(/\d/.test(c))for(let i=0;i<+c;i++)row.push('');else row.push(c)}bd.push(row)});
+  S.xadrez=S.xadrez||{ac:0,er:0,vistos:[]};const nv=xzNivel(),banco=XZ_DESAFIOS[nv-1],tipo=nv===1?'cap':'mate';
+  let livres=banco.map((x,i)=>i).filter(i=>!S.xadrez.vistos.includes(nv+'-'+i));if(!livres.length){S.xadrez.vistos=S.xadrez.vistos.filter(v=>!v.startsWith(nv+'-'));livres=banco.map((x,i)=>i)}
+  const qi=pick(livres),pz=banco[qi],bd=XZ.ler(pz.fen);
+  cabecalho(el,'♞','Xadrez · '+XZ_NOMES[nv-1],['FÁCIL','FÁCIL','MÉDIO','DIFÍCIL'][nv-1],['cy','cy','gd','rd'][nv-1],'até +'+xpA(XZ_XP[nv-1])+' XP · MENTE');
   let sel=null,tent=0,acabou=false;
   const sq=(r,c)=>'abcdefgh'[c]+(8-r);
+  const sols=XZ.legais(bd,true).filter(([r,c,a,b])=>XZ.valido(bd,tipo,r,c,a,b));
+  const inst=tipo==='cap'?'Brancas jogam e <b class="cy">capturam uma peça preta desprotegida</b> (que não pode ser recapturada). Toque na sua peça e depois na casa.':'Brancas jogam e dão <b class="cy">xeque-mate em 1 lance</b>. Toque na peça e depois na casa.';
   const draw=msg=>{
-    el.querySelector('.jogo').innerHTML='<p class="ar-inst">Brancas jogam e dão <b class="cy">mate em 1</b>. Toque na peça e depois na casa.</p><div class="xb">'+
+    el.querySelector('.jogo').innerHTML='<p class="ar-inst">'+inst+'</p><div class="xb">'+
       bd.map((row,r)=>row.map((p,c)=>'<button class="xq '+((r+c)%2?'esc':'cla')+(sel&&sel[0]===r&&sel[1]===c?' sel':'')+'" data-r="'+r+'" data-c="'+c+'"><span class="'+(p&&p===p.toUpperCase()?'pb':'pp')+'">'+(p?PECA[p]+'︎':'')+'</span></button>').join('')).join('')+'</div>'+
       '<p class="ar-msg">'+(msg||'Tentativas: '+tent+'/3')+'</p>';
     el.querySelectorAll('.xq').forEach(b=>b.onclick=()=>{if(acabou)return;const r=+b.dataset.r,c=+b.dataset.c,p=bd[r][c];
-      if(p&&p===p.toUpperCase()){sel=[r,c];try{SFX.tick()}catch(e){}draw();return}
+      if(p&&p===p.toUpperCase()){sel=[r,c];draw();return}
       if(!sel)return;
-      const mv=sq(sel[0],sel[1])+sq(r,c);
-      if(mv===pz.sol){bd[r][c]=bd[sel[0]][sel[1]];bd[sel[0]][sel[1]]='';sel=null;acabou=true;draw('♚ XEQUE-MATE!');fim(true)}
-      else{tent++;sel=null;try{SFX.erro()}catch(e){}if(tent>=3){acabou=true;draw('Solução: '+pz.sol.slice(0,2)+' → '+pz.sol.slice(2)+'. '+pz.dica);fim(false)}else draw('Não é mate. '+(tent===2?'Dica: '+pz.dica:'Tente de novo.'))}
+      const ok=XZ.valido(bd,tipo,sel[0],sel[1],r,c),legal=XZ.legais(bd,true).some(m=>m[0]===sel[0]&&m[1]===sel[1]&&m[2]===r&&m[3]===c);
+      if(!legal){sel=null;draw('Essa peça não pode ir para essa casa. Tentativas: '+tent+'/3');return}
+      const nvA=xzNivel();
+      if(ok){const n=XZ.mover(bd,sel[0],sel[1],r,c);bd.forEach((row,i)=>row.forEach((_,j)=>bd[i][j]=n[i][j]));sel=null;acabou=true;S.xadrez.ac++;S.xadrez.vistos.push(nv+'-'+qi);salvar();try{SFX.certo()}catch(e){}
+        draw(tipo==='cap'?'✓ Peça capturada em segurança!':'♚ XEQUE-MATE!');fim(true,XZ_XP[nv-1]/ARENA_TIPOS.xadrez.xp);
+        const nvD=xzNivel();if(nvD>nvA)setTimeout(()=>sistema('XADREZ · NOVO NÍVEL','<span style="font-size:44px">♞</span><br>Agora: <b class="gd">'+XZ_NOMES[nvD-1]+'</b>.'),900)}
+      else{tent++;sel=null;S.xadrez.er++;try{SFX.erro()}catch(e){}
+        const pq=tipo==='cap'?'Essa captura deixa sua peça ser recapturada, ou não captura nada.':'Esse lance não é mate.';
+        if(tent>=3){acabou=true;const sl=sols[0];S.xadrez.vistos.push(nv+'-'+qi);salvar();draw('Solução: '+sq(sl[0],sl[1])+' → '+sq(sl[2],sl[3])+'. '+pz.dica);fim(false)}
+        else draw(pq+' '+(tent===2?'Dica: '+pz.dica:'Tente de novo.'))}
     });
   };draw();
 }
@@ -2699,17 +2883,22 @@ function cardReacao(el,fim){
       est='pronto';B.className='rf-reac';B.textContent=ms+' ms · toque para a rodada '+(r+1)}};
 }
 function cardSimon(el,fim){
+  S.simon=S.simon||{alvo:5,rec:0};const alvo=S.simon.alvo;
   const J=el.querySelector('.jogo'),cores=['#22d3ee','#f5c542','#ef4444','#a3e635'],seq=[];let pos=0,trava=true,acabou=false;
-  J.innerHTML='<p class="ar-inst">Memorize a sequência de luzes e repita. Cada rodada aumenta 1.</p><div class="sim-g">'+cores.map((c,i)=>'<button class="sim-b" data-s="'+i+'" style="--c:'+c+'"></button>').join('')+'</div><p class="ar-msg">Prepare-se…</p>';
+  cabecalho(el,'💡','Sequência de Luzes · '+alvo+' fases',alvo<=6?'FÁCIL':alvo<=9?'MÉDIO':'DIFÍCIL',alvo<=6?'cy':alvo<=9?'gd':'rd','até +'+xpA(10+alvo)+' XP · FÍSICO');
+  J.innerHTML='<p class="ar-inst">Cada cor tem o seu som. Observe, escute e repita a sequência. Complete <b class="cy">'+alvo+' fases</b> para vencer'+(S.simon.rec?' (recorde: '+S.simon.rec+')':'')+'.</p><div class="sim-g">'+cores.map((c,i)=>'<button class="sim-b" data-s="'+i+'" style="--c:'+c+'"></button>').join('')+'</div><p class="ar-msg">Toque em qualquer cor para começar</p>';
   const bs=[...J.querySelectorAll('.sim-b')],msg=J.querySelector('.ar-msg');
-  const acende=(i,ms)=>{bs[i].classList.add('on');try{SFX.certo()}catch(e){}setTimeout(()=>bs[i].classList.remove('on'),ms)};
-  const rodada=()=>{seq.push(rr(0,3));pos=0;trava=true;msg.textContent='Rodada '+seq.length+' · observe';
-    const vel=Math.max(300,650-seq.length*25);seq.forEach((s,k)=>setTimeout(()=>acende(s,vel-100),600+k*vel));
-    setTimeout(()=>{trava=false;msg.textContent='Rodada '+seq.length+' · sua vez'},600+seq.length*vel)};
-  bs.forEach(b=>b.onpointerdown=()=>{if(trava||acabou)return;const i=+b.dataset.s;acende(i,180);
-    if(i!==seq[pos]){acabou=true;try{SFX.erro()}catch(e){}const n=seq.length-1;msg.innerHTML='Fim! Você lembrou <b class="cy">'+n+'</b> passo(s).';fim(n>=4,n>=10?1.6:n>=7?1.3:1);return}
-    pos++;if(pos===seq.length){trava=true;setTimeout(rodada,700)}});
-  setTimeout(rodada,700);
+  const acende=(i,ms)=>{bs[i].classList.add('on');try{SFX.nota(i)}catch(e){}setTimeout(()=>bs[i].classList.remove('on'),ms)};
+  const rodada=()=>{seq.push(rr(0,3));pos=0;trava=true;msg.innerHTML='Fase <b>'+seq.length+'/'+alvo+'</b> · observe e escute';
+    const vel=Math.max(330,700-seq.length*22);seq.forEach((s,k)=>setTimeout(()=>acende(s,vel-120),600+k*vel));
+    setTimeout(()=>{trava=false;msg.innerHTML='Fase <b>'+seq.length+'/'+alvo+'</b> · sua vez'},600+seq.length*vel)};
+  let comecou=false;
+  bs.forEach(b=>b.onpointerdown=()=>{if(!comecou){comecou=true;setTimeout(rodada,400);return}if(trava||acabou)return;const i=+b.dataset.s;acende(i,200);
+    if(i!==seq[pos]){acabou=true;try{SFX.erro()}catch(e){}const n=seq.length-1;S.simon.rec=Math.max(S.simon.rec,n);salvar();
+      msg.innerHTML='Você chegou à fase <b class="cy">'+n+'</b> de '+alvo+'. Na próxima vez, de novo com '+alvo+' fases.';fim(n>=Math.ceil(alvo*.6),Math.max(.4,n/alvo));return}
+    pos++;if(pos===seq.length){
+      if(seq.length>=alvo){acabou=true;S.simon.alvo=alvo+1;S.simon.rec=Math.max(S.simon.rec,alvo);salvar();msg.innerHTML='<b class="cy">Venceu as '+alvo+' fases!</b> Na próxima vez serão <b class="gd">'+(alvo+1)+'</b>.';fim(true,1);return}
+      trava=true;setTimeout(rodada,750)}});
 }
 function cardVaiNao(el,fim){
   const J=el.querySelector('.jogo');let k=0,ok=0,err=0,estim=null,tocou=false;const N=20;
@@ -2896,7 +3085,7 @@ function arenaProxTipo(){
 /* ---------- Catálogo ---------- */
 const ARENA_TIPOS={
   saber:{nome:'Conhecimento',ico:'📚',dif:'medio',xp:20,pilar:1,run:cardSaber},
-  xadrez:{nome:'Xadrez · Mate em 1',ico:'♞',dif:'dificil',xp:50,pilar:1,run:cardXadrez},
+  xadrez:{nome:'Xadrez',ico:'♞',dif:'facil',xp:50,pilar:1,run:cardXadrez},
   sudoku9:{nome:'Sudoku 9×9',ico:'🔢',dif:'dificil',xp:60,pilar:1,run:(e,f)=>cardSudoku(e,f,9)},
   sudoku4:{nome:'Sudoku Relâmpago 4×4',ico:'🔢',dif:'facil',xp:10,pilar:1,run:(e,f)=>cardSudoku(e,f,4)},
   memoria:{nome:'Memória',ico:'🃏',dif:'medio',xp:20,pilar:1,run:cardMemoria},
@@ -2908,7 +3097,7 @@ const ARENA_TIPOS={
   idioma:{nome:'Lição de idioma',ico:'🌍',dif:'facil',xp:15,pilar:1,run:cardIdioma},
   alvos:{nome:'Toque Rápido',ico:'🎯',dif:'medio',xp:15,pilar:0,run:cardAlvos},
   reacao:{nome:'Tempo de Reação',ico:'⚡',dif:'facil',xp:10,pilar:0,run:cardReacao},
-  simon:{nome:'Sequência de Luzes',ico:'💡',dif:'medio',xp:15,pilar:0,run:cardSimon},
+  simon:{nome:'Sequência de Luzes',ico:'💡',dif:'facil',xp:15,pilar:0,run:cardSimon},
   vainao:{nome:'Vai / Não Vai',ico:'🚦',dif:'medio',xp:15,pilar:0,run:cardVaiNao},
   calculo:{nome:'Cálculo Relâmpago',ico:'⚡',dif:'medio',xp:30,pilar:1,run:cardCalculo},
   leitura:{nome:'Leitura de 2 min',ico:'📖',dif:'facil',xp:15,pilar:1,run:cardLeitura},
@@ -2981,7 +3170,7 @@ const pages=$('#pages'),navB=[...document.querySelectorAll('nav button')];
 navB.forEach(b=>b.onclick=()=>{if(arenaPreso)arenaTravar(null);pages.scrollTo({left:pages.clientWidth*b.dataset.i,behavior:'smooth'})});
 pages.addEventListener('scroll',()=>{
   const i=Math.round(pages.scrollLeft/pages.clientWidth);
-  if(i!==pagAtual){pagAtual=i;if(i!==2&&arenaPreso)arenaTravar(null);navB.forEach((b,j)=>b.classList.toggle('on',j===i));try{SFX.tick()}catch(e){}if(i===2)try{arenaIniciar()}catch(e){console.error(e)}}
+  if(i!==pagAtual){pagAtual=i;document.body.classList.toggle('zen',i===2);try{MUS.zen(i===2)}catch(e){}if(i!==2&&arenaPreso)arenaTravar(null);navB.forEach((b,j)=>b.classList.toggle('on',j===i));try{SFX.tick()}catch(e){}if(i===2)try{arenaIniciar()}catch(e){console.error(e)}}
   $('#fab').classList.toggle('hide',i!==1);
 },{passive:true});
 window.addEventListener('resize',()=>pages.scrollLeft=pages.clientWidth*pagAtual);
@@ -3049,14 +3238,14 @@ function classeInfo(sc){
   return{prim:p,sec:q,nome:c.nome,ico:c.ico,hib:false};
 }
 function missaoClasse(k){
-  if(!S.classe)return[];
+  if(!S.classe||nivel()<NV_CLASSE)return[];
   const p=classeInfo(S.classe.scores).prim,c=CLASSES[p],r=rnd('cls'+k+S.criado);
   const j=Math.floor(r()*c.miss.length),[t,como]=c.miss[j];
   return[{id:'k-'+p+'-'+j,p:c.p,t,como,cls:p}];
 }
 const EQ_NIVEIS=[[5,'Aprendiz do Contrapeso'],[15,null],[30,'Mestre do Equilíbrio'],[50,'Lenda Versátil']];
 function titulosEquil(){
-  if(!S.classe)return[];const c=CLASSES[classeInfo(S.classe.scores).prim];
+  if(!S.classe||nivel()<NV_CLASSE)return[];const c=CLASSES[classeInfo(S.classe.scores).prim];
   return EQ_NIVEIS.filter(([n])=>S.equil>=n).map(([n,t])=>t||c.titulo);
 }
 function ganharEquilibrio(){
@@ -3065,6 +3254,7 @@ function ganharEquilibrio(){
 }
 function renderClasse(){
   const el=$('#classeCard');
+  if(nivel()<NV_CLASSE){const f=NV_CLASSE-nivel();el.innerHTML='<div class="h cy" style="font-size:13px">🔒 Ritual de Classe</div><p class="mut" style="margin:8px 0 6px;line-height:1.45">As Classes revelam seu estilo natural, suas forças e o seu ponto cego, e trazem missões e títulos próprios.</p><p style="font-size:15px">Liberado no <b class="gd">nível '+NV_CLASSE+'</b>. Faltam <b class="cy">'+f+'</b> nível(is).</p>'+(S.classe?'<p class="mut" style="font-size:13px;margin-top:8px">Seu ritual anterior fica guardado e volta a valer no nível '+NV_CLASSE+'.</p>':'');return}
   if(!S.classe){el.innerHTML='<div class="h cy" style="font-size:13px">Ritual de Classe</div><p class="mut" style="margin:8px 0 14px;line-height:1.45">Descubra sua Classe: seu estilo natural, suas forças e o seu ponto cego. São 24 escolhas rápidas, uns 3 minutos.</p><button class="btn" id="btnRit">⚔️ INICIAR RITUAL</button>';$('#btnRit').onclick=ritualIntro;return}
   const sc=S.classe.scores,ci=classeInfo(sc),c=CLASSES[ci.prim];
   const proxN=EQ_NIVEIS.find(([n])=>S.equil<n),base=[0,...EQ_NIVEIS.map(x=>x[0])].filter(n=>n<=S.equil).pop();
@@ -3232,8 +3422,8 @@ const CONQ=[
  {id:'penal',ico:'☠️',nome:'Sobrevivente',desc:'Superar uma Zona de Penalidade',titulo:'Sobrevivente',ok:()=>algumDia(d=>d.penal&&d.penal.feita)},
  {id:'meta',ico:'🎯',nome:'Objetivo Cumprido',desc:'Concluir uma meta',ok:()=>S.metas.some(m=>okMeta(m))},
  {id:'meta3',ico:'🏆',nome:'Colecionador de Metas',desc:'Concluir 3 metas',titulo:'Realizador',ok:()=>S.metas.filter(m=>okMeta(m)).length>=3},
- {id:'nv5',ico:'⬆️',nome:'Rank D',desc:'Chegar ao nível 5',ok:()=>nivel()>=5},
- {id:'nv10',ico:'🚀',nome:'Rank C',desc:'Chegar ao nível 10',titulo:'Ascendente',ok:()=>nivel()>=10},
+ {id:'nv5',ico:'⬆️',nome:'Rank D',desc:'Chegar ao nível 8',ok:()=>nivel()>=8},
+ {id:'nv10',ico:'🚀',nome:'Rank C',desc:'Chegar ao nível 16',titulo:'Ascendente',ok:()=>nivel()>=16},
  {id:'classe',ico:'⚔️',nome:'Classe Revelada',desc:'Fazer o Ritual de Classe',ok:()=>!!S.classe},
  {id:'ext',ico:'👁️',nome:'Visto pelos Outros',desc:'Receber 3 avaliações externas',titulo:'Transparente',ok:()=>(S.ext||[]).length>=3},
  {id:'valores',ico:'🧭',nome:'Bússola Interna',desc:'Definir seus 3 valores',ok:()=>(S.valores||[]).length===3}
@@ -3545,9 +3735,29 @@ function renderExt(){
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700">'+n+' avaliação(ões) recebida(s)</span><span class="tag '+(ativo?'cy':'gd')+'">'+(ativo?'CALIBRAÇÃO ATIVA':'FALTAM '+falta)+'</span></div>'+
     '<div class="bar" style="margin-bottom:14px"><i style="width:'+Math.min(100,n/EXT_MIN*100)+'%"></i></div>'+
     '<div class="row" style="margin-bottom:10px"><a class="btn" style="display:grid;place-items:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(msgConvite())+'">WHATSAPP</a><button class="btn ghost" id="exCopiar">COPIAR</button></div>'+
-    '<button class="btn" id="exColar">+ COLAR CÓDIGO RECEBIDO</button>';
+    '<button class="btn" id="exColar">+ COLAR CÓDIGO RECEBIDO</button>'+evolExtHtml();
   $('#exCopiar').onclick=()=>copiar(msgConvite(),'Convite copiado!');
+  if($('#exMes'))$('#exMes').onclick=()=>copiar(msgMes(),'Pedido copiado!');
   $('#exColar').onclick=colarCodigo;
+}
+
+/* ===== Reavaliação mensal pelas mesmas pessoas: visão geral da evolução (não altera os status) ===== */
+function notasDe(r){const sp=[0,0,0,0,0],np=[0,0,0,0,0];PERG_EXT.forEach(([p,,inv],i)=>{const v=r[i];if(typeof p==='number'&&v>=1&&v<=6){sp[p]+=inv?7-v:v;np[p]++}});return sp.map((x,p)=>np[p]>=3?notaDeMedia(x/np[p]):null)}
+function msgMes(){return 'Oi! Faz um tempo que você me avaliou no EVO. Topa responder de novo? Quero saber como você tem enxergado a minha evolução neste mês. Continua anônimo, uns 5 min, e no final me mande o código. Abra no mesmo celular da primeira vez: '+linkConvite()}
+function evolExtHtml(){
+  const base=S.ext||[],mes=S.extMes||[];if(!base.length)return'';
+  const prim=base.reduce((a,e)=>Math.min(a,e.d),Infinity),podePedir=(Date.now()-prim)/864e5>=25;
+  let h='<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><div class="h cy" style="font-size:12px;margin-bottom:6px">📈 EVOLUÇÃO VISTA PELOS OUTROS</div>';
+  // compara a última avaliação de cada pessoa com a primeira dela
+  const pares=[];new Set(mes.map(e=>e.eid)).forEach(eid=>{const a=base.find(e=>e.eid===eid),b=mes.filter(e=>e.eid===eid).sort((x,y)=>y.d-x.d)[0];if(a&&b)pares.push([notasDe(a.r),notasDe(b.r)])});
+  if(pares.length>=2){const d=[0,1,2,3,4].map(p=>{const v=pares.filter(([a,b])=>a[p]!=null&&b[p]!=null).map(([a,b])=>b[p]-a[p]);return v.length>=2?v.reduce((x,y)=>x+y,0)/v.length:null});
+    const med=d.filter(x=>x!=null),g=med.length?med.reduce((a,b)=>a+b,0)/med.length:0;
+    h+='<p style="font-size:15px;line-height:1.5">'+pares.length+' pessoas te reavaliaram. No geral, elas te veem <b class="'+(g>1?'cy':g<-1?'rd':'mut')+'">'+(g>1?'evoluindo':g<-1?'um pouco abaixo de antes':'estável')+'</b>.</p><p style="font-size:14px;margin-top:4px">'+
+      d.map((x,p)=>x==null?'':'<span style="white-space:nowrap">'+PIL[p]+' <b class="'+(x>1?'cy':x<-1?'rd':'mut')+'">'+(x>0?'+':'')+Math.round(x)+'</b></span>').filter(Boolean).join(' · ')+'</p>'+
+      '<p class="mut" style="font-size:12px;margin-top:6px">É só uma visão geral: não altera os seus status. Média de quem respondeu de novo, comparando com a primeira resposta da mesma pessoa.</p>';}
+  else h+='<p class="mut" style="font-size:14px;line-height:1.45">'+(mes.length?mes.length+' reavaliação(ões) recebida(s). Com pelo menos 2, aparece aqui como as pessoas veem a sua evolução.':'Uma vez por mês, peça às mesmas pessoas uma nova avaliação para ver como elas enxergam a sua evolução.')+'</p>';
+  h+=podePedir?'<button class="btn ghost" id="exMes" style="margin-top:10px">📨 PEDIR AVALIAÇÃO DO MÊS</button>':'<p class="mut" style="font-size:12px;margin-top:8px">Pedido mensal liberado 25 dias após a primeira avaliação.</p>';
+  return h+'</div>';
 }
 function colarCodigo(){
   abrir('<h3 class="cy">CÓDIGO DE AVALIAÇÃO</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Cole o código que a pessoa te enviou (começa com SN-).</p><div class="field"><textarea id="cdIn" rows="3" placeholder="SN-XXXX-XXXX-..."></textarea></div><p class="rd" id="cdErr" style="font-size:14px;min-height:20px;margin-bottom:8px"></p><div class="row"><button class="btn ghost" id="cdX">CANCELAR</button><button class="btn" id="cdOk">ADICIONAR</button></div>');
@@ -3557,7 +3767,11 @@ function colarCodigo(){
     const d=decodificar(S.token,txt);
     if(!d){$('#cdErr').textContent='Código inválido ou de outro jogador.';return}
     if(d.r.filter(x=>x>=1).length<20){$('#cdErr').textContent='Esse código tem respostas demais em "Não sei".';return}
-    if(S.ext.some(e=>e.eid===d.eid)){$('#cdErr').textContent='Essa pessoa já avaliou você. Cada pessoa conta uma vez.';return}
+    const ult=[...S.ext,...(S.extMes||[])].filter(e=>e.eid===d.eid).sort((a,b)=>b.d-a.d)[0];
+    if(ult){const dias=(Date.now()-ult.d)/864e5;
+      if(dias<25){$('#cdErr').textContent='Essa pessoa já te avaliou há '+Math.floor(dias)+' dia(s). Uma nova avaliação dela vale a partir de 25 dias.';return}
+      S.extMes=S.extMes||[];S.extMes.push({eid:d.eid,r:d.r,d:Date.now()});registrar('👁️ Reavaliação do mês recebida');fechar();salvar();render();
+      toast('Reavaliação somada à sua evolução vista pelos outros');return}
     const antes=extNotas().some(Boolean);
     S.ext.push({eid:d.eid,r:d.r,d:Date.now()});_extKey='';
     const n=S.ext.length,depois=extNotas().some(Boolean);
