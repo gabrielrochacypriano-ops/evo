@@ -2354,12 +2354,12 @@ function cardSaber(el,fim){
 function saberHtml(){
   return Object.entries(MATERIAS).map(([k,M])=>{const sb=saber(k),nv=saberNivel(k),ini=SABER_NIVEIS[nv-1],prox=SABER_NIVEIS[nv];
     const pc=nv>=3?100:Math.round((sb.ac-ini)/(prox-ini)*100);
-    return'<div class="stat" data-m="'+k+'" style="cursor:pointer"><div class="nm">'+M.ico+' '+M.nome+(S.saberFoco===k?' <span class="gd" style="font-size:11px">🎯 FOCO</span>':'')+'</div><div><div class="bar"><i style="width:'+pc+'%"></i></div><small>Nível '+nv+' · '+SABER_NOMES[nv-1]+' · '+sb.ac+' acertos'+(nv<3?' · próximo nível em '+(prox-sb.ac):'')+'</small></div><div class="vl cy">N'+nv+'</div></div>'}).join('');
+    return'<div class="stat" data-m="'+k+'" style="cursor:pointer"><div class="nm">'+M.ico+' '+M.nome+(FOCO.mat.has(k)?' <span class="gd" style="font-size:11px">🎯 FOCO</span>':'')+'</div><div><div class="bar"><i style="width:'+pc+'%"></i></div><small>Nível '+nv+' · '+SABER_NOMES[nv-1]+' · '+sb.ac+' acertos'+(nv<3?' · próximo nível em '+(prox-sb.ac):'')+'</small></div><div class="vl cy">N'+nv+'</div></div>'}).join('');
 }
 function renderSaber(){document.querySelectorAll('.saber-box').forEach(el=>{
   el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div class="h cy" style="font-size:12px">📚 Conhecimentos</div><span class="mut" style="font-size:12px">toque para focar</span></div>'+saberHtml()+saberExtraHtml();
   el.querySelectorAll('[data-idesc]').forEach(b=>b.onclick=idiModal);
-  el.querySelectorAll('[data-m]').forEach(r=>r.onclick=()=>{S.saberFoco=S.saberFoco===r.dataset.m?'':r.dataset.m;salvar();renderSaber();toast(S.saberFoco?'Foco em '+MATERIAS[S.saberFoco].nome+' na Arena':'Foco removido')});
+  el.querySelectorAll('[data-m]').forEach(r=>r.onclick=()=>{const k=r.dataset.m;FOCO.mat.has(k)?FOCO.mat.delete(k):FOCO.mat.add(k);renderSaber();try{arenaTopo()}catch(e){}toast(FOCO.mat.has(k)?'Foco em '+MATERIAS[k].nome+' (até fechar o app)':'Foco removido')});
   })}
 
 /* ============ GERADORES DE PERGUNTAS (respostas sempre corretas) ============ */
@@ -3125,8 +3125,8 @@ const IDI_DICAS={
 
 /* ============ NOVOS CARDS DA ARENA ============ */
 function saberEscolher(){
-  const ks=Object.keys(MATERIAS),foco=S.saberFoco;
-  const m=foco&&MATERIAS[foco]&&Math.random()<.6?foco:pick(ks);
+  const ks=Object.keys(MATERIAS),fm=[...FOCO.mat].filter(k=>MATERIAS[k]);
+  const m=fm.length&&Math.random()<.85?pick(fm):pick(ks);
   const nv=saberNivel(m),sb=saber(m);
   const banco=MATERIAS[m].n[nv-1].concat((EXTRAS[m]&&EXTRAS[m][nv-1])||[]);
   if(Math.random()<.5){const g=gerarPergunta(m,nv);if(g)return{m,nv,i:-1,q:g}}
@@ -3222,7 +3222,7 @@ function cardIdioma(el,fim){
     J.innerHTML='<p class="ar-inst">Quais idiomas você quer aprender? Escolha quantos quiser (dá para mudar depois em Perfil → Saber).</p>'+idiEscolherHtml()+'<button class="btn" id="idOk" style="margin-top:14px">COMEÇAR</button>';
     idiLigar(J);J.querySelector('#idOk').onclick=()=>{if(!idiomas().sel.length){toast('Escolha pelo menos um idioma');return}cardIdioma(el,fim)};return;
   }
-  I.vez=(I.vez||0)+1;const l=I.sel[I.vez%I.sel.length],L=IDIOMAS[l],nv=idiNivel(l);
+  I.vez=(I.vez||0)+1;const lsel=I.sel.filter(x=>FOCO.idi.has(x)),l=lsel.length&&Math.random()<.85?pick(lsel):I.sel[I.vez%I.sel.length],L=IDIOMAS[l],nv=idiNivel(l);
   cabecalho(el,L.flag,'Lição de '+L.nome+' · Nível '+nv,'NÍVEL '+nv,nv<4?'cy':nv<7?'gd':'rd','até +'+xpA(15)+' XP · MENTE');
   let n=0,ac=0,nvAt=nv;const TOT=6;
   const prox=()=>{if(n>=TOT){
@@ -3499,11 +3499,47 @@ function cardCientista(el,fim){
 }
 /* ---------- Feed sempre aleatório (com pesos e sem repetir em sequência) ---------- */
 const ARENA_PESO={saber:6,logica:4,cientista:3,livro:2,idioma:2,leitura:1,biblia:1,xadrez:1,sudoku9:1,sudoku4:1,memoria:1,erros:1,calculo:1,fisico:1,respira:1,financas:1,alvos:1,reacao:1,simon:1,vainao:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,senha:1,nono:1,soma:1,conta:1};
+/* Foco do momento: filtros só da sessão (somem ao fechar o app) */
+const FOCO={mat:new Set(),idi:new Set(),grp:new Set()};
+const FOCO_GRUPOS={
+  logica:['🧩 Lógica',['logica']],
+  jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','xadrez','sudoku4','sudoku9','erros','memoria']],
+  reflexos:['⚡ Reflexos',['alvos','reacao','simon','vainao','fisico']],
+  leituras:['📖 Leituras e livros',['leitura','livro','biblia','cientista']],
+  financas:['💰 Finanças',['financas','calculo']]
+};
+function focoAtivo(){return FOCO.mat.size+FOCO.idi.size+FOCO.grp.size}
+function focoTipos(){const t=new Set();if(FOCO.mat.size)t.add('saber');if(FOCO.idi.size)t.add('idioma');FOCO.grp.forEach(g=>FOCO_GRUPOS[g][1].forEach(x=>t.add(x)));return[...t].filter(x=>ARENA_TIPOS[x])}
+const arenaVistos={};   // distribuição: quanto mais um tipo apareceu na sessão, menor a chance de vir de novo
 function arenaProxTipo(){
-  const ult=arenaUlt;let t,tent=0;
-  do{const tot=Object.values(ARENA_PESO).reduce((a,b)=>a+b,0);let r=Math.random()*tot;for(const[k,w]of Object.entries(ARENA_PESO)){r-=w;if(r<0){t=k;break}}tent++}
-  while(tent<30&&(t===ult[0]||(t!=='saber'&&ult.includes(t))));
-  arenaUlt=[t].concat(ult).slice(0,4);return t;
+  const ult=arenaUlt,ft=focoTipos();
+  if(ft.length&&Math.random()<.8){   // foco: reveza por igual entre os itens escolhidos (matérias, idiomas, grupos)
+    const un=[];if(FOCO.mat.size)un.push(['saber']);if(FOCO.idi.size)un.push(['idioma']);FOCO.grp.forEach(g=>un.push(FOCO_GRUPOS[g][1].filter(x=>ARENA_TIPOS[x])));
+    const cnt=u=>u.reduce((a,k)=>a+(arenaVistos[k]||0),0);const ord=un.map(u=>[u,cnt(u)+Math.random()*.9]).sort((a,b)=>a[1]-b[1]);
+    let u=ord[0][0];if(ord.length>1&&u.includes(ult[0])&&u.length===1)u=ord[1][0];
+    const t=u.map(k=>[k,(arenaVistos[k]||0)+Math.random()]).sort((a,b)=>a[1]-b[1])[0][0];arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t}
+  const pool=Object.keys(ARENA_PESO).filter(k=>ARENA_TIPOS[k]);
+  let melhor=null,mv=-1;
+  pool.forEach(k=>{if(pool.length>2&&(k===ult[0]||(k!=='saber'&&ult.includes(k)&&!ft.includes(k))))return;
+    const w=(ARENA_PESO[k]||1)*(ft.includes(k)?3:1),v=w/(1+(arenaVistos[k]||0)/Math.max(1,w))*(0.35+Math.random());if(v>mv){mv=v;melhor=k}});
+  const t=melhor||pick(pool);arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t;
+}
+function focoTela(){
+  const I=idiomas(),chip=(on,attr,txt)=>'<button class="chip'+(on?' on':'')+'" '+attr+' style="font-size:14px;padding:8px 12px">'+txt+'</button>';
+  const draw=()=>{abrir('<h3 class="cy">🎯 FOCO DO MOMENTO</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:10px">Escolha o que você quer ver mais agora. Os outros tipos continuam aparecendo de vez em quando. <b>Os filtros somem quando você fecha o app.</b></p>'+
+    '<div class="h cy" style="font-size:11px;margin:8px 0 4px">MATÉRIAS</div><div class="idi-grid">'+Object.entries(MATERIAS).map(([k,M])=>chip(FOCO.mat.has(k),'data-fm="'+k+'"',M.ico+' '+M.nome)).join('')+'</div>'+
+    (I.sel.length?'<div class="h cy" style="font-size:11px;margin:10px 0 4px">IDIOMAS</div><div class="idi-grid">'+I.sel.map(l=>chip(FOCO.idi.has(l),'data-fi="'+l+'"',IDIOMAS[l].flag+' '+IDIOMAS[l].nome)).join('')+'</div>':'')+
+    '<div class="h cy" style="font-size:11px;margin:10px 0 4px">TIPOS DE DESAFIO</div><div class="idi-grid">'+Object.entries(FOCO_GRUPOS).map(([k,g])=>chip(FOCO.grp.has(k),'data-fg="'+k+'"',g[0])).join('')+'</div>'+
+    '<div class="row" style="margin-top:14px"><button class="btn ghost" id="fcLimpa">LIMPAR</button><button class="btn" id="fcOk">PRONTO</button></div>'+
+    '<button class="h mut" id="fcNiv" style="display:block;margin:12px auto 0;font-size:11px;letter-spacing:.1em">VER NÍVEIS DAS MATÉRIAS</button>');
+    const tg=(S0,k)=>{S0.has(k)?S0.delete(k):S0.add(k);draw()};
+    $('#sheet').querySelectorAll('[data-fm]').forEach(b=>b.onclick=()=>tg(FOCO.mat,b.dataset.fm));
+    $('#sheet').querySelectorAll('[data-fi]').forEach(b=>b.onclick=()=>tg(FOCO.idi,b.dataset.fi));
+    $('#sheet').querySelectorAll('[data-fg]').forEach(b=>b.onclick=()=>tg(FOCO.grp,b.dataset.fg));
+    $('#fcLimpa').onclick=()=>{FOCO.mat.clear();FOCO.idi.clear();FOCO.grp.clear();draw()};
+    $('#fcOk').onclick=()=>{fechar();for(const k in arenaVistos)delete arenaVistos[k];arenaTopo();arenaRefazer();if(focoAtivo())toast('Foco aplicado nos próximos desafios')};
+    $('#fcNiv').onclick=()=>{abrir('<h3 class="cy">📚 CONHECIMENTOS</h3><p class="mut" style="font-size:14px;margin-bottom:8px">Cada matéria sobe de nível com seus acertos: Básico → Intermediário ('+SABER_NIVEIS[1]+') → Avançado ('+SABER_NIVEIS[2]+').</p><div class="card saber-box" style="padding:6px 14px"></div><button class="btn" style="margin-top:12px" id="fcVolta">VOLTAR</button>');renderSaber();$('#fcVolta').onclick=draw};
+  };draw();
 }
 
 /* ---------- Catálogo ---------- */
@@ -3563,10 +3599,11 @@ function arenaTravar(el){
   arenaPreso=el;if(el){el.classList.add('preso');f.scrollTop=el.offsetTop}
   f.style.overflowY=el?'hidden':'';if(pg)pg.style.overflowX=el?'hidden':'';
 }
-function arenaTopo(){const d=arenaDia(),el=$('#arTopo');if(!el)return;el.innerHTML='<span>🎮 ARENA</span><button id="arMat" class="h" style="font-size:11px;color:var(--gold);letter-spacing:.1em">📚 MATÉRIAS</button><span class="'+(d.xp>=ARENA_CAP?'gd':'cy')+'">'+d.xp+'/'+ARENA_CAP+' XP</span>';
-  $('#arMat').onclick=()=>{abrir('<h3 class="cy">📚 CONHECIMENTOS</h3><p class="mut" style="font-size:14px;margin-bottom:8px">Cada matéria sobe de nível com seus acertos: Básico → Intermediário ('+SABER_NIVEIS[1]+') → Avançado ('+SABER_NIVEIS[2]+'). Toque numa matéria para focar nela.</p><div class="card saber-box" style="padding:6px 14px"></div><button class="btn" style="margin-top:12px" onclick="this.closest(\'.modal\').classList.remove(\'on\')">FECHAR</button>');renderSaber()}}
+function arenaTopo(){const d=arenaDia(),el=$('#arTopo');if(!el)return;el.innerHTML='<span>🎮 ARENA</span><button id="arMat" class="h" style="font-size:11px;color:var(--gold);letter-spacing:.1em">🎯 FOCO'+(focoAtivo()?' ('+focoAtivo()+')':'')+'</button><span class="'+(d.xp>=ARENA_CAP?'gd':'cy')+'">'+d.xp+'/'+ARENA_CAP+' XP</span>';
+  $('#arMat').onclick=focoTela}
 function arenaMedir(){const f=$('#arFeed');if(f&&f.clientHeight>100)document.documentElement.style.setProperty('--arH',f.clientHeight+'px')}
 addEventListener('resize',arenaMedir);
+function arenaRefazer(){const f=$('#arFeed');if(!f||!f.dataset.ok)return;const i=Math.round(f.scrollTop/f.clientHeight),cs=[...f.children];cs.slice(i+1).forEach(c=>c.remove());for(let k=0;k<3;k++)f.appendChild(arenaCard())}
 function arenaIniciar(){arenaMedir();
   const f=$('#arFeed');if(!f||f.dataset.ok)return;f.dataset.ok=1;
   for(let i=0;i<4;i++)f.appendChild(arenaCard());arenaTopo();
