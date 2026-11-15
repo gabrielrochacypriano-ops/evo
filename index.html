@@ -647,7 +647,7 @@ const ART_URL='https://claude.ai/artifact/TLPnHJNnw5yDeS6ZmCHmSr';
 const ALF='abcdefghijkmnpqrstuvwxyz23456789';
 const HOSTED=!!document.querySelector('link[rel=manifest]');
 const RESPOSTAS=[['SEMPRE',6],['QUASE SEMPRE',5],['ÀS VEZES',4],['RARAMENTE',3],['QUASE NUNCA',2],['NUNCA',1]];
-const NOTA_MAX_INICIAL=85, NOTA_MIN=10, NOTA_TETO=99, K_EVOL=2400;   // status sobe devagar (4× mais lento que antes)
+const NOTA_MAX_INICIAL=85, NOTA_MIN=10, NOTA_TETO=99, K_EVOL=6000;   // status sobe devagar (4× mais lento que antes)
 /* média 1..6 -> nota 10..85 (ninguém começa perfeito) */
 const notaDeMedia=m=>Math.round(NOTA_MIN+(m-1)/5*(NOTA_MAX_INICIAL-NOTA_MIN));
 const MODOS={
@@ -798,7 +798,7 @@ const pesoExt=n=>Math.min(.5,.4+.05*(n-EXT_MIN));
 const realNota=i=>{const a=S.realAuto[i],e=extNotas()[i];return e?a*(1-pesoExt(e.n))+e.nota*pesoExt(e.n):a};
 /* evolui com XP, aproximando de 100 sem nunca chegar */
 const N=v=>Math.round(v);
-const atualBruto=i=>{const ini=realNota(i),x=S.xp[i];
+const atualBruto=i=>{const ini=realNota(i),x=S.xp[i]-0.5*((S.xpAr&&S.xpAr[i])||0);   // XP da Arena conta metade para os status
   const v=x>=0?100-(100-ini)*Math.exp(-x/K_EVOL):ini*Math.exp(x/K_EVOL);
   return Math.max(0,Math.min(NOTA_TETO,v))};
 const atual=i=>{const v=atualBruto(i);return i===3?Math.min(v,tetoFin()):v};   // Recursos respeita o teto financeiro
@@ -1656,7 +1656,7 @@ function arenaDia(){const k=hoje();S.arena=S.arena||{};S.arena[k]=S.arena[k]||{x
 function arenaGanhar(xp,pilar,nome){
   const d=arenaDia();d.feitos++;
   const livre=Math.max(0,ARENA_CAP-d.xp),q=Math.min(xp,livre);
-  if(q>0){const nvA=nivel();d.xp+=q;S.xp[pilar]+=q;registrar('🎮 Arena: '+nome+' (+'+q+' XP)');salvar();renderHeader();arenaTopo();
+  if(q>0){const nvA=nivel();d.xp+=q;S.xp[pilar]+=q;S.xpAr=S.xpAr||[0,0,0,0,0];S.xpAr[pilar]+=q;registrar('🎮 Arena: '+nome+' (+'+q+' XP)');salvar();renderHeader();arenaTopo();
     const nv=nivel();if(nv>nvA){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.'+(nvA<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Rank D: Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
     else{try{SFX.sucesso()}catch(e){}toast('+'+q+' XP · '+PIL[pilar])}}
   else{salvar();arenaTopo();if(!d.avisado){d.avisado=1;salvar();toast('Limite diário de XP da Arena atingido. Continue treinando à vontade!')}}
@@ -3565,13 +3565,16 @@ const pages=$('#pages'),navB=[...document.querySelectorAll('nav button')];
 navB.forEach(b=>b.onclick=()=>{if(arenaPreso)arenaTravar(null);pages.scrollTo({left:pages.clientWidth*b.dataset.i,behavior:'smooth'})});
 pages.addEventListener('scroll',()=>{
   const i=Math.round(pages.scrollLeft/pages.clientWidth);
-  if(i!==pagAtual){pagAtual=i;document.body.classList.toggle('zen',i===2);try{MUS.zen(i===2)}catch(e){}if(i!==2&&arenaPreso)arenaTravar(null);navB.forEach((b,j)=>b.classList.toggle('on',j===i));try{SFX.tick()}catch(e){}if(i===2)try{arenaIniciar()}catch(e){console.error(e)}}
+  if(i!==pagAtual){pagAtual=i;if(i===2){try{viradaDia();arenaTopo()}catch(e){}}document.body.classList.toggle('zen',i===2);try{MUS.zen(i===2)}catch(e){}if(i!==2&&arenaPreso)arenaTravar(null);navB.forEach((b,j)=>b.classList.toggle('on',j===i));try{SFX.tick()}catch(e){}if(i===2)try{arenaIniciar()}catch(e){console.error(e)}}
   $('#fab').classList.toggle('hide',i!==1);
 },{passive:true});
 window.addEventListener('resize',()=>pages.scrollLeft=pages.clientWidth*pagAtual);
 
 /* Vira o dia com o app aberto */
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S&&S.nome&&S.ultimoDia!==hoje()){processarDias();render()}});
+let _diaVisto=hoje();
+function viradaDia(){if(!S||!S.nome)return;const k=hoje();if(S.ultimoDia!==k){processarDias();render()}if(_diaVisto!==k){_diaVisto=k;try{arenaTopo()}catch(e){}}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)viradaDia()});
+addEventListener('focus',viradaDia);setInterval(viradaDia,60000);
 
 /* ============ CLASSES (inspirado no modelo DISC) ============ */
 const CLASSES={
