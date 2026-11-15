@@ -820,24 +820,44 @@ const FIS_DEGRAUS=[   // definidos por Gabriel (nov/2026)
  ['Disciplina',[['Você se exercita de alguma forma pelo menos 4 vezes por semana?','exercício 4× por semana'],['Você fez check-up médico no último ano?','check-up médico no último ano'],['Você está lutando contra seus vícios? (Responda SIM também se não tem vícios.)','combater os vícios']]],
  ['Excelência',[['Você faz check-up médico a cada 6 meses?','check-up a cada 6 meses'],['Sua alimentação e sua hidratação estão ótimas?','alimentação e hidratação ótimas'],['Seus exercícios, seu condicionamento físico e seu sono estão ótimos?','exercícios, físico e sono ótimos'],['Você está livre de vícios?','zero vícios']]]
 ];
+
+const extCom=min=>{const e=extNotas()[4];return !!(e&&e.n>=3&&e.nota>=min)};
+const MEN_DEGRAUS=[   // definidos com Gabriel (nov/2026) · estudo (Arena conta) ≠ conteúdos ≠ livros do começo ao fim
+ ['Despertar',[['Você estuda pelo menos 10 minutos, 2 vezes por semana? (A Arena conta como estudo.)','estudar 10 min, 2× por semana'],['Você assiste ou ouve pelo menos 1 conteúdo útil por semana (vídeo, podcast ou artigo que ensine algo)?','1 conteúdo útil por semana'],['Você passa menos de 4 horas por dia em redes de vídeo curto e feed (Instagram, TikTok, Shorts, Kwai)?','menos de 4 h por dia em redes']]],
+ ['Hábito de aprender',[['Você estuda pelo menos 15 minutos, 4 vezes por semana?','estudar 15 min, 4× por semana'],['Você terminou pelo menos 1 livro (lido ou ouvido do começo ao fim) nos últimos 3 meses?','1 livro nos últimos 3 meses'],['Você passa menos de 3 horas por dia nessas redes?','menos de 3 h por dia em redes'],['Você aprendeu algo novo, fora da sua área, neste mês?','aprender algo fora da sua área']]],
+ ['Foco',[['Você estuda pelo menos 20 minutos, 5 vezes por semana?','estudar 20 min, 5× por semana'],['Você terminou pelo menos 1 livro nos últimos 2 meses?','1 livro nos últimos 2 meses'],['Você passa menos de 2 horas por dia nessas redes?','menos de 2 h por dia em redes'],['Você consegue estudar ou trabalhar 30 minutos seguidos sem olhar o celular?','30 min de foco sem celular']]],
+ ['Mente aberta',[['Você está fazendo um estudo com objetivo claro (curso, idioma ou habilidade)?','estudo com objetivo claro'],['Você terminou pelo menos 1 livro por mês nos últimos 3 meses?','1 livro por mês'],['Você passa menos de 1h30 por dia nessas redes?','menos de 1h30 por dia em redes'],['Você sente que tem sido mais aberto ao desconhecido e a ideias em que antes não acreditava, procurando entender antes de julgar?','mente aberta ao novo e ao diferente']]],
+ ['Disciplina mental',[['Você estuda pelo menos 30 minutos, 6 vezes por semana?','estudar 30 min, 6× por semana'],['Você concluiu um curso, certificação ou projeto de aprendizado nos últimos 6 meses?','concluir um curso ou projeto em 6 meses'],['Você passa menos de 1 hora por dia nessas redes?','menos de 1 h por dia em redes'],['Você ensina ou compartilha o que aprende com alguém?','ensinar o que aprende']]],
+ ['Mestre de si',[['Você estuda todos os dias, com pelo menos 1 hora de foco total?','estudar todo dia, 1 h de foco'],['Você terminou pelo menos 12 livros nos últimos 12 meses?','12 livros em 12 meses'],['Você usa essas redes com intenção, por menos de 30 minutos por dia?','menos de 30 min por dia em redes'],['Você produz conhecimento (escrever, ensinar, criar conteúdo ou mentorar)?','produzir conhecimento']]]
+];
+const COM_DEGRAUS=[   // ligação e videochamada contam como encontro · "pessoas próximas" = família, parceiro ou amigos próximos
+ ['Conectado',[['Você conversa de verdade com família, parceiro ou amigos próximos pelo menos 2 vezes por semana (pessoalmente, por ligação ou por vídeo)?','conversar 2× por semana com pessoas próximas'],['Você tem pelo menos 1 pessoa com quem pode contar num momento difícil?','ter alguém para contar'],['Você trata as pessoas com respeito mesmo quando discorda delas?','respeito mesmo discordando']]],
+ ['Presente',[['Você encontra família, parceiro ou amigos próximos pelo menos 1 vez por semana (pessoalmente ou por videochamada)?','encontrar pessoas próximas 1× por semana'],['Você evita falar mal das pessoas pelas costas?','não falar mal pelas costas'],['Você dá atenção total, sem celular, quando conversa com quem ama?','atenção total sem celular']]],
+ ['Cuidando dos laços',[['Você procura pelo menos 1 pessoa próxima por semana só para saber como ela está?','procurar alguém por semana'],['Você lembra e celebra as datas importantes das pessoas próximas?','lembrar as datas importantes'],['Quando briga com alguém, você busca resolver em vez de deixar o ressentimento crescer?','resolver os conflitos'],['Você ajuda alguém sem esperar nada em troca pelo menos 1 vez por mês?','ajudar alguém por mês']]],
+ ['Pilar para os outros',[['As pessoas próximas te procuram para pedir conselho ou apoio?','ser procurado para apoio'],['Você pede desculpas quando erra, sem justificar o erro?','pedir desculpas de verdade'],['Você participa de algum grupo, comunidade ou causa (igreja, esporte, voluntariado, associação)?','participar de um grupo ou causa'],['Você reserva um tempo de qualidade toda semana com família, parceiro ou amigos próximos?','tempo de qualidade semanal']]],
+ ['Líder de comunidade',[['Você faz trabalho voluntário ou ajuda uma causa pelo menos 1 vez por mês?','voluntariado mensal'],['Você ensina ou orienta alguém?','orientar alguém'],['Você aproxima pessoas, organizando encontros ou unindo o grupo?','aproximar pessoas'],['Avaliação externa: média de 70 ou mais em Comunidade, com 3 ou mais avaliações','avaliação externa 70+ (peça avaliações)',()=>extCom(70)]]],
+ ['Legado',[['Você lidera ou organiza algo que melhora a vida de outras pessoas?','liderar algo pelos outros'],['Você cultiva relações profundas e duradouras com família, parceiro e amigos próximos?','relações profundas e duradouras'],['Você contribui de forma constante (tempo, conhecimento ou recursos) para quem precisa?','contribuir de forma constante'],['Avaliação externa: média de 80 ou mais em Comunidade, com 3 ou mais avaliações','avaliação externa 80+',()=>extCom(80)]]]
+];
 const TETOS=[40,55,65,75,85,95,99],TETO_VALIDADE=31;
 const FIN_TETOS=TETOS,FIN_VALIDADE=TETO_VALIDADE;
 const CHK={
   3:{pil:'Recursos',ico:'💰',tit:'CHECK-IN FINANCEIRO',deg:FIN_DEGRAUS,txt:'condições financeiras reais'},
-  0:{pil:'Físico',ico:'💪',tit:'CHECK-IN FÍSICO',deg:FIS_DEGRAUS,txt:'hábitos de saúde reais'}
+  0:{pil:'Físico',ico:'💪',tit:'CHECK-IN FÍSICO',deg:FIS_DEGRAUS,txt:'hábitos de saúde reais'},
+  1:{pil:'Mente',ico:'🧠',tit:'CHECK-IN DA MENTE',deg:MEN_DEGRAUS,txt:'hábitos reais de estudo, leitura e uso de redes'},
+  4:{pil:'Comunidade',ico:'🤝',tit:'CHECK-IN DA COMUNIDADE',deg:COM_DEGRAUS,txt:'relações reais e pela avaliação de outras pessoas'}
 };
 const chkDado=p=>p===3?S.fin:((S.chk||{})[p]);
 function chkSalvar(p,v){if(p===3)S.fin=v;else{S.chk=S.chk||{};S.chk[p]=v}}
 function chkValido(p){const f=chkDado(p);return !!(f&&f.d&&(Date.now()-f.d)/864e5<TETO_VALIDADE)}
-function chkDegrau(p,r){const D=CHK[p].deg;let n=0;for(let g=0;g<D.length;g++){if(r&&r[g]&&r[g].length===D[g][1].length&&r[g].every(Boolean))n=g+1;else break}return n}
+function chkDegrau(p,r){const D=CHK[p].deg;let n=0;for(let g=0;g<D.length;g++){if(r&&r[g]&&D[g][1].every((q,j)=>q[2]?q[2]():!!r[g][j]))n=g+1;else break}return n}
 function teto(p){if(!CHK[p])return NOTA_TETO;return chkValido(p)?TETOS[chkDegrau(p,chkDado(p).r)]:TETOS[0]}
-function chkFalta(p){if(!chkValido(p))return null;const D=CHK[p].deg,r=chkDado(p).r,g=chkDegrau(p,r);if(g>=D.length)return null;return{nome:D[g][0],itens:D[g][1].filter((q,i)=>!(r[g]||[])[i]).map(q=>q[1])}}
+function chkFalta(p){if(!chkValido(p))return null;const D=CHK[p].deg,r=chkDado(p).r,g=chkDegrau(p,r);if(g>=D.length)return null;return{nome:D[g][0],itens:D[g][1].filter((q,i)=>q[2]?!q[2]():!(r[g]||[])[i]).map(q=>q[1])}}
 const tetoFin=()=>teto(3),finValido=()=>chkValido(3);
 function chkCheckin(p){const C=CHK[p],D=C.deg,old=chkValido(p)?chkDado(p).r:null;
   const r=D.map((g,i)=>g[1].map((q,j)=>!!(old&&old[i]&&old[i][j])));
   const draw=()=>{abrir('<h3 class="gd">'+C.ico+' '+C.tit+'</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:12px">Responda com sinceridade. As respostas ficam só no seu celular e definem até onde o seu status de <b>'+C.pil+'</b> pode subir. Vale por '+TETO_VALIDADE+' dias.</p>'+
     D.map(([nome,qs],g)=>'<div class="card" style="margin-bottom:10px;padding:12px 14px"><div class="h cy" style="font-size:11px;margin-bottom:8px">PARA PASSAR DE '+TETOS[g]+' · '+nome.toUpperCase()+'</div>'+
-      qs.map(([q],j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+q+'</span><div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div></div>').join('')+'</div>').join('')+
+      qs.map(([q,,auto],j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+(auto?'🔒 ':'')+q+'</span>'+(auto?'<b class="'+(auto()?'cy':'rd')+'" style="font-size:13px;white-space:nowrap">'+(auto()?'✓ OK':'AINDA NÃO')+'</b>':'<div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div>')+'</div>').join('')+'</div>').join('')+
     '<p class="cy" style="font-size:15px;margin:4px 0 12px;text-align:center">Com essas respostas, seu teto de '+C.pil+' fica em <b>'+TETOS[chkDegrau(p,r)]+'</b>.</p>'+
     '<div class="row"><button class="btn ghost" id="fqX">CANCELAR</button><button class="btn" id="fqOk">SALVAR</button></div>');
     $('#sheet').querySelectorAll('[data-fq]').forEach(b=>b.onclick=()=>{const[g,j,v]=b.dataset.fq.split('-').map(Number);const sc=$('#sheet').scrollTop;r[g][j]=!!v;draw();$('#sheet').scrollTop=sc});
@@ -849,7 +869,7 @@ function chkCheckin(p){const C=CHK[p],D=C.deg,old=chkValido(p)?chkDado(p).r:null
   };draw();
 }
 function chkLinha(p){const t=teto(p),v=atualBruto(p),preso=v>=t-0.5,f=chkFalta(p),C=CHK[p];
-  if(!chkValido(p))return'<button class="fin-linha alerta" data-chk="'+p+'">🔒 Limitado a <b>'+TETOS[0]+'</b> · faça o check-in '+(p===3?'financeiro':'físico')+' <span>›</span></button>';
+  if(!chkValido(p))return'<button class="fin-linha alerta" data-chk="'+p+'">🔒 Limitado a <b>'+TETOS[0]+'</b> · faça o check-in <span>›</span></button>';
   return'<button class="fin-linha'+(preso&&f?' preso':'')+'" data-chk="'+p+'">'+C.ico+' Teto <b>'+t+'</b>'+(f?' · falta'+(f.itens.length>1?'m':'')+' '+f.itens.length+' condiç'+(f.itens.length>1?'ões':'ão'):' · máximo')+(preso&&f?' · travado':'')+' <span>›</span></button>'}
 function chkDetalhe(p){const C=CHK[p],D=C.deg,t=teto(p),f=chkFalta(p),val=chkValido(p),dias=val?Math.max(0,TETO_VALIDADE-Math.floor((Date.now()-chkDado(p).d)/864e5)):0,g=val?chkDegrau(p,chkDado(p).r):0;
   abrir('<h3 class="gd">'+C.ico+' TETO DE '+C.pil.toUpperCase()+'</h3><p style="font-size:15px;line-height:1.5;margin:6px 0 12px">'+C.pil+' só sobe até o teto liberado pelos seus '+C.txt+'. O XP continua acumulando: quando o teto sobe, o valor sobe na hora.</p>'+
@@ -3866,7 +3886,7 @@ function renderConquistas(){
 /* ============ RELATÓRIO SEMANAL ============ */
 function segunda(d=new Date()){const t=new Date(d);t.setHours(12,0,0,0);t.setDate(t.getDate()-((t.getDay()+6)%7));return t}
 function finLembrete(){const k=hoje();if(S.finAviso===k)return false;const falta=Object.keys(CHK).map(Number).filter(p=>!chkValido(p));if(!falta.length)return false;S.finAviso=k;salvar();
-  const nomes=falta.map(p=>'<b>'+CHK[p].pil+'</b>').join(' e ');
+  const nm=falta.map(p=>'<b>'+CHK[p].pil+'</b>'),nomes=nm.length>1?nm.slice(0,-1).join(', ')+' e '+nm[nm.length-1]:nm[0];
   setTimeout(()=>sistema('CHECK-IN DO MÊS','<span style="font-size:44px">'+falta.map(p=>CHK[p].ico).join(' ')+'</span><br>Faltando o check-in de '+nomes+'.<br><br>Sem ele, '+(falta.length>1?'esses status ficam limitados':'esse status fica limitado')+' a <b class="gd">'+TETOS[0]+'</b>. Faça em <b class="cy">Perfil → Status</b>, logo abaixo de cada um.'),1500);return true}
 function relatorioAuto(){
   if(!S.nome)return;
