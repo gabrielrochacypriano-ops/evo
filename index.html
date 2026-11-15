@@ -316,6 +316,9 @@ body.zen .toast{background:#fff}
 body.zen .sys .box{background:rgba(255,255,255,.97);box-shadow:0 10px 40px rgba(40,70,60,.2)}
 body.zen .sheet{background:#fff}
 body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
+.foco-it{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;font-size:14px}
+.foco-it.on{border-color:var(--gold);background:rgba(255,201,74,.06)}.foco-it.alt{opacity:.6;justify-content:space-between;font-size:13px}
+.foco-it .btn.sm{width:auto;flex:0 0 auto;min-height:36px;padding:0 12px;font-size:12px}
 .fin-linha{display:flex;align-items:center;gap:6px;width:100%;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--txt);font-size:13.5px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fin-linha span{margin-left:auto;color:var(--mut);font-size:18px}.fin-linha.alerta,.fin-linha.preso{border-color:var(--gold)}.fin-linha.alerta{background:rgba(255,201,74,.07)}
 .fin-aviso{display:flex;gap:10px;align-items:center;margin:2px 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:10px;background:rgba(255,201,74,.07);font-size:13.5px;line-height:1.4}
@@ -965,6 +968,77 @@ function missoesDoDia(k){
   return lista;
 }
 
+/* ============ FOCOS (sub-habilidades) — a partir do Rank C ============
+   arv: árvores que o foco ocupa (0 Físico · 1 Mente · 2 Espírito · 3 Recursos · 4 Comunidade). O primeiro é onde as missões rendem XP. */
+const FOCOS=[
+ // MENTE
+ {id:'intra',nome:'Inteligência Emocional',ico:'💭',arv:[1],desc:'Conhecer e lidar com as próprias emoções.',m:[['Nomear 3 emoções que sentiu hoje','Escreva o que sentiu e o que provocou cada uma.'],['Pausa de 3 respirações antes de reagir','Use numa situação que te irritar hoje.'],['Diário de 5 minutos','Como foi o dia, o que pesou e o que ajudou.'],['Identificar um gatilho','O que costuma te tirar do sério? Anote e pense numa resposta melhor.'],['Fazer algo que te acalma de propósito','Música, caminhada, banho, oração: escolha um e faça com atenção.']]},
+ {id:'logica',nome:'Inteligência Lógica',ico:'🧮',arv:[1],desc:'Raciocínio, números, padrões e resolução de problemas.',m:[['Resolver 3 desafios de lógica na Arena','Lógica, sudoku, xadrez ou qualquer jogo de raciocínio.'],['Fazer uma conta do dia a dia de cabeça','Troco, porcentagem, desconto: sem calculadora.'],['Dividir um problema em passos','Escolha algo travado e liste os passos para resolver.'],['Aprender um conceito de matemática ou ciência','10 minutos de vídeo, livro ou aula.'],['Analisar uma decisão com prós e contras','Escreva os dois lados antes de decidir.']]},
+ {id:'lingua',nome:'Inteligência Linguística',ico:'📝',arv:[1],desc:'Leitura, escrita, vocabulário e idiomas.',m:[['Ler 15 páginas','Livro físico, e-book ou audiobook.'],['Escrever um parágrafo sobre o seu dia','Capriche na clareza.'],['Aprender 5 palavras novas','Em português ou em outro idioma, e use uma delas numa frase.'],['Fazer uma lição de idioma na Arena','Complete a lição inteira.'],['Explicar algo que aprendeu em voz alta','Como se fosse ensinar a alguém, em 2 minutos.']]},
+ {id:'inter',nome:'Inteligência Interpessoal',ico:'🫂',arv:[1,4],desc:'Entender pessoas, se comunicar e criar conexão.',m:[['Escuta ativa numa conversa','Repita com suas palavras o que a pessoa disse antes de responder.'],['Perguntar algo profundo a alguém','"O que tem te deixado feliz ultimamente?"'],['Elogio específico','Diga exatamente o que a pessoa fez bem.'],['Mediar ou acalmar um conflito','Ajude duas partes a se entenderem.'],['Observar a linguagem corporal','Numa conversa, perceba o que o corpo da pessoa comunica.']]},
+ {id:'corporal',nome:'Inteligência Corporal-Espacial',ico:'🤸',arv:[1,0],desc:'Coordenação, equilíbrio e noção do corpo no espaço.',m:[['Equilíbrio em um pé só','30 segundos em cada perna, depois de olhos fechados.'],['Praticar uma habilidade motora','Malabarismo, dança, embaixadinha ou um passo novo.'],['Desenhar um objeto observando','5 minutos, prestando atenção em formas e proporções.'],['Montar ou consertar algo com as mãos','Móvel, quebra-cabeça, conserto simples.'],['Fazer um jogo de reflexo na Arena','Toque Rápido, Reação ou Vai/Não Vai.']]},
+ {id:'musical',nome:'Inteligência Musical',ico:'🎵',arv:[1,0],desc:'Ritmo, melodia e expressão pela música e pelo corpo.',m:[['Ouvir uma música com atenção total','Tente separar os instrumentos.'],['Praticar um instrumento por 15 minutos','Ou aprender um ritmo batendo palmas.'],['Cantar ou dançar uma música inteira','Movimente o corpo no ritmo.'],['Jogar a Sequência de Luzes na Arena','Cada cor tem uma nota: use o ouvido.'],['Conhecer um estilo musical novo','Ouça 3 músicas de um gênero que você não conhece.']]},
+ {id:'natural',nome:'Inteligência Naturalista',ico:'🌿',arv:[1,2],desc:'Observar e se conectar com a natureza e os seres vivos.',m:[['Caminhar 15 minutos em área verde','Parque, praça ou rua arborizada.'],['Identificar 3 plantas ou aves','Use um app ou pesquise o nome.'],['Cuidar de uma planta','Regar, adubar ou plantar algo.'],['Observar o céu por 5 minutos','Nuvens, pôr do sol ou estrelas, sem celular.'],['Aprender um fato sobre um animal','E conte para alguém.']]},
+ {id:'existencial',nome:'Inteligência Existencial',ico:'🌌',arv:[1,2],desc:'Refletir sobre sentido, vida e o seu lugar no mundo.',m:[['Escrever o que dá sentido à sua vida','Uma lista curta e sincera.'],['Ler um trecho de filosofia ou texto sagrado','E pensar em como se aplica ao seu dia.'],['Responder: o que eu quero que digam de mim?','Pense no legado que quer deixar.'],['Conversar sobre uma grande pergunta','Com alguém de confiança: propósito, fé, morte, futuro.'],['Meditar sobre a brevidade da vida','5 minutos pensando no que realmente importa.']]},
+ // FÍSICO
+ {id:'saude',nome:'Saúde Física',ico:'❤️',arv:[0],desc:'Sono, alimentação, hidratação e prevenção.',m:[['Beber 2 litros de água','Deixe uma garrafa sempre por perto.'],['Dormir 7 horas','Planeje o horário de deitar.'],['Uma refeição com verduras e proteína','Prato colorido.'],['Zero refrigerante hoje','Troque por água ou suco natural.'],['Marcar ou conferir um exame de rotina','Check-up, dentista ou vista.']]},
+ {id:'forca',nome:'Força',ico:'🏋️',arv:[0],desc:'Músculos, potência e firmeza do corpo.',m:[['3 séries de flexões','No seu limite, com boa técnica (pode apoiar os joelhos).'],['3 séries de agachamentos','15 repetições cada.'],['Prancha: 3 × 30 segundos','Corpo reto, abdômen firme.'],['Treino de força de 20 minutos','Academia, elástico ou peso do corpo.'],['Subir escadas em vez do elevador','Pelo menos 3 andares.']]},
+ {id:'resist',nome:'Resistência',ico:'🏃',arv:[0],desc:'Fôlego e capacidade de manter o esforço.',m:[['Caminhada rápida de 30 minutos','Num ritmo em que dá para falar, mas não cantar.'],['Corrida ou trote de 15 minutos','No seu ritmo, sem parar.'],['20 minutos de bike ou natação','Ou outro cardio de sua escolha.'],['Pular corda 5 minutos','Pode dividir em blocos.'],['Treino intervalado de 10 minutos','30 s forte, 30 s leve.']]},
+ {id:'destreza',nome:'Destreza',ico:'🤹',arv:[0],desc:'Agilidade, flexibilidade e coordenação.',m:[['Alongamento de 10 minutos','Corpo inteiro, sem forçar.'],['Exercício de agilidade','Pular para os lados, escada de agilidade ou polichinelos rápidos.'],['Mobilidade de quadril e ombros','5 minutos de movimentos circulares.'],['Jogo de reflexo na Arena','Bata a meta do seu nível.'],['Praticar um esporte com bola','10 minutos de embaixadinha, arremesso ou quique.']]},
+ // ESPÍRITO
+ {id:'espir',nome:'Espiritualidade',ico:'🙏',arv:[2],desc:'Meditação, oração e filosofia.',m:[['10 minutos de meditação ou oração','Num lugar tranquilo.'],['Ler um trecho espiritual ou filosófico','E anotar uma frase que marcou.'],['Momento de silêncio','5 minutos sem estímulos, só respirando.'],['Agradecer antes de uma refeição','Com atenção, não no automático.'],['Refletir sobre o dia antes de dormir','O que fez bem e o que pode melhorar.']]},
+ {id:'proposito',nome:'Propósito',ico:'🧭',arv:[2],desc:'Saber o seu porquê e viver de acordo com ele.',m:[['Escrever seu porquê em uma frase','Por que você faz o que faz?'],['Uma ação ligada a uma meta de vida','Mesmo pequena, que te aproxime dela.'],['Revisar seus valores','Releia e veja se o dia combinou com eles.'],['Dizer não a algo que te afasta do essencial','Proteja o seu tempo.'],['Imaginar você daqui a 5 anos','Escreva como quer estar e um passo para hoje.']]},
+ {id:'gratidao',nome:'Gratidão e Contentamento',ico:'🌻',arv:[2],desc:'Reconhecer o que tem e reduzir a comparação.',m:[['Anotar 3 coisas boas do dia','Mesmo pequenas.'],['Agradecer alguém pessoalmente','Diga o que a pessoa fez e por que importou.'],['Um dia sem reclamar','Se reclamar, troque por uma solução.'],['Ficar 1 hora sem redes sociais','Para diminuir a comparação.'],['Aproveitar algo simples com atenção','Um café, um banho, um pôr do sol.']]},
+ {id:'resil',nome:'Resiliência',ico:'🪨',arv:[2],desc:'Atravessar as dificuldades sem desistir.',m:[['Fazer algo difícil que você vinha adiando','Comece por 10 minutos.'],['Banho frio de 30 segundos','No final do banho. Pule se tiver problema de saúde.'],['Reescrever um problema como desafio','O que ele pode te ensinar?'],['Lembrar uma dificuldade que você já superou','E o que te ajudou a passar por ela.'],['Terminar algo que começou','Mesmo que esteja sem vontade.']]},
+ {id:'integ',nome:'Integridade',ico:'⚖️',arv:[2],desc:'Agir de acordo com os seus valores e cumprir a palavra.',m:[['Cumprir uma promessa feita','Mesmo pequena.'],['Dizer a verdade numa situação desconfortável','Com respeito.'],['Devolver ou resolver algo pendente','Um empréstimo, uma resposta, uma conta.'],['Chegar no horário em todos os compromissos','Hoje, sem exceção.'],['Admitir um erro','Assuma e proponha como corrigir.']]},
+ // RECURSOS
+ {id:'patrim',nome:'Patrimônio',ico:'🏛️',arv:[3],desc:'Construir e proteger o que você tem.',m:[['Calcular seu patrimônio líquido','Some o que tem e subtraia o que deve.'],['Estudar 15 minutos sobre investimentos','Tesouro Direto, renda fixa, fundos.'],['Revisar onde seu dinheiro está aplicado','Rendimento, taxas e prazo.'],['Investir qualquer valor','Até R$ 10 já cria o hábito.'],['Conferir seguros e documentos importantes','Estão em dia e guardados?']]},
+ {id:'renda',nome:'Geração de Renda',ico:'💼',arv:[3],desc:'Aumentar o quanto você ganha.',m:[['Listar 3 habilidades que alguém pagaria por','O que as pessoas já te pedem ajuda para fazer?'],['30 minutos aprendendo uma habilidade que paga','Curso, vídeo ou prática.'],['Atualizar currículo ou perfil profissional','LinkedIn, portfólio ou bio de vendas.'],['Fazer uma ação de venda ou prospecção','Oferecer um serviço, ligar para um cliente, divulgar.'],['Pedir feedback sobre o seu trabalho','E anotar um ponto para melhorar.']]},
+ {id:'econ',nome:'Economia',ico:'✂️',arv:[3],desc:'Gastar menos e melhor.',m:[['Anotar todos os gastos do dia','Do café ao boleto.'],['Um dia sem gastos supérfluos','Só o essencial.'],['Cancelar uma assinatura que não usa','Streaming, app, clube.'],['Comparar preços antes de uma compra','Pelo menos 3 lugares.'],['Cozinhar em vez de pedir comida','E anotar quanto economizou.']]},
+ {id:'reserva',nome:'Reservas',ico:'🛟',arv:[3],desc:'Montar a reserva de emergência e o colchão de segurança.',m:[['Separar um valor para a reserva hoje','Qualquer valor, assim que o dinheiro entrar.'],['Calcular sua meta de reserva','Gastos mensais × 6.'],['Deixar a reserva num lugar seguro e com liquidez','Como Tesouro Selic ou CDB com liquidez diária.'],['Ver quantos meses sua reserva cobre','Reserva ÷ gastos mensais.'],['Automatizar uma transferência para a reserva','No dia do pagamento.']]},
+ // COMUNIDADE
+ {id:'volunt',nome:'Voluntariado',ico:'🤲',arv:[4],desc:'Doar tempo e talento a uma causa.',m:[['Pesquisar uma causa ou ONG perto de você','E como ajudar.'],['Doar algo que você não usa','Roupas, livros, brinquedos.'],['Ajudar um vizinho ou desconhecido','Uma ajuda concreta hoje.'],['Participar de uma ação voluntária','Mutirão, campanha, evento.'],['Divulgar uma causa importante','Compartilhe com quem pode ajudar.']]},
+ {id:'familia',nome:'Família, Parceiro e Amigos',ico:'🏡',arv:[4],desc:'Cuidar das relações mais próximas.',m:[['Ligar para alguém da família','Só para saber como está.'],['Tempo de qualidade sem celular','30 minutos com quem você ama.'],['Fazer uma surpresa simples','Um bilhete, um café, uma mensagem carinhosa.'],['Marcar um encontro com um amigo','Pessoalmente ou por vídeo.'],['Ajudar em uma tarefa da casa sem ser pedido','E sem esperar reconhecimento.']]},
+ {id:'colegas',nome:'Colegas',ico:'🤝',arv:[4],desc:'Boas relações no trabalho e nos estudos.',m:[['Reconhecer o trabalho de um colega','Em público ou em particular.'],['Ajudar um colega com uma dificuldade','Ofereça 15 minutos.'],['Almoçar ou conversar com alguém novo','Conheça melhor quem trabalha com você.'],['Dar um retorno construtivo','Com respeito e um exemplo concreto.'],['Resolver um mal-entendido','Converse direto, sem fofoca.']]},
+ {id:'mentoria',nome:'Alunos e Mentoriados',ico:'🎓',arv:[4],desc:'Ensinar, orientar e ajudar alguém a crescer.',m:[['Ensinar algo que você sabe a alguém','15 minutos.'],['Responder a dúvida de alguém com calma','Até a pessoa entender.'],['Compartilhar um conteúdo útil com quem está aprendendo','Um livro, vídeo ou dica.'],['Fazer uma pergunta que faça alguém pensar','Em vez de dar a resposta pronta.'],['Contar um erro seu e o que aprendeu','Para poupar o outro do mesmo erro.']]}
+];
+const FOCO_RANKS=['C','B','A','S','SS'];   // cada rank abre +1 foco em cada árvore
+const FOCO_TROCA_DIAS=30;
+function focosLib(){const r=rank(nivel()),ord=['E','D','C','B','A','S','SS'];return FOCO_RANKS.filter(x=>ord.indexOf(r)>=ord.indexOf(x)).length}
+function focosSel(){S.focos=S.focos||{sel:[],troca:0};return S.focos}
+const focoPor=id=>FOCOS.find(f=>f.id===id);
+function focoUso(p){return focosSel().sel.map(focoPor).filter(f=>f&&f.arv.includes(p)).length}
+function focoPode(f){const L=focosLib();return !focosSel().sel.includes(f.id)&&f.arv.every(p=>focoUso(p)<L)}
+function focoProgresso(id){let n=0;for(const d of Object.values(S.dias||{}))if(d.feitas)n+=d.feitas.filter(x=>String(x).startsWith('fo-'+id+'-')).length;return n}
+function focoMissoesDia(k){
+  const sel=focosSel().sel.map(focoPor).filter(Boolean);if(!sel.length||focosLib()<1)return[];
+  const dn=Math.floor(new Date(k+'T12:00:00').getTime()/864e5),q=Math.min(3,sel.length),out=[];
+  for(let i=0;i<q;i++){const f=sel[(dn+i)%sel.length],mi=(dn+i*2)%f.m.length,[t,como]=f.m[mi];out.push({id:'fo-'+f.id+'-'+mi,p:f.arv[0],t,como,minha:1,foco:f.nome})}
+  return out;
+}
+function focosHtml(){
+  const L=focosLib();
+  if(!L)return'<div class="card" style="margin-top:12px"><div class="h cy" style="font-size:12px">🧬 Focos</div><p class="mut" style="font-size:14px;margin-top:6px">🔒 Liberados no <b class="gd">Rank C</b> (nível 16). Você escolhe um foco em cada árvore, como Força no Físico ou Inteligência Lógica na Mente, e recebe missões guiadas para ele.</p></div>';
+  const sel=focosSel().sel.map(focoPor).filter(Boolean),livres=[0,1,2,3,4].filter(p=>focoUso(p)<L);
+  return'<div class="card" style="margin-top:12px"><div class="h cy" style="font-size:12px;margin-bottom:6px">🧬 Focos <span class="mut" style="font-size:10px">· '+L+' por árvore</span></div>'+
+    (sel.length?sel.map(f=>{const n=focoProgresso(f.id);return'<div class="stat" style="padding:5px 0"><div class="nm" style="font-size:13px">'+f.ico+' '+f.nome+'</div><div><div class="bar"><i style="width:'+Math.min(100,(n%10)*10)+'%"></i></div><small>Nível '+(1+Math.floor(n/10))+' · '+n+' missão(ões) · '+f.arv.map(p=>PIL[p]).join(' + ')+'</small></div><div class="vl cy">N'+(1+Math.floor(n/10))+'</div></div>'}).join(''):'<p class="mut" style="font-size:14px">Nenhum foco escolhido ainda.</p>')+
+    (livres.length?'<p style="font-size:14px;margin:8px 0">Espaços livres em: <b class="gd">'+livres.map(p=>PIL[p]).join(', ')+'</b>.</p>':'')+
+    '<button class="btn sm '+(livres.length?'':'ghost')+'" data-focos style="margin-top:6px">'+(livres.length?'ESCOLHER FOCOS':'GERENCIAR FOCOS')+'</button></div>';
+}
+function focosTela(){
+  const L=focosLib(),F=focosSel(),podeTrocar=!F.troca||(Date.now()-F.troca)/864e5>=FOCO_TROCA_DIAS,diasT=F.troca?Math.max(0,FOCO_TROCA_DIAS-Math.floor((Date.now()-F.troca)/864e5)):0;
+  const arvs=[[1,'🧠 Mente'],[0,'💪 Físico'],[2,'✨ Espírito'],[3,'💰 Recursos'],[4,'🤝 Comunidade']];
+  abrir('<h3 class="cy">🧬 FOCOS</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:10px">Você tem <b>'+L+'</b> foco(s) por árvore (+1 a cada rank a partir do C). Focos com 🔗 ocupam um espaço de cada árvore envolvida. Cada foco traz missões próprias para o seu dia. Pode trocar 1 foco por mês'+(podeTrocar?'.':' (próxima troca em '+diasT+' dia(s)).')+'</p>'+
+    arvs.map(([p,nome])=>'<div class="h cy" style="font-size:11px;margin:12px 0 4px">'+nome+' · '+focoUso(p)+'/'+L+'</div>'+FOCOS.filter(f=>f.arv.includes(p)).map(f=>{
+      const on=F.sel.includes(f.id),ok=focoPode(f);if(p!==f.arv[0]&&f.arv.length>1)return'<div class="foco-it alt"><span>'+f.ico+' '+f.nome+' 🔗</span><small class="mut">ver em '+PIL[f.arv[0]]+'</small></div>';
+      return'<div class="foco-it'+(on?' on':'')+'"><div style="flex:1;min-width:0"><b>'+f.ico+' '+f.nome+(f.arv.length>1?' 🔗':'')+'</b><div class="mut" style="font-size:12.5px">'+f.desc+(f.arv.length>1?' Ocupa '+f.arv.map(x=>PIL[x]).join(' + ')+'.':'')+'</div></div>'+
+        (on?'<button class="btn sm ghost" data-fx="'+f.id+'"'+(podeTrocar?'':' disabled')+'>TROCAR</button>':'<button class="btn sm" data-fs="'+f.id+'"'+(ok?'':' disabled')+'>ESCOLHER</button>')+'</div>'}).join('')).join('')+
+    '<button class="btn" style="margin-top:14px" id="foX">FECHAR</button>');
+  $('#foX').onclick=()=>{fechar();render()};
+  $('#sheet').querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{const f=focoPor(b.dataset.fs);if(!focoPode(f))return;F.sel.push(f.id);registrar('🧬 Novo foco: '+f.nome);sincronizarHoje();salvar();const sc=$('#sheet').scrollTop;focosTela();$('#sheet').scrollTop=sc;toast(f.nome+' escolhido')});
+  $('#sheet').querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{if(!b.dataset.c){b.dataset.c=1;b.textContent='CONFIRMAR';return}const f=focoPor(b.dataset.fx);F.sel=F.sel.filter(x=>x!==f.id);F.troca=Date.now();registrar('🧬 Foco trocado: '+f.nome+' saiu');sincronizarHoje();salvar();const sc=$('#sheet').scrollTop;focosTela();$('#sheet').scrollTop=sc;toast('Escolha o novo foco')});
+}
+
 /* ===== Minhas missões (criadas pelo jogador) ===== */
 function minhasLimite(){const n=nivel(),r=rank(n),porRank={E:0,D:1,C:2,B:3,A:4,S:5}[r]||0;const total=Math.min(10,2+Math.floor(n/5)+porRank);
   const prox=[...Array(60)].map((_,i)=>n+1+i).find(l=>Math.min(10,2+Math.floor(l/5)+({E:0,D:1,C:2,B:3,A:4,S:5}[rank(l)]||0))>total);return{total,prox}}
@@ -1003,7 +1077,8 @@ function tarefasDoDia(k){
   const dw=new Date(k+'T12:00:00').getDay();
   return missaoClasse(k).concat((S.tarefas||[]).filter(t=>t.dias.includes(dw)&&metaAtiva(S.metas.find(m=>m.id===t.mid)))
     .map(t=>{const m=S.metas.find(x=>x.id===t.mid);return{id:t.id,p:m.p,t:t.t,meta:1}}))
-    .concat((S.minhas||[]).filter(t=>t.dias.includes(dw)).map(t=>({id:t.id,p:t.p,t:t.t,como:t.desc||'',minha:1})));
+    .concat((S.minhas||[]).filter(t=>t.dias.includes(dw)).map(t=>({id:t.id,p:t.p,t:t.t,como:t.desc||'',minha:1})))
+    .concat(focoMissoesDia(k));
 }
 /* coloca/retira tarefas de meta na lista de hoje quando você muda algo */
 function sincronizarHoje(){
@@ -1172,7 +1247,7 @@ $('#btnEgo').onclick=()=>{
     ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','focos','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1234,9 +1309,9 @@ function renderRadar(){
   $('#kStreak').textContent=sequencia()+' 🔥';
   $('#stats').innerHTML=PIL.map((p,i)=>{
     const lv=1+Math.floor(Math.max(0,S.xp[i])/300), d=S.ego[i]-realNota(i);
-    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(CHK[i]?chkLinha(i):'')}).join('')+subsHtml();
+    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(CHK[i]?chkLinha(i):'')}).join('')+focosHtml();
   $('#stats').querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>chkDetalhe(+b.dataset.chk));
-  $('#stats').querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const p=+b.dataset.sub;S.subs=S.subs||{abertos:[]};if(S.subs.abertos.length>=subsLiberadas())return;S.subs.abertos.push(p);registrar('🧬 Sub-habilidades de '+PIL[p]+' abertas');salvar();render();toast(PIL[p]+' dividido em 3 sub-habilidades')});
+  $('#stats').querySelectorAll('[data-focos]').forEach(b=>b.onclick=focosTela);
   const f=fraco();let maior=0;for(let i=1;i<5;i++)if(S.ego[i]-realNota(i)>S.ego[maior]-realNota(maior))maior=i;
   const gap=S.ego[maior]-realNota(maior);
   renderEvol();
@@ -1276,7 +1351,7 @@ function renderMissoes(){
   const xp=Math.round(XP_MISSAO*MODOS[S.modo].mult);
   const rest=trocasRestantes();
   const card=(m,i)=>{const ok=d.feitas.includes(m.id);
-    return'<div class="mis'+(ok?' done':'')+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.minha?'✍️ MINHA · ':'')+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls||m.minha?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'};
+    return'<div class="mis'+(ok?' done':'')+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.foco?'🧬 '+m.foco.toUpperCase()+' · ':m.minha?'✍️ MINHA · ':'')+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls||m.minha?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'};
   const pend=lista.map((m,i)=>[m,i]).filter(([m])=>!d.feitas.includes(m.id)),feitasL=lista.map((m,i)=>[m,i]).filter(([m])=>d.feitas.includes(m.id));
   const ml=minhasLimite();
   $('#misList').innerHTML=(pend.length?pend.map(([m,i])=>card(m,i)).join(''):'<div class="card" style="text-align:center;margin-bottom:10px"><div style="font-size:30px">🏆</div><b class="cy">Todas as missões de hoje concluídas!</b></div>')+
