@@ -774,25 +774,25 @@ const atual=i=>{const v=atualBruto(i);return i===3?Math.min(v,tetoFin()):v};   /
 
 /* ============ TETOS FINANCEIROS (Recursos) — check-in mensal obrigatório ============ */
 const FIN_TETOS=[40,55,65,75,85,95,99];
-const FIN_DEGRAUS=[
- ['Renda e contas básicas',['Você tem renda própria regular (salário, negócio, bicos, aposentadoria ou pensão)?','As contas essenciais deste mês (moradia, comida, luz e água) estão pagas?']],
- ['Contas em dia',['Todas as suas contas estão em dia há pelo menos 3 meses?','Você está sem dívidas atrasadas (ou com um acordo sendo pago em dia)?','Você sabe quanto ganha e quanto gasta por mês?']],
- ['Sobra e reserva inicial',['Você gasta menos do que ganha (sobra dinheiro no fim do mês)?','Você está sem usar cheque especial e sem pagar o rotativo do cartão?','Você tem reserva de emergência de pelo menos 1 mês dos seus gastos?']],
- ['Reserva de 3 meses',['Sua reserva cobre pelo menos 3 meses de gastos?','Você guarda 10% ou mais da sua renda há pelo menos 6 meses?','Seus gastos essenciais ficam em até 60% da sua renda?']],
- ['Reserva de 6 meses',['Sua reserva cobre pelo menos 6 meses de gastos?','Você investe todos os meses?','Seu patrimônio é maior que as suas dívidas (e financiamentos, se houver, estão em dia)?']],
- ['Renda de investimentos',['Seus investimentos geram renda que cobre pelo menos 25% dos seus gastos?','Sua reserva cobre 12 meses de gastos?','Você tem um plano para a aposentadoria?']]
+const FIN_DEGRAUS=[   // [pergunta (SIM = cumpre), condição curta mostrada no perfil]
+ ['Renda e contas básicas',[['Você tem renda própria regular (salário, negócio, bicos, aposentadoria ou pensão)?','ter renda própria regular'],['As contas essenciais deste mês (moradia, comida, luz e água) estão pagas?','pagar as contas essenciais do mês']]],
+ ['Contas em dia',[['Todas as suas contas estão em dia há pelo menos 3 meses?','contas em dia há 3 meses'],['Suas dívidas estão em dia? (Responda SIM se não tem dívidas ou se tem um acordo sendo pago em dia.)','nenhuma dívida atrasada'],['Você sabe quanto ganha e quanto gasta por mês?','saber quanto ganha e quanto gasta']]],
+ ['Sobra e reserva inicial',[['Você gasta menos do que ganha (sobra dinheiro no fim do mês)?','gastar menos do que ganha'],['Você fica longe do cheque especial e do rotativo do cartão?','não usar cheque especial nem rotativo'],['Você tem reserva de emergência de pelo menos 1 mês dos seus gastos?','reserva de 1 mês']]],
+ ['Reserva de 3 meses',[['Sua reserva cobre pelo menos 3 meses de gastos?','reserva de 3 meses'],['Você guarda 10% ou mais da sua renda há pelo menos 6 meses?','guardar 10% da renda há 6 meses'],['Seus gastos essenciais ficam em até 60% da sua renda?','gastos essenciais até 60% da renda']]],
+ ['Reserva de 6 meses',[['Sua reserva cobre pelo menos 6 meses de gastos?','reserva de 6 meses'],['Você investe todos os meses?','investir todo mês'],['Seu patrimônio é maior que as suas dívidas (e financiamentos, se houver, estão em dia)?','patrimônio maior que as dívidas']]],
+ ['Renda de investimentos',[['Seus investimentos geram renda que cobre pelo menos 25% dos seus gastos?','investimentos cobrindo 25% dos gastos'],['Sua reserva cobre 12 meses de gastos?','reserva de 12 meses'],['Você tem um plano para a aposentadoria?','plano de aposentadoria']]]
 ];
 const FIN_VALIDADE=31;   // dias
 function finValido(){const f=S.fin;return f&&f.d&&(Date.now()-f.d)/864e5<FIN_VALIDADE}
 function finDegrau(r){let n=0;for(let g=0;g<FIN_DEGRAUS.length;g++){if(r&&r[g]&&r[g].every(Boolean))n=g+1;else break}return n}
 function tetoFin(){return finValido()?FIN_TETOS[finDegrau(S.fin.r)]:FIN_TETOS[0]}
 function finFalta(){if(!finValido())return null;const g=finDegrau(S.fin.r);if(g>=FIN_DEGRAUS.length)return null;
-  return{nome:FIN_DEGRAUS[g][0],itens:FIN_DEGRAUS[g][1].filter((q,i)=>!(S.fin.r[g]||[])[i])}}
+  return{nome:FIN_DEGRAUS[g][0],itens:FIN_DEGRAUS[g][1].filter((q,i)=>!(S.fin.r[g]||[])[i]).map(q=>q[1])}}
 function finCheckin(){
   const r=FIN_DEGRAUS.map((g,i)=>g[1].map((q,j)=>!!(finValido()&&S.fin.r[i]&&S.fin.r[i][j])));
   const draw=()=>{abrir('<h3 class="gd">💰 CHECK-IN FINANCEIRO</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:12px">Responda com sinceridade. As respostas ficam só no seu celular e definem até onde o seu status de <b>Recursos</b> pode subir. Vale por '+FIN_VALIDADE+' dias.</p>'+
     FIN_DEGRAUS.map(([nome,qs],g)=>'<div class="card" style="margin-bottom:10px;padding:12px 14px"><div class="h cy" style="font-size:11px;margin-bottom:8px">PARA PASSAR DE '+FIN_TETOS[g]+' · '+nome.toUpperCase()+'</div>'+
-      qs.map((q,j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+q+'</span><div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div></div>').join('')+'</div>').join('')+
+      qs.map(([q],j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+q+'</span><div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div></div>').join('')+'</div>').join('')+
     '<p class="cy" style="font-size:15px;margin:4px 0 12px;text-align:center">Com essas respostas, seu teto de Recursos fica em <b>'+FIN_TETOS[finDegrau(r)]+'</b>.</p>'+
     '<div class="row"><button class="btn ghost" id="fqX">CANCELAR</button><button class="btn" id="fqOk">SALVAR</button></div>');
     $('#sheet').querySelectorAll('[data-fq]').forEach(b=>b.onclick=()=>{const[g,j,v]=b.dataset.fq.split('-').map(Number);const sc=$('#sheet').scrollTop;r[g][j]=!!v;draw();$('#sheet').scrollTop=sc});
@@ -805,7 +805,7 @@ function finCheckin(){
 }
 function finLinha(){const t=tetoFin(),v=atualBruto(3),preso=v>=t-0.5,f=finFalta();
   if(!finValido())return'<div class="fin-aviso"><span>🔒 Recursos limitado a <b>'+FIN_TETOS[0]+'</b> até você fazer o check-in financeiro do mês.</span><button class="btn sm" data-fin>FAZER CHECK-IN</button></div>';
-  return'<div class="fin-aviso ok"><span>💰 Teto de Recursos: <b>'+t+'</b>'+(preso&&f?' · <span class="gd">travado no teto</span>':'')+'. '+(f?'Para passar: '+esc(f.itens[0]).replace(/\?$/,'')+(f.itens.length>1?' (+'+(f.itens.length-1)+')':'')+'.':'Teto máximo liberado.')+' Próximo check-in em '+Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5))+' dia(s).</span><button class="btn sm ghost" data-fin>REVER</button></div>'}
+  return'<div class="fin-aviso ok"><span>💰 Teto de Recursos: <b>'+t+'</b>'+(preso&&f?' · <span class="gd">travado no teto</span>':'')+'. '+(f?'Para passar de '+t+', falta: <b>'+f.itens.join('</b>, <b>')+'</b>.':'Teto máximo liberado.')+' Próximo check-in em '+Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5))+' dia(s).</span><button class="btn sm ghost" data-fin>REVER</button></div>'}
 
 /* ============ SUB-HABILIDADES (a partir do Rank C) — versão inicial ============ */
 const SUBS=[
