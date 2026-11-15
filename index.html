@@ -801,10 +801,9 @@ const N=v=>Math.round(v);
 const atualBruto=i=>{const ini=realNota(i),x=S.xp[i]-0.5*((S.xpAr&&S.xpAr[i])||0);   // XP da Arena conta metade para os status
   const v=x>=0?100-(100-ini)*Math.exp(-x/K_EVOL):ini*Math.exp(x/K_EVOL);
   return Math.max(0,Math.min(NOTA_TETO,v))};
-const atual=i=>{const v=atualBruto(i);return i===3?Math.min(v,tetoFin()):v};   // Recursos respeita o teto financeiro
+const atual=i=>{const v=atualBruto(i);return CHK[i]?Math.min(v,teto(i)):v};   // Físico e Recursos respeitam o teto do check-in   // Recursos respeita o teto financeiro
 
 /* ============ TETOS FINANCEIROS (Recursos) — check-in mensal obrigatório ============ */
-const FIN_TETOS=[40,55,65,75,85,95,99];
 const FIN_DEGRAUS=[   // [pergunta (SIM = cumpre), condição curta mostrada no perfil]
  ['Renda e contas básicas',[['Você tem renda própria regular (salário, negócio, bicos, aposentadoria ou pensão)?','ter renda própria regular'],['As contas essenciais deste mês (moradia, comida, luz e água) estão pagas?','pagar as contas essenciais do mês']]],
  ['Contas em dia',[['Todas as suas contas estão em dia há pelo menos 3 meses?','contas em dia há 3 meses'],['Suas dívidas estão em dia? (Responda SIM se não tem dívidas ou se tem um acordo sendo pago em dia.)','nenhuma dívida atrasada'],['Você sabe quanto ganha e quanto gasta por mês?','saber quanto ganha e quanto gasta']]],
@@ -813,38 +812,53 @@ const FIN_DEGRAUS=[   // [pergunta (SIM = cumpre), condição curta mostrada no 
  ['Reserva de 6 meses',[['Sua reserva cobre pelo menos 6 meses de gastos?','reserva de 6 meses'],['Você investe todos os meses?','investir todo mês'],['Seu patrimônio é maior que as suas dívidas (e financiamentos, se houver, estão em dia)?','patrimônio maior que as dívidas']]],
  ['Renda de investimentos',[['Seus investimentos geram renda que cobre pelo menos 25% dos seus gastos?','investimentos cobrindo 25% dos gastos'],['Sua reserva cobre 12 meses de gastos?','reserva de 12 meses'],['Você tem um plano para a aposentadoria?','plano de aposentadoria']]]
 ];
-const FIN_VALIDADE=31;   // dias
-function finValido(){const f=S.fin;return f&&f.d&&(Date.now()-f.d)/864e5<FIN_VALIDADE}
-function finDegrau(r){let n=0;for(let g=0;g<FIN_DEGRAUS.length;g++){if(r&&r[g]&&r[g].every(Boolean))n=g+1;else break}return n}
-function tetoFin(){return finValido()?FIN_TETOS[finDegrau(S.fin.r)]:FIN_TETOS[0]}
-function finFalta(){if(!finValido())return null;const g=finDegrau(S.fin.r);if(g>=FIN_DEGRAUS.length)return null;
-  return{nome:FIN_DEGRAUS[g][0],itens:FIN_DEGRAUS[g][1].filter((q,i)=>!(S.fin.r[g]||[])[i]).map(q=>q[1])}}
-function finCheckin(){
-  const r=FIN_DEGRAUS.map((g,i)=>g[1].map((q,j)=>!!(finValido()&&S.fin.r[i]&&S.fin.r[i][j])));
-  const draw=()=>{abrir('<h3 class="gd">💰 CHECK-IN FINANCEIRO</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:12px">Responda com sinceridade. As respostas ficam só no seu celular e definem até onde o seu status de <b>Recursos</b> pode subir. Vale por '+FIN_VALIDADE+' dias.</p>'+
-    FIN_DEGRAUS.map(([nome,qs],g)=>'<div class="card" style="margin-bottom:10px;padding:12px 14px"><div class="h cy" style="font-size:11px;margin-bottom:8px">PARA PASSAR DE '+FIN_TETOS[g]+' · '+nome.toUpperCase()+'</div>'+
+const FIS_DEGRAUS=[   // definidos por Gabriel (nov/2026)
+ ['Base',[['Você dorme pelo menos 5 horas por noite?','dormir 5 h por noite'],['Você come "comida de verdade" (refeição completa) em pelo menos 5 refeições na semana?','5 refeições de comida na semana'],['Você bebe pelo menos 1 litro de água por dia?','1 litro de água por dia']]],
+ ['Hábitos básicos',[['Você dorme pelo menos 6 horas por noite?','dormir 6 h por noite'],['Você bebe pelo menos 2 litros de água por dia?','2 litros de água por dia'],['Você come "comida de verdade" em pelo menos 7 refeições na semana?','7 refeições de comida na semana']]],
+ ['Rotina saudável',[['Você dorme pelo menos 7 horas por noite?','dormir 7 h por noite'],['Você come verduras, legumes ou frutas em pelo menos 3 refeições por semana?','verduras, legumes ou frutas em 3 refeições por semana'],['Você se exercita de alguma forma pelo menos 2 vezes por semana?','exercício 2× por semana'],['Você fez check-up médico nos últimos 5 anos?','check-up médico nos últimos 5 anos']]],
+ ['Corpo em dia',[['Você come verduras, legumes ou frutas em pelo menos 5 refeições por semana?','verduras, legumes ou frutas em 5 refeições por semana'],['Você se exercita de alguma forma pelo menos 3 vezes por semana?','exercício 3× por semana'],['Você fez check-up médico nos últimos 2 anos?','check-up médico nos últimos 2 anos']]],
+ ['Disciplina',[['Você se exercita de alguma forma pelo menos 4 vezes por semana?','exercício 4× por semana'],['Você fez check-up médico no último ano?','check-up médico no último ano'],['Você está lutando contra seus vícios? (Responda SIM também se não tem vícios.)','combater os vícios']]],
+ ['Excelência',[['Você faz check-up médico a cada 6 meses?','check-up a cada 6 meses'],['Sua alimentação e sua hidratação estão ótimas?','alimentação e hidratação ótimas'],['Seus exercícios, seu condicionamento físico e seu sono estão ótimos?','exercícios, físico e sono ótimos'],['Você está livre de vícios?','zero vícios']]]
+];
+const TETOS=[40,55,65,75,85,95,99],TETO_VALIDADE=31;
+const FIN_TETOS=TETOS,FIN_VALIDADE=TETO_VALIDADE;
+const CHK={
+  3:{pil:'Recursos',ico:'💰',tit:'CHECK-IN FINANCEIRO',deg:FIN_DEGRAUS,txt:'condições financeiras reais'},
+  0:{pil:'Físico',ico:'💪',tit:'CHECK-IN FÍSICO',deg:FIS_DEGRAUS,txt:'hábitos de saúde reais'}
+};
+const chkDado=p=>p===3?S.fin:((S.chk||{})[p]);
+function chkSalvar(p,v){if(p===3)S.fin=v;else{S.chk=S.chk||{};S.chk[p]=v}}
+function chkValido(p){const f=chkDado(p);return !!(f&&f.d&&(Date.now()-f.d)/864e5<TETO_VALIDADE)}
+function chkDegrau(p,r){const D=CHK[p].deg;let n=0;for(let g=0;g<D.length;g++){if(r&&r[g]&&r[g].length===D[g][1].length&&r[g].every(Boolean))n=g+1;else break}return n}
+function teto(p){if(!CHK[p])return NOTA_TETO;return chkValido(p)?TETOS[chkDegrau(p,chkDado(p).r)]:TETOS[0]}
+function chkFalta(p){if(!chkValido(p))return null;const D=CHK[p].deg,r=chkDado(p).r,g=chkDegrau(p,r);if(g>=D.length)return null;return{nome:D[g][0],itens:D[g][1].filter((q,i)=>!(r[g]||[])[i]).map(q=>q[1])}}
+const tetoFin=()=>teto(3),finValido=()=>chkValido(3);
+function chkCheckin(p){const C=CHK[p],D=C.deg,old=chkValido(p)?chkDado(p).r:null;
+  const r=D.map((g,i)=>g[1].map((q,j)=>!!(old&&old[i]&&old[i][j])));
+  const draw=()=>{abrir('<h3 class="gd">'+C.ico+' '+C.tit+'</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:12px">Responda com sinceridade. As respostas ficam só no seu celular e definem até onde o seu status de <b>'+C.pil+'</b> pode subir. Vale por '+TETO_VALIDADE+' dias.</p>'+
+    D.map(([nome,qs],g)=>'<div class="card" style="margin-bottom:10px;padding:12px 14px"><div class="h cy" style="font-size:11px;margin-bottom:8px">PARA PASSAR DE '+TETOS[g]+' · '+nome.toUpperCase()+'</div>'+
       qs.map(([q],j)=>'<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-top:'+(j?'1px solid var(--line)':'0')+'"><span style="flex:1;font-size:14.5px;line-height:1.35">'+q+'</span><div class="seg" style="grid-template-columns:repeat(2,52px)"><button data-fq="'+g+'-'+j+'-1" class="'+(r[g][j]?'on':'')+'">SIM</button><button data-fq="'+g+'-'+j+'-0" class="'+(!r[g][j]?'on':'')+'">NÃO</button></div></div>').join('')+'</div>').join('')+
-    '<p class="cy" style="font-size:15px;margin:4px 0 12px;text-align:center">Com essas respostas, seu teto de Recursos fica em <b>'+FIN_TETOS[finDegrau(r)]+'</b>.</p>'+
+    '<p class="cy" style="font-size:15px;margin:4px 0 12px;text-align:center">Com essas respostas, seu teto de '+C.pil+' fica em <b>'+TETOS[chkDegrau(p,r)]+'</b>.</p>'+
     '<div class="row"><button class="btn ghost" id="fqX">CANCELAR</button><button class="btn" id="fqOk">SALVAR</button></div>');
     $('#sheet').querySelectorAll('[data-fq]').forEach(b=>b.onclick=()=>{const[g,j,v]=b.dataset.fq.split('-').map(Number);const sc=$('#sheet').scrollTop;r[g][j]=!!v;draw();$('#sheet').scrollTop=sc});
     $('#fqX').onclick=fechar;
-    $('#fqOk').onclick=()=>{const antes=finValido()?tetoFin():FIN_TETOS[0],vAntes=atual(3);S.fin={d:Date.now(),r};const t=tetoFin();
-      registrar('💰 Check-in financeiro: teto de Recursos em '+t);salvar();fechar();render();
-      if(t>antes&&atualBruto(3)>antes)sistema('TETO LIBERADO','<span style="font-size:44px">💰</span><br>Seu teto de Recursos subiu para <b class="gd">'+t+'</b>.<br>Recursos: '+N(vAntes)+' → <b class="cy">'+N(atual(3))+'</b>');
-      else toast('Check-in salvo · teto de Recursos: '+t)};
+    $('#fqOk').onclick=()=>{const antes=teto(p),vAntes=atual(p);chkSalvar(p,{d:Date.now(),r});const t=teto(p);
+      registrar(C.ico+' Check-in de '+C.pil+': teto em '+t);salvar();fechar();render();
+      if(t>antes&&atualBruto(p)>antes)sistema('TETO LIBERADO','<span style="font-size:44px">'+C.ico+'</span><br>Seu teto de '+C.pil+' subiu para <b class="gd">'+t+'</b>.<br>'+C.pil+': '+N(vAntes)+' → <b class="cy">'+N(atual(p))+'</b>');
+      else toast('Check-in salvo · teto de '+C.pil+': '+t)};
   };draw();
 }
-function finLinha(){const t=tetoFin(),v=atualBruto(3),preso=v>=t-0.5,f=finFalta();
-  if(!finValido())return'<button class="fin-linha alerta" data-fin-det>🔒 Limitado a <b>'+FIN_TETOS[0]+'</b> · faça o check-in financeiro <span>›</span></button>';
-  return'<button class="fin-linha'+(preso&&f?' preso':'')+'" data-fin-det>💰 Teto <b>'+t+'</b>'+(f?' · falta'+(f.itens.length>1?'m':'')+' '+f.itens.length+' condiç'+(f.itens.length>1?'ões':'ão'):' · máximo')+(preso&&f?' · travado':'')+' <span>›</span></button>'}
-function finDetalhe(){const t=tetoFin(),f=finFalta(),val=finValido(),dias=val?Math.max(0,FIN_VALIDADE-Math.floor((Date.now()-S.fin.d)/864e5)):0,g=val?finDegrau(S.fin.r):0;
-  abrir('<h3 class="gd">💰 TETO DE RECURSOS</h3><p style="font-size:15px;line-height:1.5;margin:6px 0 12px">Recursos só sobe até o teto liberado pelas suas condições financeiras reais. O XP continua acumulando: quando o teto sobe, o valor sobe na hora.</p>'+
-    '<div class="card" style="margin-bottom:10px">'+(val?'<p style="font-size:15px">Teto atual: <b class="gd">'+t+'</b> · Recursos: <b class="cy">'+N(atual(3))+'</b>'+(atualBruto(3)>t+0.5?' <span class="mut">(sem o teto seria '+N(atualBruto(3))+')</span>':'')+'</p>'+
+function chkLinha(p){const t=teto(p),v=atualBruto(p),preso=v>=t-0.5,f=chkFalta(p),C=CHK[p];
+  if(!chkValido(p))return'<button class="fin-linha alerta" data-chk="'+p+'">🔒 Limitado a <b>'+TETOS[0]+'</b> · faça o check-in '+(p===3?'financeiro':'físico')+' <span>›</span></button>';
+  return'<button class="fin-linha'+(preso&&f?' preso':'')+'" data-chk="'+p+'">'+C.ico+' Teto <b>'+t+'</b>'+(f?' · falta'+(f.itens.length>1?'m':'')+' '+f.itens.length+' condiç'+(f.itens.length>1?'ões':'ão'):' · máximo')+(preso&&f?' · travado':'')+' <span>›</span></button>'}
+function chkDetalhe(p){const C=CHK[p],D=C.deg,t=teto(p),f=chkFalta(p),val=chkValido(p),dias=val?Math.max(0,TETO_VALIDADE-Math.floor((Date.now()-chkDado(p).d)/864e5)):0,g=val?chkDegrau(p,chkDado(p).r):0;
+  abrir('<h3 class="gd">'+C.ico+' TETO DE '+C.pil.toUpperCase()+'</h3><p style="font-size:15px;line-height:1.5;margin:6px 0 12px">'+C.pil+' só sobe até o teto liberado pelos seus '+C.txt+'. O XP continua acumulando: quando o teto sobe, o valor sobe na hora.</p>'+
+    '<div class="card" style="margin-bottom:10px">'+(val?'<p style="font-size:15px">Teto atual: <b class="gd">'+t+'</b> · '+C.pil+': <b class="cy">'+N(atual(p))+'</b>'+(atualBruto(p)>t+0.5?' <span class="mut">(sem o teto seria '+N(atualBruto(p))+')</span>':'')+'</p>'+
       (f?'<p style="font-size:14.5px;margin-top:8px">Para passar de '+t+', falta:</p><ul style="margin:6px 0 0 18px;font-size:14.5px;line-height:1.6">'+f.itens.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p class="cy" style="margin-top:8px">Você liberou o teto máximo.</p>')+
-      '<p class="mut" style="font-size:13px;margin-top:10px">Check-in válido por mais '+dias+' dia(s).</p>':'<p style="font-size:15px">Sem check-in neste mês, Recursos fica limitado a <b class="gd">'+FIN_TETOS[0]+'</b>.</p>')+'</div>'+
-    '<div class="card" style="margin-bottom:14px"><div class="h cy" style="font-size:11px;margin-bottom:6px">OS DEGRAUS</div>'+FIN_DEGRAUS.map(([nome,qs],k)=>'<div style="display:flex;gap:8px;font-size:13.5px;padding:5px 0;border-top:'+(k?'1px solid var(--line)':'0')+'"><span style="width:18px">'+(val&&k<g?'✅':'⬜')+'</span><span style="flex:1"><b>Passar de '+FIN_TETOS[k]+'</b>: '+qs.map(q=>q[1]).join(', ')+'</span></div>').join('')+'</div>'+
+      '<p class="mut" style="font-size:13px;margin-top:10px">Check-in válido por mais '+dias+' dia(s).</p>':'<p style="font-size:15px">Sem check-in neste mês, '+C.pil+' fica limitado a <b class="gd">'+TETOS[0]+'</b>.</p>')+'</div>'+
+    '<div class="card" style="margin-bottom:14px"><div class="h cy" style="font-size:11px;margin-bottom:6px">OS DEGRAUS</div>'+D.map(([nome,qs],k)=>'<div style="display:flex;gap:8px;font-size:13.5px;padding:5px 0;border-top:'+(k?'1px solid var(--line)':'0')+'"><span style="width:18px">'+(val&&k<g?'✅':'⬜')+'</span><span style="flex:1"><b>Passar de '+TETOS[k]+'</b>: '+qs.map(q=>q[1]).join(', ')+'</span></div>').join('')+'</div>'+
     '<div class="row"><button class="btn ghost" id="fdX">FECHAR</button><button class="btn" id="fdOk">'+(val?'REVER CHECK-IN':'FAZER CHECK-IN')+'</button></div>');
-  $('#fdX').onclick=fechar;$('#fdOk').onclick=finCheckin}
+  $('#fdX').onclick=fechar;$('#fdOk').onclick=()=>chkCheckin(p)}
 
 /* ============ SUB-HABILIDADES (a partir do Rank C) — versão inicial ============ */
 const SUBS=[
@@ -858,7 +872,7 @@ const SUB_RANKS=['C','B','A','S','SS'];   // cada um desses ranks abre 1 habilid
 const semAcento=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')+' ';
 function subsLiberadas(){const r=rank(nivel()),ord=['E','D','C','B','A','S','SS'];return SUB_RANKS.filter(x=>ord.indexOf(r)>=ord.indexOf(x)).length}
 function subValores(p){const c=[0,0,0];for(const d of Object.values(S.dias||{})){if(!d.lista)continue;for(const m of d.lista)if(m.p===p&&d.feitas.includes(m.id)){const t=semAcento(m.t+' '+(m.como||''));SUBS[p].forEach(([n,re],i)=>{if(re.test(t))c[i]++})}}
-  const tot=c[0]+c[1]+c[2],v=atual(p);return SUBS[p].map(([n],i)=>({n,v:Math.max(0,Math.min(p===3?tetoFin():NOTA_TETO,v*(.82+.54*((c[i]+1)/(tot+3))))),c:c[i]}))}
+  const tot=c[0]+c[1]+c[2],v=atual(p);return SUBS[p].map(([n],i)=>({n,v:Math.max(0,Math.min(teto(p),v*(.82+.54*((c[i]+1)/(tot+3))))),c:c[i]}))}
 function subsHtml(){
   const lib=subsLiberadas(),ab=(S.subs&&S.subs.abertos)||[];
   if(!lib)return'<div class="card" style="margin-top:12px"><div class="h cy" style="font-size:12px">🧬 Sub-habilidades</div><p class="mut" style="font-size:14px;margin-top:6px">🔒 Liberadas no <b class="gd">Rank C</b> (nível 16). Cada habilidade se divide em 3 partes, como Força, Resistência e Saúde no Físico.</p></div>';
@@ -1138,7 +1152,7 @@ $('#btnEgo').onclick=()=>{
     ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','subs','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1200,8 +1214,8 @@ function renderRadar(){
   $('#kStreak').textContent=sequencia()+' 🔥';
   $('#stats').innerHTML=PIL.map((p,i)=>{
     const lv=1+Math.floor(Math.max(0,S.xp[i])/300), d=S.ego[i]-realNota(i);
-    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(i===3?finLinha():'')}).join('')+subsHtml();
-  $('#stats').querySelectorAll('[data-fin-det]').forEach(b=>b.onclick=finDetalhe);
+    return'<div class="stat"><div class="nm">'+p+'<small>Nv. '+lv+'</small></div><div><div class="bar"><i style="width:'+atual(i)+'%"></i></div><small>Ego '+S.ego[i]+' · Real '+N(realNota(i))+(Math.abs(d)>=20?' <span class="'+(d>0?'rd':'cy')+'">('+(d>0?'+':'')+N(d)+')</span>':'')+'</small></div><div class="vl cy">'+N(atual(i))+'</div></div>'+(CHK[i]?chkLinha(i):'')}).join('')+subsHtml();
+  $('#stats').querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>chkDetalhe(+b.dataset.chk));
   $('#stats').querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>{const p=+b.dataset.sub;S.subs=S.subs||{abertos:[]};if(S.subs.abertos.length>=subsLiberadas())return;S.subs.abertos.push(p);registrar('🧬 Sub-habilidades de '+PIL[p]+' abertas');salvar();render();toast(PIL[p]+' dividido em 3 sub-habilidades')});
   const f=fraco();let maior=0;for(let i=1;i<5;i++)if(S.ego[i]-realNota(i)>S.ego[maior]-realNota(maior))maior=i;
   const gap=S.ego[maior]-realNota(maior);
@@ -3851,8 +3865,9 @@ function renderConquistas(){
 
 /* ============ RELATÓRIO SEMANAL ============ */
 function segunda(d=new Date()){const t=new Date(d);t.setHours(12,0,0,0);t.setDate(t.getDate()-((t.getDay()+6)%7));return t}
-function finLembrete(){const k=hoje();if(S.finAviso===k)return false;if(finValido())return false;S.finAviso=k;salvar();
-  setTimeout(()=>sistema('CHECK-IN FINANCEIRO','<span style="font-size:44px">💰</span><br>'+(S.fin?'Seu check-in financeiro venceu.':'Agora o status de <b>Recursos</b> tem tetos.')+'<br><br>Sem o check-in do mês, Recursos fica limitado a <b class="gd">'+FIN_TETOS[0]+'</b>. Faça em <b class="cy">Perfil → Status</b>, logo abaixo de Recursos.'),1500);return true}
+function finLembrete(){const k=hoje();if(S.finAviso===k)return false;const falta=Object.keys(CHK).map(Number).filter(p=>!chkValido(p));if(!falta.length)return false;S.finAviso=k;salvar();
+  const nomes=falta.map(p=>'<b>'+CHK[p].pil+'</b>').join(' e ');
+  setTimeout(()=>sistema('CHECK-IN DO MÊS','<span style="font-size:44px">'+falta.map(p=>CHK[p].ico).join(' ')+'</span><br>Faltando o check-in de '+nomes+'.<br><br>Sem ele, '+(falta.length>1?'esses status ficam limitados':'esse status fica limitado')+' a <b class="gd">'+TETOS[0]+'</b>. Faça em <b class="cy">Perfil → Status</b>, logo abaixo de cada um.'),1500);return true}
 function relatorioAuto(){
   if(!S.nome)return;
   const seg=hoje(segunda());
