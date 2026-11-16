@@ -184,6 +184,13 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 .chip{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:8px 12px;margin:0 6px 8px 0;font-size:14px;font-weight:600;color:var(--mut)}
 .chip.on{border-color:var(--gold);color:var(--gold);background:rgba(255,201,74,.08)}
 .idi-grid{display:flex;flex-wrap:wrap}
+.vic{margin-bottom:12px}.vic-n{text-align:center;min-width:56px}.vic-n b{display:block;font-family:Orbitron;font-size:28px;color:var(--gold)}.vic-n small{font-size:11px;color:var(--mut)}
+.vic-med{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;font-size:22px}
+.vic-gal{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.vic-gal div{border:1px solid var(--line);border-radius:10px;padding:6px 2px;text-align:center;opacity:.32;filter:grayscale(1)}.vic-gal div.on{opacity:1;filter:none;border-color:var(--gold)}.vic-gal span{font-size:22px;display:block}.vic-gal b{font-size:11px}.vic-gal small{display:block;font-size:10.5px;color:var(--gold)}
+.pin-v{display:flex;justify-content:center;gap:10px;margin-bottom:6px}.pin-v i{width:14px;height:14px;border-radius:50%;border:2px solid var(--line)}.pin-v i.on{background:var(--gold);border-color:var(--gold)}
+.pin-k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto}.pin-k button{padding:14px 0;font-size:20px;border:1px solid var(--line);border-radius:12px;font-weight:700}
+.humor{display:flex;justify-content:space-between}.humor button{font-size:30px;padding:4px 8px;border-radius:12px;border:2px solid transparent;opacity:.6}.humor button.on{border-color:var(--gold);opacity:1}
+.dia-e{margin-bottom:10px}
 .idi-resp{min-height:56px;font-size:17px;line-height:1.6}
 .idi-p{display:inline-block;color:var(--cyan);font-weight:700}
 .idi-pecas{display:flex;flex-wrap:wrap;margin-top:10px}
@@ -496,9 +503,12 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
     </div>
 
     <div class="page" id="pgMetas">
-      <div class="ptitle h cy">Metas</div>
+      <div class="subtabs" data-grupo="metas"><button data-sec="metas" class="on"><span class="ic">🎯</span>METAS</button><button data-sec="vicios"><span class="ic">🌱</span>VÍCIOS</button><button data-sec="diario"><span class="ic">📔</span>DIÁRIO</button></div>
+      <div class="sec on" data-grupo="metas" data-sec="metas"><div class="ptitle h cy">Metas</div>
       <div id="metaList"></div>
-      <button class="btn" id="btnNovaMeta" style="margin-top:6px">+ NOVA META</button>
+      <button class="btn" id="btnNovaMeta" style="margin-top:6px">+ NOVA META</button></div>
+      <div class="sec" data-grupo="metas" data-sec="vicios"><div class="ptitle h cy">Vícios</div><div id="vicBox"></div></div>
+      <div class="sec" data-grupo="metas" data-sec="diario"><div class="ptitle h cy">Diário</div><div id="diaBox"></div></div>
     </div>
 
     <!-- GUILDA -->
@@ -1172,6 +1182,150 @@ function processarDias(){
 }
 function registrar(txt,ruim){S.log.unshift({t:txt,d:Date.now(),r:!!ruim});S.log=S.log.slice(0,80);try{if(!ruim&&/^(⬆️|🏅|🎯 Meta concluída|⚔️|🏷️|🏆)/.test(txt))gPostar(txt)}catch(e){}}
 
+/* ============ VÍCIOS e DIÁRIO — privados (nunca vão para a guilda), com senha numérica opcional ============ */
+const VIC_TIPOS=[
+ ['alcool','Bebida alcoólica','🍺',0],['cigarro','Cigarro / vape','🚬',0],['drogas','Drogas','💊',0],['porno','Pornografia','🔞',2],['sexo','Sexo compulsivo','💔',2],
+ ['doces','Doces e açúcar','🍬',0],['energetico','Bebidas energéticas','⚡',0],['refri','Refrigerante','🥤',0],['fastfood','Fast food','🍔',0],['cafeina','Excesso de cafeína','☕',0],
+ ['redes','Redes sociais','📱',1],['jogos','Jogos em excesso','🎮',1],['apostas','Apostas','🎰',3],['compras','Compras por impulso','🛍️',3],['outro','Outro','✍️',2]
+];
+const VIC_MARCOS=[
+ [1,'🌱','Primeiro Passo',10,'O primeiro dia é o mais corajoso de todos. Você escolheu cuidar de si. Isso já é uma vitória enorme.'],
+ [2,'🌿','Broto',10,'Dois dias. O que nasceu ontem está criando raiz. Continue regando, um dia de cada vez.'],
+ [3,'🍀','Três Dias',15,'Três dias seguidos! Os primeiros dias costumam ser os mais difíceis, e você está atravessando eles.'],
+ [5,'⭐','Estrela da Manhã',25,'Cinco dias. Cada manhã em que você escolhe de novo mostra a força que existe em você.'],
+ [7,'🗓️','Uma Semana',35,'Uma semana inteira! Sete escolhas seguidas. Respire fundo e sinta orgulho desse caminho.'],
+ [10,'🥉','Dez Dias · Bronze',50,'Dez dias! Você está provando para si mesmo que consegue. Sua primeira medalha de metal é sua.'],
+ [14,'🛡️','Escudo de Duas Semanas',60,'Duas semanas. Seu escudo está ficando mais forte. Lembre do porquê você começou.'],
+ [21,'🔥','Vinte e Um Dias',80,'Vinte e um dias! A cada dia a escolha fica mais natural. Você está construindo um novo jeito de viver.'],
+ [30,'🥈','Um Mês · Prata',100,'Um mês inteiro! Isso é enorme. Olhe para trás e veja quanta coisa você já superou.'],
+ [45,'💪','Força Interior',110,'Quarenta e cinco dias. A força que você está mostrando vem de dentro, e ninguém tira isso de você.'],
+ [60,'🌊','Maré Calma',120,'Dois meses! A tempestade dos primeiros dias foi ficando para trás. Aproveite essa calma que você conquistou.'],
+ [90,'🥇','Três Meses · Ouro',150,'Três meses! Medalha de ouro. Você está vivendo uma transformação de verdade.'],
+ [120,'🦅','Voo Livre',160,'Cento e vinte dias. Você está voando mais alto e mais leve. Que conquista!'],
+ [180,'💎','Seis Meses · Diamante',200,'Meio ano! Como o diamante, você ficou mais forte sob pressão. Brilhe!'],
+ [270,'🌳','Raízes Fortes',220,'Nove meses. Suas novas raízes estão profundas. Você é exemplo de que a mudança é possível.'],
+ [365,'👑','Um Ano · Coroa',300,'UM ANO! Trezentos e sessenta e cinco escolhas. Você merece essa coroa e todo o orgulho do mundo.'],
+ [500,'🏔️','Montanha',300,'Quinhentos dias. Você subiu uma montanha que muita gente nem tenta. A vista daqui é sua.'],
+ [730,'🌟','Dois Anos · Lenda',400,'Dois anos! Você virou uma lenda da sua própria história.'],
+ [1000,'🐉','Mil Dias · Mítico',500,'MIL DIAS. Isso é lendário. Sua jornada pode inspirar muitas pessoas.']
+];
+const VIC_RECAIDA=['Recaídas fazem parte de muitas jornadas de mudança. Isso não apaga o que você já conquistou.','Obrigado pela honestidade. Reconhecer é o primeiro passo para recomeçar.','Você não voltou para o zero: você voltou com experiência. Amanhã é um novo dia 1.','Seja gentil com você hoje. Respire, descanse e recomece quando estiver pronto.','Cair não define você. Levantar, sim. E você está aqui, tentando de novo.'];
+const VIC_DIA=['Mais um dia! Cada dia conta.','Um dia de cada vez. Hoje foi seu.','Você escolheu você hoje. Que orgulho!','Mais um passo firme na sua jornada.','Dia vencido! Continue assim.','Forte e constante. Parabéns por hoje!'];
+const vicTipo=k=>VIC_TIPOS.find(t=>t[0]===k)||VIC_TIPOS[VIC_TIPOS.length-1];
+function vicS(){S.vicios=S.vicios||{lista:[]};return S.vicios}
+const diaAntes=(k,n)=>{const d=new Date(k+'T12:00:00');d.setDate(d.getDate()-n);return hoje(d)};
+function vicSeq(v){if(!v.ult)return 0;const k=hoje();return v.ult===k||v.ult===diaAntes(k,1)?v.atual:0}
+function vicVezes(v,m){return (v.hist||[]).filter(x=>x>=m).length+(vicSeq(v)>=m?1:0)}
+function vicMelhor(v){return Math.max(vicSeq(v),...(v.hist||[0]))}
+/* ---------- senha ---------- */
+let privAberto=false;document.addEventListener('visibilitychange',()=>{if(document.hidden&&S&&S.privPin&&privAberto){privAberto=false;try{privRender()}catch(e){}}});
+const pinHash=p=>{let h=7;for(const c of String(p))h=(h*31+c.charCodeAt(0))%1000000007;return 'h'+h};
+function privTrancado(){return !!(S.privPin&&!privAberto)}
+function privCadeado(box,depois){
+  let dig='';const draw=msg=>{box.innerHTML='<div class="card" style="text-align:center;padding:22px 16px"><div style="font-size:40px">🔒</div><p style="font-size:15px;margin:8px 0 12px">Área protegida. Digite sua senha.</p><div class="pin-v">'+[0,1,2,3,4,5].slice(0,Math.max(4,dig.length)).map(i=>'<i class="'+(i<dig.length?'on':'')+'"></i>').join('')+'</div><p class="rd" style="min-height:18px;font-size:13px">'+(msg||'')+'</p><div class="pin-k">'+[1,2,3,4,5,6,7,8,9,'⌫',0,'OK'].map(k=>'<button data-k="'+k+'">'+k+'</button>').join('')+'</div></div>';
+    box.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(k==='⌫')dig=dig.slice(0,-1);else if(k==='OK'){if(pinHash(dig)===S.privPin){privAberto=true;depois();return}dig='';draw('Senha incorreta');return}else if(dig.length<6)dig+=k;draw()})};draw();
+}
+function privSenhaTela(){
+  const tem=!!S.privPin;
+  abrir('<h3 class="cy">🔒 SENHA DE PRIVACIDADE</h3><p class="mut" style="font-size:14px;line-height:1.45;margin-bottom:10px">Protege as áreas de <b>Vícios</b> e <b>Diário</b> neste celular. Use de 4 a 6 números. É uma proteção simples contra olhares curiosos; se esquecer a senha, só apagando os dados do app.</p>'+
+    '<div class="field"><label>'+(tem?'NOVA SENHA (DEIXE VAZIO PARA REMOVER)':'SENHA')+'</label><input id="pvA" inputmode="numeric" maxlength="6" type="password"></div><div class="field"><label>REPITA A SENHA</label><input id="pvB" inputmode="numeric" maxlength="6" type="password"></div><p class="rd" id="pvM" style="font-size:13px;min-height:18px"></p>'+
+    '<div class="row"><button class="btn ghost" id="pvX">CANCELAR</button><button class="btn" id="pvOk">SALVAR</button></div>');
+  $('#pvX').onclick=fechar;
+  $('#pvOk').onclick=()=>{const a=$('#pvA').value.trim(),b=$('#pvB').value.trim();
+    if(!a&&tem){S.privPin=null;salvar();fechar();toast('Senha removida');privRender();return}
+    if(!/^\d{4,6}$/.test(a)){$('#pvM').textContent='Use de 4 a 6 números.';return}if(a!==b){$('#pvM').textContent='As senhas não conferem.';return}
+    S.privPin=pinHash(a);privAberto=true;salvar();fechar();toast('Senha definida');privRender()};
+}
+function privTopo(){return'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="mut" style="font-size:12.5px">🔐 Só você vê isto. Nada aqui vai para a guilda.</span><button class="h mut" data-pin style="font-size:11px;letter-spacing:.08em">'+(S.privPin?'🔒 SENHA':'🔓 PÔR SENHA')+'</button></div>'}
+function privRender(){renderVicios();renderDiario()}
+/* ---------- vícios ---------- */
+function vicMarco(n){return VIC_MARCOS.filter(m=>m[0]<=n).pop()}
+function vicProx(n){return VIC_MARCOS.find(m=>m[0]>n)}
+function renderVicios(){
+  const box=$('#vicBox');if(!box)return;if(privTrancado()){privCadeado(box,privRender);return}
+  const V=vicS(),k=hoje();
+  box.innerHTML=privTopo()+
+    '<div class="card" style="margin-bottom:12px;font-size:14.5px;line-height:1.5"><b class="cy">🌱 Um dia de cada vez.</b> Marque cada dia em que você ficou longe do seu vício. A cada marco você ganha uma medalha e XP. Se recair, tudo bem: registre com honestidade e recomece. Cada tentativa conta.</div>'+
+    (V.lista.length?V.lista.map(v=>{const T=vicTipo(v.tipo),seq=vicSeq(v),feitoHoje=v.ult===k,px=vicProx(seq),ant=vicMarco(seq),pc=px?Math.round((seq-(ant?ant[0]:0))/(px[0]-(ant?ant[0]:0))*100):100,med=VIC_MARCOS.filter(m=>(v.marcos||[]).includes(m[0]));
+      return'<div class="card vic"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:30px">'+T[2]+'</span><div style="flex:1;min-width:0"><b>'+esc(v.nome)+'</b><div class="mut" style="font-size:12.5px">Melhor sequência: '+vicMelhor(v)+' dia(s) · '+((v.hist||[]).length+1)+'ª tentativa</div></div><div class="vic-n"><b>'+seq+'</b><small>dia'+(seq===1?'':'s')+'</small></div></div>'+
+        '<div class="bar" style="margin:10px 0 4px"><i style="width:'+pc+'%"></i></div><small class="mut">'+(px?'Próxima medalha: '+px[1]+' '+px[2]+' em '+(px[0]-seq)+' dia(s)':'Todas as medalhas conquistadas!')+'</small>'+
+        (med.length?'<div class="vic-med">'+med.map(m=>'<span title="'+m[2]+'">'+m[1]+'</span>').join('')+'</div>':'')+
+        '<div class="row" style="margin-top:10px"><button class="btn'+(feitoHoje?' ghost':'')+'" data-vok="'+v.id+'"'+(feitoHoje?' disabled':'')+'>'+(feitoHoje?'✓ HOJE JÁ MARCADO':'✓ HOJE FIQUEI LONGE')+'</button></div>'+
+        '<div style="display:flex;justify-content:space-between;margin-top:8px"><button class="h mut" data-vdet="'+v.id+'" style="font-size:11px;letter-spacing:.08em">MEDALHAS E HISTÓRICO</button><button class="h mut" data-vrec="'+v.id+'" style="font-size:11px;letter-spacing:.08em">TIVE UMA RECAÍDA</button></div></div>'}).join(''):'<p class="mut" style="font-size:14px;margin:6px 0 12px">Nenhum vício adicionado. Adicione aquilo de que você quer se libertar.</p>')+
+    '<button class="btn ghost" id="vicNovo">＋ ADICIONAR VÍCIO</button>';
+  box.querySelector('[data-pin]').onclick=privSenhaTela;$('#vicNovo').onclick=vicNovo;
+  box.querySelectorAll('[data-vok]').forEach(b=>b.onclick=()=>vicMarcar(b.dataset.vok));
+  box.querySelectorAll('[data-vrec]').forEach(b=>b.onclick=()=>vicRecaida(b.dataset.vrec));
+  box.querySelectorAll('[data-vdet]').forEach(b=>b.onclick=()=>vicDetalhe(b.dataset.vdet));
+}
+function vicNovo(){let tipo=null;
+  const draw=()=>{abrir('<h3 class="cy">＋ ADICIONAR VÍCIO</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Escolha do que você quer se libertar. Fica só no seu celular.</p><div class="idi-grid">'+VIC_TIPOS.map(t=>'<button class="chip'+(tipo===t[0]?' on':'')+'" data-vt="'+t[0]+'" style="font-size:14px;padding:8px 12px">'+t[2]+' '+t[1]+'</button>').join('')+'</div>'+
+    (tipo==='outro'?'<div class="field" style="margin-top:10px"><label>QUAL?</label><input id="vtN" maxlength="40"></div>':'')+
+    '<div class="row" style="margin-top:14px"><button class="btn ghost" id="vtX">CANCELAR</button><button class="btn" id="vtOk"'+(tipo?'':' disabled')+'>ADICIONAR</button></div>');
+    $('#sheet').querySelectorAll('[data-vt]').forEach(b=>b.onclick=()=>{tipo=b.dataset.vt;draw()});$('#vtX').onclick=fechar;
+    $('#vtOk').onclick=()=>{const T=vicTipo(tipo),nome=tipo==='outro'?($('#vtN').value.trim()||'Meu vício'):T[1];const V=vicS();
+      if(V.lista.some(v=>v.tipo===tipo&&v.nome===nome)){toast('Esse já está na sua lista');return}
+      V.lista.push({id:'v'+novoToken(6),tipo,nome,atual:0,ult:null,hist:[],marcos:[],marcosEver:[],criado:Date.now()});salvar();fechar();renderVicios();
+      sistema('UMA NOVA JORNADA','<span style="font-size:44px">'+T[2]+'</span><br>Reconhecer é o primeiro passo, e você deu esse passo agora.<br><br>Marque <b class="cy">cada dia</b> em que ficar longe. Estamos juntos nessa.')}};draw()}
+function vicMarcar(id){
+  const V=vicS(),v=V.lista.find(x=>x.id===id),k=hoje();if(!v||v.ult===k)return;
+  const seguido=v.ult===diaAntes(k,1);
+  if(!seguido&&v.atual>0){v.hist=(v.hist||[]).concat(v.atual);v.marcos=[]}
+  v.atual=seguido?v.atual+1:1;v.ult=k;
+  const m=VIC_MARCOS.find(x=>x[0]===v.atual);let html=null;
+  if(m&&!(v.marcos||[]).includes(m[0])){
+    v.marcos=(v.marcos||[]).concat(m[0]);v.marcosEver=Array.from(new Set((v.marcosEver||[]).concat(m[0])));
+    const p=vicTipo(v.tipo)[3];S.xp[p]+=m[3];const d=S.dias[k];if(d)d.xp=(d.xp||0)+m[3];
+    const vezes=vicVezes(v,m[0]);
+    registrar('🌱 Marco de superação: '+m[0]+' dia'+(m[0]>1?'s':'')+' (+'+m[3]+' XP)');
+    html='<span style="font-size:54px">'+m[1]+'</span><br><b class="gd" style="font-size:18px">'+m[2]+'</b><br><br>'+m[4]+
+      (vezes>=2?'<br><br>🔁 <b class="cy">Você já conseguiu ficar '+vezes+' vezes '+m[0]+' dia'+(m[0]>1?'s':'')+' sem '+esc(v.nome.toLowerCase())+'.</b> Parabéns! Você consegue chegar lá!':'')+
+      '<br><br><b class="cy">+'+m[3]+' XP</b> em '+PIL[p];
+  }
+  salvar();render();renderVicios();
+  if(html)setTimeout(()=>{try{SFX.conquista()}catch(e){}sistema('MEDALHA CONQUISTADA',html)},200);
+  else toast(v.atual===1&&(v.hist||[]).length?'Dia 1 de novo. Recomeçar é coragem! 💚':pick(VIC_DIA));
+}
+function vicRecaida(id){const v=vicS().lista.find(x=>x.id===id);if(!v)return;
+  abrir('<h3 class="cy">💚 TUDO BEM</h3><p style="font-size:15px;line-height:1.55;margin:8px 0 14px">'+pick(VIC_RECAIDA)+'</p><p class="mut" style="font-size:14px;margin-bottom:14px">Registrar a recaída encerra a sequência atual de <b>'+vicSeq(v)+' dia(s)</b>. Ela fica guardada no seu histórico e continua contando para os reconhecimentos de quem tenta de novo.</p><div class="row"><button class="btn ghost" id="vrX">VOLTAR</button><button class="btn" id="vrOk">REGISTRAR E RECOMEÇAR</button></div>');
+  $('#vrX').onclick=fechar;
+  $('#vrOk').onclick=()=>{const s=vicSeq(v);if(s>0)v.hist=(v.hist||[]).concat(s);v.atual=0;v.ult=null;v.marcos=[];v.recaidas=(v.recaidas||0)+1;salvar();fechar();renderVicios();
+    sistema('RECOMEÇO','<span style="font-size:44px">🌅</span><br>Amanhã é um novo dia 1.<br><br>'+(s>0?'Você ficou <b class="cy">'+s+' dia(s)</b> longe. Isso é real e é seu. ':'')+'Quem tenta de novo está mais perto de conseguir.')};
+}
+function vicDetalhe(id){const v=vicS().lista.find(x=>x.id===id);if(!v)return;const T=vicTipo(v.tipo),ever=v.marcosEver||[];
+  abrir('<h3 class="cy">'+T[2]+' '+esc(v.nome).toUpperCase()+'</h3>'+
+    '<div class="grid2" style="margin:8px 0 12px"><div class="card kpi"><div class="k">SEQUÊNCIA</div><div class="v">'+vicSeq(v)+'</div></div><div class="card kpi"><div class="k">MELHOR</div><div class="v gd">'+vicMelhor(v)+'</div></div></div>'+
+    '<div class="h cy" style="font-size:11px;margin-bottom:6px">MEDALHAS</div><div class="vic-gal">'+VIC_MARCOS.map(m=>{const n=vicVezes(v,m[0]);return'<div class="'+(ever.includes(m[0])?'on':'')+'"><span>'+m[1]+'</span><b>'+m[0]+'d</b>'+(n>=2?'<small>×'+n+'</small>':'')+'</div>'}).join('')+'</div>'+
+    '<p class="mut" style="font-size:12.5px;margin:6px 0 12px">×2, ×3… = quantas vezes você já chegou a esse marco, somando todas as tentativas.</p>'+
+    '<div class="h cy" style="font-size:11px;margin-bottom:6px">TENTATIVAS ANTERIORES</div><p style="font-size:14px;margin-bottom:12px">'+((v.hist||[]).length?(v.hist||[]).map((d,i)=>(i+1)+'ª: <b>'+d+'</b> dia(s)').join(' · '):'Nenhuma ainda.')+'</p>'+
+    '<div class="row"><button class="btn ghost" id="vdDel">REMOVER</button><button class="btn" id="vdX">FECHAR</button></div>');
+  $('#vdX').onclick=fechar;
+  $('#vdDel').onclick=()=>{const b=$('#vdDel');if(!b.dataset.c){b.dataset.c=1;b.textContent='CONFIRMAR';return}const V=vicS();V.lista=V.lista.filter(x=>x.id!==id);salvar();fechar();renderVicios()};
+}
+/* ---------- diário ---------- */
+const HUMOR=[['😞','Muito mal'],['😕','Mal'],['😐','Mais ou menos'],['🙂','Bem'],['😄','Muito bem']];
+const DIA_RESP={
+ baixo:['Obrigado por colocar isso para fora. Não é fácil, e você fez. Seus sentimentos importam.','Dias pesados existem, e você não precisa carregar tudo sozinho. Respire fundo; amanhã pode ser mais leve.','Que coragem escrever sobre isso. Ser honesto consigo mesmo é uma forma de cuidado.','Você está aqui, olhando para o que sente. Isso já é um passo. Seja gentil com você hoje.','Sinto que hoje foi difícil. Se puder, converse com alguém de confiança. Você merece apoio.'],
+ meio:['Obrigado por registrar o seu dia. Nem todo dia precisa ser incrível para valer a pena.','Dias comuns também constroem a vida. Que bom que você parou para olhar para o seu.','Escrever ajuda a entender o que sentimos. Continue cuidando de você.','Valeu por dividir. Que pequena coisa boa você pode fazer por você amanhã?'],
+ alto:['Que alegria ler isso! Comemore esse dia, você merece.','Que dia bom! Guarde essa sensação: ela mostra do que você é capaz.','Que bom ver você bem! Obrigado por dividir essa conquista.','Isso merece celebração! Lembre-se deste dia quando os dias forem mais difíceis.']
+};
+const RISCO=/suic[ií]d|me matar|tirar (a )?minha vida|n[aã]o quero (mais )?viver|acabar com (a )?minha vida|me machucar|automutila|me cortar|quero morrer/i;
+function renderDiario(){
+  const box=$('#diaBox');if(!box)return;if(privTrancado()){privCadeado(box,privRender);return}
+  S.diario=S.diario||[];
+  box.innerHTML=privTopo()+'<div class="card" style="margin-bottom:12px"><div class="h cy" style="font-size:12px;margin-bottom:8px">📔 COMO VOCÊ ESTÁ HOJE?</div><div class="humor">'+HUMOR.map((h,i)=>'<button data-h="'+i+'" title="'+h[1]+'">'+h[0]+'</button>').join('')+'</div>'+
+    '<textarea id="diaTxt" rows="6" placeholder="Escreva livremente: como foi o dia, o que sentiu, o que pesou, o que foi bom…" style="width:100%;margin-top:10px"></textarea><button class="btn" id="diaOk" style="margin-top:8px">GUARDAR</button></div>'+
+    (S.diario.length?'<div class="h cy" style="font-size:11px;margin:4px 0 8px">SUAS PÁGINAS</div>'+S.diario.slice(0,30).map((e,i)=>'<div class="card dia-e"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mut" style="font-size:12.5px">'+new Date(e.d).toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span style="font-size:22px">'+(e.h!=null?HUMOR[e.h][0]:'')+'</span></div><p style="font-size:15px;line-height:1.5;white-space:pre-wrap;margin-top:6px">'+esc(e.t)+'</p>'+(e.r?'<p class="cy" style="font-size:13.5px;margin-top:8px">💬 '+e.r+'</p>':'')+'<button class="h mut" data-ddel="'+i+'" style="font-size:10px;letter-spacing:.08em;margin-top:6px">APAGAR</button></div>').join(''):'');
+  box.querySelector('[data-pin]').onclick=privSenhaTela;
+  let hum=null;box.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{hum=+b.dataset.h;box.querySelectorAll('[data-h]').forEach(x=>x.classList.toggle('on',x===b))});
+  $('#diaOk').onclick=()=>{const t=$('#diaTxt').value.trim();if(t.length<2&&hum==null){toast('Escreva algo ou escolha como está');return}
+    const grupo=hum==null?'meio':hum<=1?'baixo':hum>=3?'alto':'meio',r=pick(DIA_RESP[grupo]);
+    S.diario.unshift({d:Date.now(),h:hum,t,r});S.diario=S.diario.slice(0,365);salvar();renderDiario();
+    if(RISCO.test(t))sistema('VOCÊ NÃO ESTÁ SOZINHO','<span style="font-size:40px">💚</span><br>Obrigado por escrever o que está sentindo. Se você está pensando em se machucar ou em tirar a própria vida, procure ajuda agora.<br><br><b class="cy">CVV · ligue 188</b><br>Gratuito, 24 horas, ou pelo chat em cvv.org.br.<br><br>Em emergência, ligue <b>192</b> (SAMU). Conversar com alguém de confiança também ajuda.');
+    else sistema('OBRIGADO POR DIVIDIR','<span style="font-size:40px">'+(hum!=null?HUMOR[hum][0]:'📔')+'</span><br>'+r)};
+  box.querySelectorAll('[data-ddel]').forEach(b=>b.onclick=()=>{if(!b.dataset.c){b.dataset.c=1;b.textContent='CONFIRMAR';return}S.diario.splice(+b.dataset.ddel,1);salvar();renderDiario()});
+}
+
 /* ============ UI GERAL ============ */
 function tela(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 let tT;
@@ -1245,10 +1399,10 @@ $('#btnEgo').onclick=()=>{
   S=novoEstado();
   if(antigo&&zerar){ // redefinir: só mantém a visão dos outros, a guilda e as configurações
     S.token=antigo.token||S.token;S.ext=antigo.ext||[];S.extMes=antigo.extMes||[];S.extArq=antigo.extArq||[];S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.modo=antigo.modo||S.modo;
-    ['guilda','valPed','valPremio','gPremio','votosDia'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    ['guilda','valPed','valPremio','gPremio','votosDia','vicios','diario','privPin'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','focos','jg','finVistos','leVistos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','focos','jg','finVistos','leVistos','vicios','diario','privPin'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1274,7 +1428,7 @@ function render(){
   const pen=S.dias[hoje()]&&S.dias[hoje()].penal&&!S.dias[hoje()].penal.feita;
   document.body.classList.toggle('penal',!!pen);
   try{MUS.modo(pen?'penal':'normal')}catch(e){}
-  renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
+  renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{privRender()}catch(e){console.error(e)}try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
 
 /* ===== Modo teste (código especial): perfil SS temporário, o perfil real fica guardado ===== */
@@ -1632,7 +1786,7 @@ $('#btnCfg').onclick=()=>{
   $('#cCod').onclick=codigoTela;
   $('#cZr').onclick=()=>abrir('<h3 class="rd">♻️ REDEFINIR PERFIL</h3><p style="font-size:15px;line-height:1.5;margin:8px 0 12px">Você vai começar do zero e refazer o teste do Despertar.</p>'+
     '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:10px"><b class="rd">Será apagado:</b> nível, rank, XP, status, sequência, metas, tarefas, conquistas, títulos, histórico, progresso da Arena, das matérias, da lógica e dos idiomas.</div>'+
-    '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:14px"><b class="cy">Será mantido:</b> a visão que outras pessoas deram sobre você (avaliações externas e o seu link de avaliação), a sua guilda, o seu nome, as preferências de missões e as configurações de som.</div>'+
+    '<div class="card" style="font-size:14px;line-height:1.6;margin-bottom:14px"><b class="cy">Será mantido:</b> a visão que outras pessoas deram sobre você (avaliações externas e o seu link de avaliação), a sua guilda, o seu nome, seus vícios, seu diário, as preferências de missões e as configurações de som.</div>'+
     '<div class="row"><button class="btn ghost" id="zrX">CANCELAR</button><button class="btn red" id="zrOk">REDEFINIR</button></div>');
   $('#cRe').onclick=()=>{const b=$('#cRe');b.textContent='TOCAR DE NOVO: nova linha de base, XP zera (metas e histórico ficam)';b.classList.add('red');b.onclick=()=>{fechar();try{localStorage.removeItem('evo_reset')}catch(x){}limparProg();qi=0;resp=Array(PERGUNTAS.length).fill(0);quest()}};
 };
