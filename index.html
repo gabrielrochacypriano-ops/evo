@@ -3342,7 +3342,7 @@ function cardIdioma(el,fim){
           const ok=esc.map(p=>p.w).join(' ')===ex.alvo;resp(ok);falar(l,ex.alvo);
           J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Perfeito!</b>':'<b class="rd">Correto:</b> '+ex.alvo)+(ex.tipo==='ditado'?'<br><span class="mut">= '+ex.pt+'</span>':'');
           J.querySelector('#idVer').textContent='CONTINUAR →';J.querySelector('#idVer').onclick=prox;J.querySelector('#idDel').style.visibility='hidden'};
-      };draw();if(ex.tipo==='ditado')setTimeout(()=>falar(l,ex.alvo),350);
+      };draw();if(ex.tipo==='ditado')aoVer(el,()=>falar(l,ex.alvo));
       return;
     }
     // múltipla escolha (lp, pl, escuta). Opções no idioma estrangeiro: toque ouve e seleciona; confirme em VERIFICAR.
@@ -3363,7 +3363,7 @@ function cardIdioma(el,fim){
       if(!estrangeiro){corrigir(k);return}
       sel=k;J.querySelectorAll('[data-k]').forEach(x=>x.classList.toggle('esc',+x.dataset.k===k));if(falaOps)falar(l,ex.ops[k]);J.querySelector('#idVer').disabled=false});
     if(estrangeiro)J.querySelector('#idVer').onclick=()=>{if(!feito&&sel>=0)corrigir(sel)};
-    if(ex.tipo==='escuta'||ex.tipo==='lp')setTimeout(()=>falar(l,ex.fala),350);
+    if(ex.tipo==='escuta'||ex.tipo==='lp')aoVer(el,()=>falar(l,ex.fala));
   };prox();
 }
 
@@ -3669,9 +3669,13 @@ const ARENA_TIPOS={
 };
 const ARENA_ORDEM=['saber','logica','livro','memoria','saber','idioma','alvos','xadrez','saber','leitura','logica','reacao','saber','biblia','calculo','idioma','saber','erros','livro','simon','saber','sudoku4','financas','logica','saber','vainao','fisico','livro','saber','respira','idioma','sudoku9'];
 let arenaN=0,arenaUlt=[];
+/* só fala/toca quando o card está na tela (os próximos cards são preparados antes, fora da tela) */
+const arObs='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{const el=e.target;if(e.isIntersecting&&e.intersectionRatio>=.6){el._visivel=true;if(el._aoVer){const f=el._aoVer;el._aoVer=null;setTimeout(f,350)}}else if(el._visivel&&(!e.isIntersecting||e.intersectionRatio<.3)){el._visivel=false;try{speechSynthesis.cancel()}catch(x){}}}),{threshold:[0,.3,.6]}):null;
+function aoVer(el,fn){if(!arObs||el._visivel){setTimeout(()=>{if(!arObs||el._visivel)fn()},350);return}el._aoVer=fn}
 function arenaCard(){
   const tipo=arenaProxTipo(),T=ARENA_TIPOS[tipo],el=document.createElement('section');el.className='ar-card';
   el.innerHTML='<div class="ar-top"><span class="ar-ico">'+T.ico+'</span><div style="flex:1;min-width:0"><div class="ar-nome">'+T.nome+'</div><div class="ar-sub"><span class="tag '+DIF[T.dif][1]+'" style="font-size:10px;padding:2px 6px">'+DIF[T.dif][0]+'</span> <span class="mut">até +'+xpA(T.xp)+' XP · '+PIL[T.pilar]+'</span></div></div></div><div class="jogo"></div><div class="ar-res"></div><div class="ar-swipe">deslize ↑ para o próximo</div>';
+  if(arObs)arObs.observe(el);
   let feito=false;
   const top=el.querySelector('.ar-top');top.insertAdjacentHTML('beforeend','<button class="ar-sair">✕ SAIR</button>');
   top.querySelector('.ar-sair').onclick=e=>{e.stopPropagation();arenaTravar(null)};
