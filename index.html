@@ -5258,18 +5258,34 @@ const FOCO_GRUPOS={
 function focoAtivo(){return FOCO.mat.size+FOCO.idi.size+FOCO.grp.size}
 function focoTipos(){const t=new Set();if(FOCO.mat.size)t.add('saber');if(FOCO.idi.size)t.add('idioma');FOCO.grp.forEach(g=>FOCO_GRUPOS[g][1].forEach(x=>t.add(x)));return[...t].filter(x=>ARENA_TIPOS[x])}
 const arenaVistos={};   // distribuição: quanto mais um tipo apareceu na sessão, menor a chance de vir de novo
+const ARENA_CATS={
+  perguntas:{w:3,t:{saber:4,cientista:1,financas:1}},
+  logica:{w:2,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1}},
+  jogos:{w:2,t:{memoria:1,erros:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,xadrez:1}},
+  reflexo:{w:1.3,t:{alvos:1,reacao:1,simon:1,vainao:1,fisico:1}},
+  idiomas:{w:1.3,t:{idioma:1}},
+  calma:{w:1.2,t:{livro:2,leitura:1,biblia:1,respira:1}}
+};
+const ARENA_LONGOS=['idioma','sudoku9','xadrez','leitura'];
+let arenaCatVistos={};
 function arenaProxTipo(){
   const ult=arenaUlt,ft=focoTipos();
   if(ft.length&&Math.random()<.8){   // foco: reveza por igual entre os itens escolhidos (matérias, idiomas, grupos)
     const un=[];if(FOCO.mat.size)un.push(['saber']);if(FOCO.idi.size)un.push(['idioma']);FOCO.grp.forEach(g=>un.push(FOCO_GRUPOS[g][1].filter(x=>ARENA_TIPOS[x])));
     const cnt=u=>u.reduce((a,k)=>a+(arenaVistos[k]||0),0);const ord=un.map(u=>[u,cnt(u)+Math.random()*.9]).sort((a,b)=>a[1]-b[1]);
     let u=ord[0][0];if(ord.length>1&&u.includes(ult[0])&&u.length===1)u=ord[1][0];
-    const t=u.map(k=>[k,(arenaVistos[k]||0)+Math.random()]).sort((a,b)=>a[1]-b[1])[0][0];arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t}
-  const pool=Object.keys(ARENA_PESO).filter(k=>ARENA_TIPOS[k]);
-  let melhor=null,mv=-1;
-  pool.forEach(k=>{if(pool.length>2&&(k===ult[0]||(k!=='saber'&&ult.includes(k)&&!ft.includes(k))))return;
-    const w=(ARENA_PESO[k]||1)*(ft.includes(k)?3:1),v=w/(1+(arenaVistos[k]||0)/Math.max(1,w))*(0.35+Math.random());if(v>mv){mv=v;melhor=k}});
-  const t=melhor||pick(pool);arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t;
+    const t=u.filter(k=>u.length===1||k!==ult[0]).map(k=>[k,(arenaVistos[k]||0)+Math.random()]).sort((a,b)=>a[1]-b[1])[0][0];arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t}
+  /* sem foco: reveza por CATEGORIA (perguntas, lógica, jogos, reflexo, idiomas, calma), sem repetir categoria seguida
+     e sem dois desafios longos em sequência, para nada ficar cansativo */
+  const catDe=k=>Object.keys(ARENA_CATS).find(c=>ARENA_CATS[c].t[k]!=null),ultCat=ult[0]?catDe(ult[0]):null,longoAntes=ARENA_LONGOS.includes(ult[0]);
+  let mc=null,mv=-1;
+  Object.entries(ARENA_CATS).forEach(([c,C])=>{if(c===ultCat)return;const tipos=Object.keys(C.t).filter(k=>ARENA_TIPOS[k]&&!(longoAntes&&ARENA_LONGOS.includes(k)));if(!tipos.length)return;
+    const v=C.w/(1+(arenaCatVistos[c]||0)/C.w)*(0.6+Math.random()*.8);if(v>mv){mv=v;mc=c}});
+  mc=mc||Object.keys(ARENA_CATS)[0];const C=ARENA_CATS[mc];
+  let melhor=null,mt=-1;
+  Object.entries(C.t).forEach(([k,w])=>{if(!ARENA_TIPOS[k]||(longoAntes&&ARENA_LONGOS.includes(k))||(k!=='saber'&&ult.includes(k)&&Object.keys(C.t).length>2))return;
+    const v=w/(1+(arenaVistos[k]||0)/w)*(0.5+Math.random());if(v>mt){mt=v;melhor=k}});
+  const t=melhor||Object.keys(C.t).find(k=>ARENA_TIPOS[k]);arenaCatVistos[mc]=(arenaCatVistos[mc]||0)+1;arenaVistos[t]=(arenaVistos[t]||0)+1;arenaUlt=[t].concat(ult).slice(0,4);return t;
 }
 function focoTela(){
   const I=idiomas(),chip=(on,attr,txt)=>'<button class="chip'+(on?' on':'')+'" '+attr+' style="font-size:14px;padding:8px 12px">'+txt+'</button>';
@@ -5284,7 +5300,7 @@ function focoTela(){
     $('#sheet').querySelectorAll('[data-fi]').forEach(b=>b.onclick=()=>tg(FOCO.idi,b.dataset.fi));
     $('#sheet').querySelectorAll('[data-fg]').forEach(b=>b.onclick=()=>tg(FOCO.grp,b.dataset.fg));
     $('#fcLimpa').onclick=()=>{FOCO.mat.clear();FOCO.idi.clear();FOCO.grp.clear();draw()};
-    $('#fcOk').onclick=()=>{fechar();for(const k in arenaVistos)delete arenaVistos[k];arenaTopo();arenaRefazer();if(focoAtivo())toast('Foco aplicado nos próximos desafios')};
+    $('#fcOk').onclick=()=>{fechar();for(const k in arenaVistos)delete arenaVistos[k];arenaCatVistos={};arenaTopo();arenaRefazer();if(focoAtivo())toast('Foco aplicado nos próximos desafios')};
     $('#fcNiv').onclick=()=>{abrir('<h3 class="cy">📚 CONHECIMENTOS</h3><p class="mut" style="font-size:14px;margin-bottom:8px">Cada matéria sobe de nível com seus acertos: Básico → Intermediário ('+SABER_NIVEIS[1]+') → Avançado ('+SABER_NIVEIS[2]+').</p><div class="card saber-box" style="padding:6px 14px"></div><button class="btn" style="margin-top:12px" id="fcVolta">VOLTAR</button>');renderSaber();$('#fcVolta').onclick=draw};
   };draw();
 }
