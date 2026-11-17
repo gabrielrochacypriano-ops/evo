@@ -1442,7 +1442,7 @@ function entrarTeste(){
   S.logica={ac:320,er:0};S.modoTeste=1;S.focos={sel:[],troca:0};
   registrar('🧪 Modo teste ativado (perfil SS)');salvar();fechar();render();sistema('MODO TESTE','<span style="font-size:44px">🧪</span><br>Perfil <b class="gd">SS</b> liberado para testes.<br><br>Seu perfil real está guardado. Para voltar, toque em <b class="cy">SAIR DO TESTE</b> no topo ou use ⚙️ → Código especial.')}
 function sairTeste(){let r=null;try{r=JSON.parse(localStorage.getItem('evo_perfil_real')||'null')}catch(e){}if(!r){toast('Perfil real não encontrado');return}
-  S=r;delete S.modoTeste;salvar();try{localStorage.removeItem('evo_perfil_real')}catch(e){}location.reload()}
+  ['guilda','vicios','diario','privPin'].forEach(k=>{if(S[k]!=null)r[k]=S[k]});S=r;delete S.modoTeste;salvar();try{localStorage.removeItem('evo_perfil_real')}catch(e){}location.reload()}
 function testeFaixa(){let f=$('#testeFx');if(!S.modoTeste){if(f)f.remove();return}if(!f){document.body.insertAdjacentHTML('beforeend','<button id="testeFx" class="teste-fx">🧪 MODO TESTE · SAIR DO TESTE</button>');f=$('#testeFx');f.onclick=()=>{if(!f.dataset.c){f.dataset.c=1;f.textContent='TOQUE DE NOVO PARA VOLTAR AO PERFIL REAL';setTimeout(()=>{f.dataset.c='';f.textContent='🧪 MODO TESTE · SAIR DO TESTE'},4000);return}sairTeste()}}}
 function renderHeader(){testeFaixa();
   const n=nivel(),x=Math.max(0,xpTotal())-xpParaNivel(n),cust=xpParaNivel(n+1)-xpParaNivel(n);
@@ -4250,7 +4250,8 @@ async function backendFirebase(cfg){
     async update(p,v){await F.updateDoc(F.doc(fs,p),cv(v))},
     async add(c,v){const r=await F.addDoc(F.collection(fs,c),Object.assign({_t:Date.now()},cv(v)));return r.id},
     async list(c,ord,lim){return snapCol(await F.getDocs(qy(c,ord,lim)))},
-    watchDoc(p,cb){return F.onSnapshot(F.doc(fs,p),x=>cb(snapDoc(x)),e=>gErro(e))},
+    watchDoc(p,cb){return F.onSnapshot(F.doc(fs,p),x=>{if(!x.exists()&&x.metadata&&x.metadata.fromCache)return;cb(snapDoc(x))},e=>gErro(e))},
+    async existe(p){try{return (await F.getDocFromServer(F.doc(fs,p))).exists()}catch(e){return true}},
     watchCol(c,ord,lim,cb){return F.onSnapshot(qy(c,ord,lim),x=>cb(snapCol(x)),e=>gErro(e))}};
 }
 function gErro(e){console.error(e);G.erro=String(e&&e.message||e);renderGuilda()}
@@ -4268,12 +4269,18 @@ async function gIniciar(){
 const semanaK=()=>'w'+hoje(segunda());
 function gAbrir(gid){
   G.unsub.forEach(f=>{try{f()}catch(e){}});G.unsub=[];G.gid=gid;
-  G.unsub.push(G.db.watchDoc('guildas/'+gid,d=>{if(!d){sairLocal();return}G.guild=d;gChecarMissao();renderGuilda()}));
+  G.unsub.push(G.db.watchDoc('guildas/'+gid,d=>{if(!d){gConfirmarSumiu(gid);return}G.guild=d;gChecarMissao();renderGuilda()}));
   G.unsub.push(G.db.watchCol('guildas/'+gid+'/membros',null,null,l=>{G.membros=l;if(G.gid&&G.membros.length&&!G.membros.some(m=>m.id===G.uid)&&!G._entrando){/* removido */}renderGuilda()}));
   G.unsub.push(G.db.watchCol('guildas/'+gid+'/feed','_t',40,l=>{G.feed=l;renderGuilda()}));
   G.unsub.push(G.db.watchCol('guildas/'+gid+'/validacoes','_t',30,l=>{G.vals=l;gChecarValidacoes();renderGuilda()}));
   _gSync='';gSyncMembro();
 }
+/* só sai da guilda se o servidor confirmar 2x (com intervalo) que ela foi apagada; falha de rede/cache nunca apaga */
+async function gConfirmarSumiu(gid){
+  if(G._conf)return;G._conf=1;
+  try{for(let i=0;i<2;i++){await new Promise(r=>setTimeout(r,i?4000:1200));if(G.gid!==gid)return;
+      const ok=G.db.existe?await G.db.existe('guildas/'+gid):!!(await G.db.get('guildas/'+gid).catch(()=>1));if(ok)return}
+    if(G.gid===gid){sairLocal();toast('Esta guilda não existe mais')}}finally{G._conf=0}}
 function sairLocal(){G.unsub.forEach(f=>{try{f()}catch(e){}});G.unsub=[];G.gid=null;G.guild=null;G.membros=[];G.feed=[];G.vals=[];S.guilda=null;salvar();renderGuilda()}
 /* estatísticas da semana para o ranking */
 function statsSemana(){
