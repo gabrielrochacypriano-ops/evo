@@ -3434,12 +3434,738 @@ const IDI_DICAS={
 };
 
 /* ============ NOVOS CARDS DA ARENA ============ */
+/* ============ BANCO DE PERGUNTAS FIXAS (500 por matéria) ============
+   Ordem estável: novas perguntas devem ser ACRESCENTADAS NO FIM de cada nível (o progresso "vistos" usa o índice). */
+const BANCO=(()=>{
+const B={};
+function mk(seed){let s=seed>>>0;const R=()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296};
+  const ri=(a,b)=>a+Math.floor(R()*(b-a+1)),pk=a=>a[Math.floor(R()*a.length)],mix=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const fN=x=>typeof x==='number'?(Number.isInteger(x)?x.toLocaleString('pt-BR'):(+x.toFixed(2)).toLocaleString('pt-BR')):String(x);
+  /* pergunta de múltipla escolha: certa + erradas (até 3) */
+  const Q=(p,certa,erradas,ex)=>{const er=[...new Set(erradas.map(String))].filter(x=>x!==String(certa)).slice(0,3);const ops=mix([String(certa)].concat(er));return[p,ops,ops.indexOf(String(certa)),ex]};
+  /* escolhe erradas de uma lista de candidatos */
+  const QL=(p,certa,pool,ex,n=3)=>Q(p,certa,mix([...new Set(pool.map(String))].filter(x=>x!==String(certa))).slice(0,n),ex);
+  /* numérica com distratores próximos */
+  const QN=(p,v,dist,ex,f=fN)=>{const s=new Set([f(v)]),er=[];for(let t=0;t<80&&er.length<3;t++){const d=dist();if(typeof d!=='number'||!isFinite(d)||(v>=0&&d<0))continue;const k=f(d);if(s.has(k))continue;s.add(k);er.push(k)}
+    for(let k=1;er.length<3;k++){const d=f(v+k);if(!s.has(d)){s.add(d);er.push(d)}}return Q(p,f(v),er,ex)};
+  return{R,ri,pk,mix,fN,Q,QL,QN};
+}
+/* remove perguntas cujo enunciado já existe nas fixas antigas */
+function juntar(m,niveis){const K=q=>q[0]+'|'+q[1].slice().sort().join('|'),velhas=new Set();for(let i=0;i<3;i++){(MATERIAS[m].n[i]||[]).concat((EXTRAS[m]&&EXTRAS[m][i])||[]).forEach(q=>{velhas.add(K(q));velhas.add(q[0]+'|'+q[1][q[2]])})}
+  const K2=q=>q[0]+'|'+q[1][q[2]];
+  B[m]=niveis.map(l=>{const vis=new Set();return l.filter(q=>q&&q[1]&&q[2]>=0&&q[1].length>=2&&new Set(q[1]).size===q[1].length&&!velhas.has(K(q))&&!velhas.has(K2(q))&&!vis.has(K(q))&&vis.add(K(q)))})}
+/* ---------- MATEMÁTICA ---------- */
+{const {ri,pk,mix,fN,Q,QN,QL}=mk(101);const L1=[],L2=[],L3=[];
+/* nível 1 */
+for(let a=3;a<=9;a++)for(let b=a;b<=9;b++)L1.push(QN('Quanto é '+a+' × '+b+'?',a*b,()=>a*b+pk([-a,a,-b,b,1,-1,10,-10]),a+' × '+b+' = '+(a*b)+'. Se esquecer, some '+a+' vezes o número '+b+', ou faça '+a+' × '+(b-1)+' + '+a+'.'));
+for(let i=0;i<15;i++){const a=ri(12,89),b=ri(11,79);L1.push(QN('Quanto é '+a+' + '+b+'?',a+b,()=>a+b+pk([-10,10,-1,1,-2,2,-11,11]),'Some dezenas com dezenas e unidades com unidades: '+(a-a%10)+' + '+(b-b%10)+' = '+((a-a%10)+(b-b%10))+' e '+(a%10)+' + '+(b%10)+' = '+(a%10+b%10)+'. Total: '+(a+b)+'.'))}
+for(let i=0;i<15;i++){const a=ri(40,99),b=ri(11,a-5);L1.push(QN('Quanto é '+a+' − '+b+'?',a-b,()=>a-b+pk([-10,10,-1,1,-2,2]),'Confira somando de volta: '+(a-b)+' + '+b+' = '+a+'. Então '+a+' − '+b+' = '+(a-b)+'.'))}
+for(let i=0;i<15;i++){const d=ri(2,9),q=ri(3,12);L1.push(QN('Quanto é '+(d*q)+' ÷ '+d+'?',q,()=>q+pk([-2,-1,1,2,d]),'Divisão é a operação inversa da multiplicação: '+d+' × '+q+' = '+(d*q)+', então '+(d*q)+' ÷ '+d+' = '+q+'.'))}
+[[10,40],[10,80],[10,250],[20,50],[20,80],[20,300],[25,40],[25,120],[25,400],[50,70],[50,180],[50,90],[10,1200],[20,150],[25,200],[50,500],[10,90],[20,400],[25,80],[50,30]].forEach(([p,v])=>{const r=v*p/100;L1.push(QN('Quanto é '+p+'% de '+v+'?',r,()=>r+pk([-10,10,-5,5,r,-r/2]),p===10?'10% é a décima parte: '+v+' ÷ 10 = '+fN(r)+'.':p===50?'50% é a metade: '+v+' ÷ 2 = '+fN(r)+'.':p===25?'25% é a quarta parte: '+v+' ÷ 4 = '+fN(r)+'.':'20% é o dobro de 10%: 10% de '+v+' = '+fN(v/10)+', vezes 2 = '+fN(r)+'.'))});
+for(let n=2;n<=15;n++)if(n!==9)L1.push(QN('Qual é a raiz quadrada de '+(n*n)+'?',n,()=>n+pk([-2,-1,1,2,n]),n+' × '+n+' = '+(n*n)+', então √'+(n*n)+' = '+n+'.'));
+[[2,2],[2,4],[2,5],[3,2],[3,3],[5,2],[5,3],[10,2],[10,3],[4,2],[4,3],[6,2]].forEach(([b,e])=>{const r=b**e;L1.push(QN('Quanto é '+b+' elevado a '+e+'?',r,()=>pk([b*e,r/b,r*b,r+b,r-1,r+1]),'Potência é multiplicação repetida: '+Array(e).fill(b).join(' × ')+' = '+r+'. Não confunda com '+b+' × '+e+' = '+(b*e)+'.'))});
+for(let l=3;l<=12;l++)if(l!==5)L1.push(QN('Qual o perímetro de um quadrado de lado '+l+' cm?',4*l,()=>pk([l*l,2*l,4*l+2,4*l-2,3*l]),'Perímetro é a soma dos lados: 4 × '+l+' = '+(4*l)+' cm. (A área seria '+(l*l)+' cm².)',x=>fN(x)+' cm'));
+for(let i=0;i<12;i++){const a=ri(3,12),b=ri(2,9);L1.push(QN('Qual a área de um retângulo de '+a+' m por '+b+' m?',a*b,()=>pk([2*(a+b),a+b,a*b+a,a*b-b,a*b+10]),'Área do retângulo = base × altura = '+a+' × '+b+' = '+(a*b)+' m². O perímetro seria '+(2*(a+b))+' m.',x=>fN(x)+' m²'))}
+[['quilômetros','metros',1000,[2,3,5,7]],['metros','centímetros',100,[2,4,6]],['quilos','gramas',1000,[2,3,4]],['horas','minutos',60,[2,3,5]],['minutos','segundos',60,[2,4,10]],['litros','mililitros',1000,[2,3,5]]].forEach(([a,b,f,vs])=>vs.forEach(v=>L1.push(QN('Quantos '+b+' há em '+v+' '+a+'?',v*f,()=>pk([v*f/10,v*f*10,v*100,v*f+f,v*f-f]),'1 '+a.replace(/s$/,'').replace(/õe$/,'ão')+' = '+f+' '+b+'. Então '+v+' × '+f+' = '+fN(v*f)+' '+b+'.'))));
+for(let i=0;i<10;i++){const n=ri(13,60),t=pk(['dobro','triplo','metade']);const r=t==='dobro'?2*n:t==='triplo'?3*n:n/2;if(t==='metade'&&n%2)continue;L1.push(QN('Qual é o '+t+' de '+n+'?',r,()=>pk([2*n,3*n,n/2,n+2,n*4].filter(x=>x!==r)),t==='dobro'?'Dobro = 2 × '+n+' = '+r+'.':t==='triplo'?'Triplo = 3 × '+n+' = '+r+'.':'Metade = '+n+' ÷ 2 = '+r+'.'))}
+/* nível 2 */
+for(let i=0;i<25;i++){const x=ri(2,15),a=ri(2,9),b=ri(1,30);L2.push(QN('Resolva: '+a+'x + '+b+' = '+(a*x+b),x,()=>x+pk([-2,-1,1,2,3,b]),'Tire '+b+' dos dois lados: '+a+'x = '+(a*x)+'. Divida por '+a+': x = '+x+'.'))}
+[[80,10],[80,25],[120,15],[120,25],[150,10],[150,30],[200,15],[200,35],[250,20],[250,40],[300,15],[300,25],[400,30],[500,12],[500,35],[60,50],[90,10],[180,20],[240,25],[360,15],[1000,8],[800,15],[640,25],[450,20],[720,10]].forEach(([v,d])=>{const r=v*(100-d)/100;L2.push(QN('Um produto de R$ '+v+' tem '+d+'% de desconto. Qual o preço final?',r,()=>pk([v*d/100,r+10,r-10,v-d,r+v*d/200]),d+'% de '+v+' = '+fN(v*d/100)+'. Então '+v+' − '+fN(v*d/100)+' = '+fN(r)+'. Atalho: pagar '+(100-d)+'% → '+v+' × '+fN((100-d)/100)+'.',x=>'R$ '+fN(x)))});
+[[100,10],[200,5],[50,20],[80,25],[300,10],[1500,4],[40,50],[120,15],[250,8],[600,12]].forEach(([v,a])=>{const r=v*(100+a)/100;L2.push(QN('Um salário de R$ '+v+' teve aumento de '+a+'%. Qual o novo valor?',r,()=>pk([v+a,v*a/100,r+10,r-10,v*(100-a)/100]),a+'% de '+v+' = '+fN(v*a/100)+'. '+v+' + '+fN(v*a/100)+' = '+fN(r)+'. Atalho: '+v+' × '+fN(1+a/100)+'.',x=>'R$ '+fN(x)))});
+for(let i=0;i<15;i++){const ns=[ri(2,20),ri(2,20),ri(2,20)];const s=ns.reduce((a,b)=>a+b);ns[2]+=(3-s%3)%3;const t=ns.reduce((a,b)=>a+b),m=t/3;L2.push(QN('Qual a média de '+ns.join(', ')+'?',m,()=>m+pk([-2,-1,1,2,3]),'Some e divida pela quantidade: ('+ns.join(' + ')+') ÷ 3 = '+t+' ÷ 3 = '+m+'.'))}
+for(let i=0;i<15;i++){const b=ri(4,16),h=ri(3,12)*2;L2.push(QN('Qual a área de um triângulo de base '+b+' cm e altura '+h+' cm?',b*h/2,()=>pk([b*h,b+h,b*h/2+2,b*h/2-4,b*h/4]),'Área do triângulo = base × altura ÷ 2 = '+b+' × '+h+' ÷ 2 = '+(b*h/2)+' cm².',x=>fN(x)+' cm²'))}
+for(let r=1;r<=10;r++)if(r!==3)L2.push(QN('Qual a área de um círculo de raio '+r+' cm? (use π = 3,14)',3.14*r*r,()=>pk([2*3.14*r,3.14*r,3.14*r*r*2,3.14*(r+1)**2]),'Área = π × r² = 3,14 × '+(r*r)+' = '+fN(3.14*r*r)+' cm². (2πr = '+fN(6.28*r)+' é o comprimento da circunferência.)',x=>fN(x)+' cm²'));
+for(let r=1;r<=8;r++)L2.push(QN('Qual o comprimento de uma circunferência de raio '+r+' cm? (use π = 3,14)',6.28*r,()=>pk([3.14*r*r,3.14*r,6.28*(r+1),6.28*r*2]),'Comprimento = 2 × π × r = 2 × 3,14 × '+r+' = '+fN(6.28*r)+' cm.',x=>fN(x)+' cm'));
+for(let i=0;i<15;i++){const a=ri(2,6),b=ri(2,6),c=ri(2,5),it=pk([['ovos','pessoas'],['litros de tinta','paredes'],['xícaras de farinha','bolos'],['funcionários','tarefas']]);L2.push(QN('Se '+a+' '+it[0]+' servem para '+b+' '+it[1]+', quantos '+it[0]+' servem para '+(b*c)+' '+it[1]+'?',a*c,()=>a*c+pk([-2,-1,1,2,a,b]),'Regra de três direta: '+(b*c)+' é '+c+' vezes '+b+'. Então '+a+' × '+c+' = '+(a*c)+'.'))}
+[[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[7,10],[1,8],[3,8],[1,20]].forEach(([n,d])=>{const r=n/d*100;L2.push(QN('A fração '+n+'/'+d+' equivale a quantos por cento?',r,()=>pk([r+5,r-5,r+10,n*10,d*10,r*2].filter(x=>x>0&&x!==r)),n+' ÷ '+d+' = '+fN(n/d)+'; × 100 = '+fN(r)+'%.',x=>fN(x)+'%'))});
+for(let i=0;i<8;i++){const a=ri(3,15),b=ri(a+2,25);L2.push(QN('Quanto é '+a+' − '+b+'?',a-b,()=>a-b+pk([-2,2,b-a+a-b+2*(b-a),1,-1]),'Como '+b+' é maior que '+a+', o resultado é negativo: '+b+' − '+a+' = '+(b-a)+', então '+a+' − '+b+' = '+(a-b)+'.',x=>x<0?'−'+(-x):String(x)))}
+for(let i=0;i<7;i++){const a=ri(2,9),b=ri(2,9);L2.push(Q('Quanto é (−'+a+') × '+b+'?','−'+(a*b),[String(a*b),'−'+(a*b+a),'−'+(a+b)],'Sinais diferentes na multiplicação dão resultado negativo: (−'+a+') × '+b+' = −'+(a*b)+'. Sinais iguais dariam positivo.'))}
+[20,35,40,55,60,75,15,80].forEach(g=>L2.push(QN('Qual é o complemento de um ângulo de '+g+'°?',90-g,()=>pk([180-g,90+g,g,100-g]),'Ângulos complementares somam 90°: 90° − '+g+'° = '+(90-g)+'°.',x=>x+'°')));
+[30,45,60,110,120,135,150].forEach(g=>L2.push(QN('Qual é o suplemento de um ângulo de '+g+'°?',180-g,()=>pk([90-g,360-g,g,200-g].filter(x=>x>0)),'Ângulos suplementares somam 180°: 180° − '+g+'° = '+(180-g)+'°.',x=>x+'°')));
+[[0.5,0.4],[1.5,2],[0.2,0.3],[2.5,4],[0.1,0.5],[1.2,3],[0.6,0.5],[3.5,2],[0.25,8],[0.3,0.3]].forEach(([a,b])=>{const r=+(a*b).toFixed(4);L2.push(QN('Quanto é '+fN(a)+' × '+fN(b)+'?',r,()=>pk([r*10,r/10,a+b,r+1,r+0.1].map(x=>+x.toFixed(4))),'Multiplique sem a vírgula e depois conte as casas decimais dos dois números. Resultado: '+fN(r)+'.'))});
+/* nível 3 */
+[[3,4,5],[6,8,10],[9,12,15],[12,16,20],[15,20,25],[5,12,13],[10,24,26],[8,15,17],[7,24,25],[20,21,29],[9,40,41],[12,35,37]].forEach(t=>{if(t[0]===6&&t[1]===8)return;L3.push(QN('Um triângulo retângulo tem catetos '+t[0]+' e '+t[1]+'. Quanto mede a hipotenusa?',t[2],()=>t[2]+pk([-2,-1,1,2,3]),'Pitágoras: h² = '+t[0]+'² + '+t[1]+'² = '+(t[0]**2)+' + '+(t[1]**2)+' = '+(t[2]**2)+'. Logo h = √'+(t[2]**2)+' = '+t[2]+'.'))});
+[[3,4,5],[5,12,13],[8,15,17],[6,8,10],[7,24,25],[9,12,15],[20,21,29],[12,16,20]].forEach(t=>L3.push(QN('Um triângulo retângulo tem hipotenusa '+t[2]+' e um cateto '+t[0]+'. Quanto mede o outro cateto?',t[1],()=>t[1]+pk([-2,-1,1,2,t[0]]),'Pitágoras: c² = '+t[2]+'² − '+t[0]+'² = '+(t[2]**2)+' − '+(t[0]**2)+' = '+(t[1]**2)+'. Logo c = '+t[1]+'.')));
+[[1000,10,3],[2000,10,2],[2000,10,3],[5000,10,2],[1000,20,2],[1000,20,3],[5000,20,2],[10000,10,2],[3000,10,2],[4000,5,2],[8000,5,2]].forEach(([c,i,n])=>{const r=Math.round(c*(1+i/100)**n*100)/100;L3.push(QN('R$ '+c.toLocaleString('pt-BR')+' a '+i+'% ao ano, juros compostos, por '+n+' anos. Quanto vira?',r,()=>pk([c*(1+i*n/100),r+c*i/100,r-c*i/200,c+c*i/100]),'Montante = C × (1 + i)ⁿ = '+c.toLocaleString('pt-BR')+' × '+fN(1+i/100)+'^'+n+' = '+fN(r)+'. Nos juros simples daria '+fN(c*(1+i*n/100))+': nos compostos, os juros rendem sobre juros.',x=>'R$ '+fN(x)))});
+[[1000,5,2],[2000,10,3],[500,4,5],[1500,2,10],[800,5,4],[3000,3,6],[1200,10,2],[600,5,3],[2500,4,4],[10000,1,12]].forEach(([c,i,n])=>{const j=c*i/100*n;L3.push(QN('Quanto rendem R$ '+c.toLocaleString('pt-BR')+' a '+i+'% ao mês, em juros SIMPLES, durante '+n+' meses?',j,()=>pk([c*i/100,j*2,j+c*i/100,j-c*i/100,c+j]),'Juros simples = C × i × t = '+c.toLocaleString('pt-BR')+' × '+fN(i/100)+' × '+n+' = '+fN(j)+'.',x=>'R$ '+fN(x)))});
+[2,3,4,5,6].forEach(e=>L3.push(QN('Quanto vale log₁₀ '+(10**e).toLocaleString('pt-BR')+'?',e,()=>e+pk([-1,1,2,10]),'O logaritmo pergunta: 10 elevado a quanto dá '+(10**e).toLocaleString('pt-BR')+'? Como 10^'+e+' = '+(10**e).toLocaleString('pt-BR')+', o log é '+e+'.')));
+[1,2,3,4,5,6,7,8,9,10].forEach(e=>L3.push(QN('Quanto vale log₂ '+(2**e)+'?',e,()=>e+pk([-2,-1,1,2,e]),'2 elevado a '+e+' dá '+(2**e)+', então log₂ '+(2**e)+' = '+e+'.')));
+const QR=[];for(let a=1;a<=7;a++)for(let b=a+1;b<=8;b++)QR.push([a,b]);mix(QR).slice(0,18).forEach(([a,b])=>{if(a===2&&b===3)return;L3.push(Q('Quais são as raízes de x² − '+(a+b)+'x + '+(a*b)+' = 0?',a+' e '+b,[(a+1)+' e '+(b+1),'−'+a+' e −'+b,(a+b)+' e '+(a*b)],'Procure dois números com soma '+(a+b)+' e produto '+(a*b)+': '+a+' e '+b+'. Fatorando: (x − '+a+')(x − '+b+') = 0.'))});
+[3,4,5,6,7].forEach(n=>{const f=[1,1,2,6,24,120,720,5040][n];L3.push(QN('Quanto é '+n+'! (fatorial de '+n+')?',f,()=>pk([n*n,f/2,f*2,n*(n-1),f+n]),n+'! = '+[...Array(n)].map((_,k)=>n-k).join(' × ')+' = '+f.toLocaleString('pt-BR')+'.'))});
+[['SOL',6],['GATO',24],['LIVRO',120],['FRASE',120],['CAMPO',120]].forEach(([w,f])=>L3.push(QN('Quantos anagramas tem a palavra '+w+'?',f,()=>pk([w.length**2,f/2,f*2,w.length*(w.length-1)]),'São '+w.length+' letras diferentes, então os anagramas são '+w.length+'! = '+f+'.')));
+[[4,2],[5,2],[6,2],[7,2],[8,2],[10,2],[5,3],[6,3],[7,3],[8,3],[10,3],[6,4],[9,2],[12,2]].forEach(([n,k])=>{let c=1;for(let i=0;i<k;i++)c=c*(n-i)/(i+1);L3.push(QN('De quantas formas posso escolher '+k+' pessoas entre '+n+' para uma comissão (a ordem não importa)?',c,()=>pk([c*2,n*k,c+n,c-1,c*k]),'Combinação: C('+n+','+k+') = '+n+'! ÷ ('+k+'! × '+(n-k)+'!) = '+c+'. Como a ordem não importa, dividimos as permutações repetidas.'))});
+for(let i=0;i<15;i++){const a1=ri(1,10),r=ri(2,7),n=ri(8,20),an=a1+(n-1)*r;L3.push(QN('Numa progressão aritmética, o 1º termo é '+a1+' e a razão é '+r+'. Qual é o '+n+'º termo?',an,()=>pk([a1+n*r,an-r,an+r,a1*n,an+1]),'aₙ = a₁ + (n − 1) × r = '+a1+' + '+(n-1)+' × '+r+' = '+an+'.'))}
+[10,20,50,100,30,40,60,15].forEach(n=>{const s=n*(n+1)/2;L3.push(QN('Quanto é a soma de todos os números de 1 a '+n+'?',s,()=>pk([n*n,s+n,s-n,n*(n-1)/2,s*2]),'Truque de Gauss: (1 + '+n+') × '+n+' ÷ 2 = '+s.toLocaleString('pt-BR')+'.'))});
+[[2,2,6],[3,2,5],[1,3,5],[5,2,4],[2,3,4],[1,2,10],[4,3,4],[3,3,4],[1,5,4],[6,2,5]].forEach(([a,q,n])=>{const r=a*q**(n-1);L3.push(QN('Numa progressão geométrica, o 1º termo é '+a+' e a razão é '+q+'. Qual é o '+n+'º termo?',r,()=>pk([a*q**n,r/q,a+(n-1)*q,r+a,r*2]),'aₙ = a₁ × q^(n−1) = '+a+' × '+q+'^'+(n-1)+' = '+r.toLocaleString('pt-BR')+'.'))});
+for(let l=2;l<=10;l++)L3.push(QN('Qual o volume de um cubo de aresta '+l+' cm?',l**3,()=>pk([l*l,6*l*l,12*l,l**3+l,3*l]),'Volume do cubo = aresta³ = '+l+' × '+l+' × '+l+' = '+(l**3)+' cm³.',x=>fN(x)+' cm³'));
+for(let i=0;i<6;i++){const a=ri(2,9),b=ri(2,8),c=ri(2,6);L3.push(QN('Qual o volume de uma caixa de '+a+' cm × '+b+' cm × '+c+' cm?',a*b*c,()=>pk([a*b+c,2*(a*b+b*c+a*c),a*b*c+a,a+b+c,a*b]),'Volume = comprimento × largura × altura = '+a+' × '+b+' × '+c+' = '+(a*b*c)+' cm³. Em litros: 1.000 cm³ = 1 L.',x=>fN(x)+' cm³'))}
+[['tirar um número maior que 4 em um dado','1/3','2 resultados (5 e 6) em 6: 2/6 = 1/3.'],['tirar um ás de um baralho comum de 52 cartas','1/13','Há 4 ases em 52 cartas: 4/52 = 1/13.'],['tirar uma carta de copas de um baralho de 52 cartas','1/4','São 13 cartas de copas em 52: 13/52 = 1/4.'],['tirar soma 7 com dois dados','1/6','Há 6 combinações que somam 7 em 36 possíveis: 6/36 = 1/6.'],['tirar soma 12 com dois dados','1/36','Só (6,6) soma 12: 1 em 36.'],['tirar coroa duas vezes em dois lançamentos de moeda','1/4','1/2 × 1/2 = 1/4.'],['tirar número primo em um dado','1/2','Os primos de 1 a 6 são 2, 3 e 5: 3/6 = 1/2.'],['NÃO tirar 6 em um dado','5/6','O complementar: 1 − 1/6 = 5/6.'],['tirar três caras seguidas com uma moeda','1/8','1/2 × 1/2 × 1/2 = 1/8.'],['tirar uma bola vermelha de um saco com 3 vermelhas e 7 azuis','3/10','Favoráveis ÷ total = 3 ÷ 10 = 3/10.']].forEach(([t,c,e])=>L3.push(QL('Qual a probabilidade de '+t+'?',c,['1/2','1/3','1/4','1/6','1/8','1/12','1/13','1/36','5/6','3/10'],e)));
+[[2,-1,'1/2'],[2,-2,'1/4'],[10,-1,'0,1'],[10,-2,'0,01'],[5,0,'1'],[3,-2,'1/9'],[4,0,'1'],[2,-3,'1/8']].forEach(([b,e,r])=>L3.push(Q('Quanto é '+b+' elevado a '+e+'?',r,e===0?['0',String(b),'−1']:['−'+(b**-e),String(-b*e),'1/'+(b*-e)].filter(x=>x!==r).concat(['0']),e===0?'Todo número diferente de zero elevado a 0 é igual a 1.':'Expoente negativo inverte a base: '+b+'^'+e+' = 1/'+b+'^'+(-e)+' = '+r+'.')));
+juntar('mat',[L1,L2,L3]);}
+/* ---------- GEOGRAFIA ---------- */
+{const {R,pk,mix,Q,QL}=mk(202);const L=[[],[],[]];
+const MAIS_PAISES=[['Afeganistão','Cabul','Ásia',3],['Bangladesh','Daca','Ásia',3],['Mianmar','Naypyidaw','Ásia',3],['Camboja','Phnom Penh','Ásia',3],['Coreia do Norte','Pyongyang','Ásia',3],['Uzbequistão','Tashkent','Ásia',3],['Kuwait','Cidade do Kuwait','Ásia',3],['Omã','Mascate','Ásia',3],['Luxemburgo','Luxemburgo','Europa',3],['Eslováquia','Bratislava','Europa',3],['Eslovênia','Liubliana','Europa',3],['Estônia','Tallinn','Europa',3],['Letônia','Riga','Europa',3],['Lituânia','Vilnius','Europa',3],['Belarus','Minsk','Europa',3],['Albânia','Tirana','Europa',3],['Malta','Valletta','Europa',3],['Armênia','Erevan','Ásia',3],['Camarões','Iaundé','África',3],['Zâmbia','Lusaka','África',3],['Zimbábue','Harare','África',3],['Uganda','Kampala','África',3],['Ruanda','Kigali','África',3],['Madagascar','Antananarivo','África',3],['Namíbia','Windhoek','África',3],['Botsuana','Gaborone','África',3],['Sudão','Cartum','África',3],['Líbia','Trípoli','África',3],['Guiné-Bissau','Bissau','África',3],['São Tomé e Príncipe','São Tomé','África',3],['Timor-Leste','Díli','Ásia',3],['República Dominicana','Santo Domingo','América Central',3],['Haiti','Porto Príncipe','América Central',3],['Belize','Belmopan','América Central',3],['Bahamas','Nassau','América Central',3],['Trinidad e Tobago','Port of Spain','América Central',3],['Fiji','Suva','Oceania',3],['Papua-Nova Guiné','Port Moresby','Oceania',3]];
+const PS=PAISES.concat(MAIS_PAISES),REG=['América do Sul','América do Norte','América Central','Europa','Ásia','África','Oceania'];
+const curta=c=>c.replace(/ \(.*\)/,'').split(' / ')[0];
+PS.forEach(p=>{const nv=p[3]-1,cap=p[1];
+  L[nv].push(QL('Qual é a capital deste país: '+p[0]+'?',curta(cap),PS.filter(x=>x[2]===p[2]||R()<.2).map(x=>curta(x[1])),p[0]+' → capital: '+cap+'. Fica em: '+p[2]+'.'));
+  if(!cap.includes(p[0])&&!p[0].includes(curta(cap)))L[Math.min(2,nv+(nv===0?1:0))].push(QL(curta(cap)+' é a capital de qual país?',p[0],(PS.filter(x=>x[2]===p[2]).length>4?PS.filter(x=>x[2]===p[2]):PS).map(x=>x[0]),curta(cap)+' → capital do país: '+p[0]+' ('+p[2]+').'));
+  if(REG.includes(p[2])&&p[0]!=='Brasil')L[nv===2?1:0].push(QL('Em que parte do mundo fica '+p[0]+'?',p[2],REG,p[0]+' fica em: '+p[2]+'. Sua capital é '+cap+'.'));
+});
+const UF={'Acre':'AC','Alagoas':'AL','Amapá':'AP','Amazonas':'AM','Bahia':'BA','Ceará':'CE','Espírito Santo':'ES','Goiás':'GO','Maranhão':'MA','Mato Grosso':'MT','Mato Grosso do Sul':'MS','Minas Gerais':'MG','Pará':'PA','Paraíba':'PB','Paraná':'PR','Pernambuco':'PE','Piauí':'PI','Rio de Janeiro':'RJ','Rio Grande do Norte':'RN','Rio Grande do Sul':'RS','Rondônia':'RO','Roraima':'RR','Santa Catarina':'SC','São Paulo':'SP','Sergipe':'SE','Tocantins':'TO'};
+const RB=['Norte','Nordeste','Centro-Oeste','Sudeste','Sul'];
+ESTADOS.forEach(e=>{const nv=EST_NV[e[0]]-1;
+  L[nv].push(QL('Qual é a capital deste estado: '+e[0]+'?',e[1],ESTADOS.map(x=>x[1]),e[0]+' → capital: '+e[1]+'. Região: '+e[2]+'.'));
+  if(e[0]!==e[1])L[Math.min(2,nv+1)].push(QL(e[1]+' é a capital de qual estado?',e[0],ESTADOS.filter(x=>x[2]===e[2]||x[0].length%3===0).map(x=>x[0]),e[1]+' → capital do estado: '+e[0]+' (região '+e[2]+').'));
+  L[nv].push(QL('Em que região do Brasil fica '+e[0]+'?',e[2],RB,e[0]+' fica na região '+e[2]+'. Capital: '+e[1]+'.'));
+  L[0].push(QL('Qual é a sigla do estado '+e[0]+'?',UF[e[0]],Object.values(UF).filter(s=>s[0]===UF[e[0]][0]||s[1]===UF[e[0]][1]).concat(Object.values(UF)),'A sigla de '+e[0]+' é '+UF[e[0]]+'.'));
+});
+const H=[
+ [0,'Qual é o maior continente do mundo em área?','Ásia',['África','América','Europa'],'A Ásia tem cerca de 44 milhões de km², quase um terço das terras do planeta.'],
+ [0,'Qual é o menor continente?','Oceania',['Europa','Antártida','África'],'A Oceania, com a Austrália, é o menor continente em área.'],
+ [0,'Qual é o continente mais frio do planeta?','Antártida',['Europa','Ásia','América do Norte'],'Na Antártida já foram medidas temperaturas abaixo de −89 °C.'],
+ [0,'Qual é o maior país da América do Sul?','Brasil',['Argentina','Peru','Colômbia'],'O Brasil ocupa quase metade da área da América do Sul.'],
+ [0,'Quantas regiões oficiais o Brasil tem (IBGE)?','5',['4','6','7'],'Norte, Nordeste, Centro-Oeste, Sudeste e Sul.'],
+ [0,'Qual é a maior região do Brasil em área?','Norte',['Nordeste','Centro-Oeste','Sudeste'],'A região Norte ocupa cerca de 45% do território brasileiro.'],
+ [0,'Qual é a região mais populosa do Brasil?','Sudeste',['Nordeste','Sul','Norte'],'O Sudeste concentra cerca de 40% da população do país.'],
+ [0,'Qual é a cidade mais populosa do Brasil?','São Paulo',['Rio de Janeiro','Brasília','Salvador'],'A cidade de São Paulo tem mais de 11 milhões de habitantes.'],
+ [0,'Qual é o maior deserto quente do mundo?','Saara',['Atacama','Gobi','Kalahari'],'O Saara, no norte da África, tem cerca de 9 milhões de km². (A Antártida é um deserto frio ainda maior.)'],
+ [0,'Qual é a montanha mais alta do mundo?','Monte Everest',['K2','Aconcágua','Kilimanjaro'],'O Everest, no Himalaia, tem cerca de 8.849 m de altitude.'],
+ [0,'Qual instrumento indica as direções Norte, Sul, Leste e Oeste?','Bússola',['Termômetro','Barômetro','Sismógrafo'],'A agulha imantada da bússola aponta para o norte magnético.'],
+ [0,'Para que lado o Sol nasce?','Leste',['Oeste','Norte','Sul'],'O Sol nasce no lado leste (nascente) e se põe no oeste (poente), aproximadamente.'],
+ [0,'Qual é o maior bioma do Brasil?','Amazônia',['Cerrado','Mata Atlântica','Pantanal'],'A Amazônia ocupa cerca de 49% do território brasileiro.'],
+ [0,'Qual bioma brasileiro é conhecido como a maior planície alagável do mundo?','Pantanal',['Cerrado','Caatinga','Pampa'],'O Pantanal fica principalmente em Mato Grosso e Mato Grosso do Sul.'],
+ [0,'Que oceano banha o litoral do Brasil?','Atlântico',['Pacífico','Índico','Ártico'],'Todo o litoral brasileiro, de cerca de 7,4 mil km, é banhado pelo Oceano Atlântico.'],
+ [1,'Qual bioma é exclusivamente brasileiro?','Caatinga',['Cerrado','Amazônia','Pampa'],'A Caatinga só existe no Brasil, principalmente no semiárido nordestino.'],
+ [1,'Qual bioma brasileiro é chamado de "berço das águas"?','Cerrado',['Pantanal','Caatinga','Pampa'],'No Cerrado nascem rios de várias das grandes bacias do Brasil.'],
+ [1,'Qual bioma brasileiro foi o mais desmatado, restando pouco de sua área original?','Mata Atlântica',['Pampa','Cerrado','Amazônia'],'Restam aproximadamente 12% da Mata Atlântica original, que ocupava grande parte do litoral.'],
+ [1,'Em que região do Brasil fica o bioma Pampa?','Sul',['Sudeste','Centro-Oeste','Nordeste'],'O Pampa (campos sulinos) fica no Rio Grande do Sul.'],
+ [1,'Qual é o maior rio do mundo em volume de água?','Amazonas',['Nilo','Mississippi','Yangtzé'],'O Amazonas despeja no oceano mais água que qualquer outro rio.'],
+ [1,'Em qual país fica a maior parte da Floresta Amazônica?','Brasil',['Peru','Colômbia','Venezuela'],'Cerca de 60% da Floresta Amazônica fica em território brasileiro.'],
+ [1,'Qual linha imaginária passa por Greenwich, em Londres?','Meridiano de Greenwich',['Equador','Trópico de Câncer','Círculo Polar Ártico'],'O Meridiano de Greenwich é a longitude 0° e divide os hemisférios Leste e Oeste.'],
+ [1,'Qual trópico passa pelo estado de São Paulo?','Trópico de Capricórnio',['Trópico de Câncer','Equador','Círculo Polar Antártico'],'O Trópico de Capricórnio cruza o Brasil passando por SP, PR e MS.'],
+ [1,'Qual é a usina hidrelétrica no Rio Paraná, compartilhada pelo Brasil e Paraguai?','Itaipu',['Belo Monte','Tucuruí','Sobradinho'],'Itaipu é binacional e uma das maiores hidrelétricas do mundo.'],
+ [1,'Qual país tem a maior população do mundo hoje?','Índia',['China','Estados Unidos','Indonésia'],'A Índia ultrapassou a China em 2023 e se tornou o país mais populoso.'],
+ [1,'Qual é o rio mais longo da Ásia?','Yangtzé',['Ganges','Mekong','Indo'],'O Yangtzé (Rio Azul), na China, tem cerca de 6.300 km.'],
+ [1,'Qual país tem o formato de uma bota?','Itália',['Grécia','Portugal','Croácia'],'A península Itálica lembra uma bota no Mar Mediterrâneo.'],
+ [1,'O Monte Aconcágua, o mais alto das Américas, fica em qual país?','Argentina',['Chile','Peru','Bolívia'],'O Aconcágua tem cerca de 6.961 m, na Cordilheira dos Andes argentina.'],
+ [1,'Qual país é formado por milhares de ilhas e tem Tóquio como capital?','Japão',['Filipinas','Indonésia','Coreia do Sul'],'O Japão é um arquipélago com quatro ilhas principais e milhares de menores.'],
+ [1,'Qual mar separa a Europa da África?','Mar Mediterrâneo',['Mar do Norte','Mar Negro','Mar Vermelho'],'O Mediterrâneo fica entre o sul da Europa, o norte da África e o oeste da Ásia.'],
+ [1,'Qual lago, na fronteira entre Peru e Bolívia, é famoso por ser um dos lagos navegáveis mais altos do mundo?','Lago Titicaca',['Lago Vitória','Lagoa dos Patos','Lago Nicarágua'],'O Titicaca fica a cerca de 3.800 m de altitude, nos Andes.'],
+ [1,'O que significa IDH?','Índice de Desenvolvimento Humano',['Índice de Dados Habitacionais','Indicador de Desempenho Hídrico','Índice de Densidade Humana'],'O IDH combina saúde (expectativa de vida), educação e renda.'],
+ [2,'Qual é o fuso horário oficial de Brasília em relação a Greenwich?','UTC−3',['UTC−2','UTC−4','UTC−5'],'Brasília fica 3 horas atrás do horário de Greenwich (UTC−3).'],
+ [2,'Quantos fusos horários o Brasil tem, contando as ilhas oceânicas?','4',['2','3','5'],'São 4: UTC−2 (Fernando de Noronha), −3 (Brasília), −4 (parte do Norte e do Centro-Oeste) e −5 (Acre e parte do Amazonas).'],
+ [2,'Qual é a maior ilha do mundo (que não é continente)?','Groenlândia',['Madagascar','Bornéu','Nova Guiné'],'A Groenlândia tem cerca de 2,1 milhões de km² e pertence ao Reino da Dinamarca.'],
+ [2,'Qual é o ponto mais profundo dos oceanos?','Fossa das Marianas',['Fossa de Porto Rico','Fossa de Java','Dorsal Mesoatlântica'],'No Pacífico, a Fossa das Marianas passa de 10.900 m de profundidade.'],
+ [2,'Qual é o rio mais longo da África?','Nilo',['Congo','Níger','Zambeze'],'O Nilo tem cerca de 6.650 km e corre do centro da África até o Mediterrâneo.'],
+ [2,'Qual é o deserto mais seco do mundo (não polar)?','Atacama',['Saara','Gobi','Kalahari'],'O Atacama, no Chile, tem lugares onde quase nunca chove.'],
+ [2,'O que é uma bacia hidrográfica?','Área drenada por um rio principal e seus afluentes',['Lago artificial de uma hidrelétrica','Área de mar raso perto da costa','Reservatório de água subterrânea'],'É toda a área de terra cuja água escorre para um mesmo rio principal.'],
+ [2,'O que é um aquífero?','Reserva de água subterrânea',['Rio que deságua no mar','Nascente de montanha','Lago de água salgada'],'Aquíferos são rochas que armazenam água no subsolo, como o Aquífero Guarani.'],
+ [2,'O Aquífero Guarani se estende sob quais países?','Brasil, Argentina, Paraguai e Uruguai',['Brasil, Bolívia, Peru e Chile','Brasil, Colômbia e Venezuela','Só no Brasil'],'É um dos maiores aquíferos do mundo e fica sob esses quatro países.'],
+ [2,'O que é um arquipélago?','Um conjunto de ilhas',['Uma cadeia de montanhas','Um tipo de planalto','A foz de um rio em delta'],'Fernando de Noronha, por exemplo, é um arquipélago brasileiro.'],
+ [2,'Qual tipo de foz se divide em vários braços, como a do Nilo?','Delta',['Estuário','Meandro','Cânion'],'No delta, os sedimentos se acumulam e o rio se divide em canais. No estuário, a foz é única e aberta.'],
+ [2,'O que mede a escala Richter?','A magnitude dos terremotos',['A força dos ventos','A temperatura do mar','A altura das ondas'],'A escala Richter mede a energia liberada por um terremoto.'],
+ [2,'O que causa os terremotos, na maioria dos casos?','Movimento das placas tectônicas',['Fases da Lua','Ventos fortes','Erupções solares'],'As placas tectônicas se movem lentamente e liberam energia quando se deslocam bruscamente.'],
+ [2,'Qual é a camada da atmosfera mais próxima da superfície, onde ocorre o clima?','Troposfera',['Estratosfera','Mesosfera','Termosfera'],'A troposfera vai até cerca de 12 km e concentra nuvens e chuvas. A camada de ozônio fica na estratosfera.'],
+ [2,'Em que camada da atmosfera fica a maior parte da camada de ozônio?','Estratosfera',['Troposfera','Mesosfera','Exosfera'],'O ozônio da estratosfera filtra boa parte da radiação ultravioleta do Sol.'],
+ [2,'Qual fenômeno é o aquecimento anormal das águas do Pacífico que muda o clima no mundo?','El Niño',['La Niña','Monção','Inversão térmica'],'O El Niño aquece o Pacífico equatorial; a La Niña é o resfriamento.']
+];
+H.forEach(h=>L[h[0]].push(Q(h[1],h[2],h[3],h[4])));
+juntar('geo',L);}
+/* ---------- HISTÓRIA ---------- */
+{const {R,pk,mix,Q,QL}=mk(303);const L=[[],[],[]];
+const EV2=[
+['Criação das capitanias hereditárias',1534,3,'D. João III dividiu o Brasil em grandes faixas de terra entregues a donatários.'],
+['Invasão holandesa em Pernambuco',1630,3,'A Companhia das Índias Ocidentais ocupou Olinda e Recife, interessada no açúcar.'],
+['Expulsão dos holandeses do Brasil',1654,3,'A Insurreição Pernambucana terminou com a rendição holandesa em 1654.'],
+['Morte de Zumbi dos Palmares',1695,2,'Zumbi foi morto em 20 de novembro de 1695; a data é hoje o Dia da Consciência Negra.'],
+['Transferência da capital de Salvador para o Rio de Janeiro',1763,3,'A mudança acompanhou a importância do ouro de Minas, escoado pelo porto do Rio.'],
+['Conjuração Baiana (Revolta dos Alfaiates)',1798,3,'Movimento em Salvador que defendia a república e o fim da escravidão.'],
+['Abertura dos Portos às Nações Amigas',1808,2,'Decretada por D. João logo ao chegar, encerrou o monopólio comercial de Portugal.'],
+['Elevação do Brasil a Reino Unido a Portugal e Algarves',1815,3,'O Brasil deixou de ser colônia e passou à condição de reino.'],
+['Revolução Pernambucana',1817,3,'Revolta republicana em Pernambuco contra a Coroa portuguesa.'],
+['Primeira Constituição do Brasil, outorgada por D. Pedro I',1824,2,'Criou o Poder Moderador, exclusivo do imperador.'],
+['Abdicação de D. Pedro I',1831,2,'D. Pedro I abdicou em favor do filho, então com 5 anos, abrindo o Período Regencial.'],
+['Início da Cabanagem, no Pará',1835,3,'Revolta popular no Grão-Pará durante o Período Regencial.'],
+['Sabinada, na Bahia',1837,3,'Revolta em Salvador liderada pelo médico Francisco Sabino.'],
+['Início da Balaiada, no Maranhão',1838,3,'Revolta popular no Maranhão durante o Período Regencial.'],
+['Lei de Terras',1850,3,'Determinou que terras só poderiam ser obtidas por compra, dificultando o acesso dos pobres à terra.'],
+['Fim da Guerra do Paraguai',1870,2,'A guerra terminou em 1870 com a morte de Solano López.'],
+['Lei dos Sexagenários',1885,3,'Libertava escravizados com mais de 60 anos.'],
+['Primeira Constituição republicana do Brasil',1891,3,'Instituiu o federalismo e o presidencialismo.'],
+['Fim da Guerra de Canudos',1897,3,'O arraial de Antônio Conselheiro, no sertão baiano, foi destruído pelo Exército.'],
+['Revolta da Chibata',1910,3,'Marinheiros liderados por João Cândido se revoltaram contra os castigos físicos na Marinha.'],
+['Início da Guerra do Contestado',1912,3,'Conflito na região disputada entre Paraná e Santa Catarina.'],
+['Revolta dos 18 do Forte de Copacabana',1922,3,'Primeiro grande levante do movimento tenentista.'],
+['Início da Coluna Prestes',1925,3,'Movimento tenentista que percorreu cerca de 25 mil km pelo interior do Brasil.'],
+['Revolução Constitucionalista de São Paulo',1932,2,'São Paulo pegou em armas contra o governo Vargas, exigindo uma nova constituição.'],
+['Conquista do voto feminino no Brasil (Código Eleitoral)',1932,2,'O Código Eleitoral de 1932 garantiu às mulheres o direito de votar.'],
+['Criação da CLT (Consolidação das Leis do Trabalho)',1943,2,'Reuniu as leis trabalhistas no governo Vargas.'],
+['Brasil declara guerra ao Eixo na Segunda Guerra',1942,3,'Após ataques a navios brasileiros, o Brasil entrou na guerra ao lado dos Aliados.'],
+['Criação da Petrobras',1953,2,'Criada no governo Vargas após a campanha "O petróleo é nosso".'],
+['Primeira Copa do Mundo vencida pelo Brasil (Suécia)',1958,1,'O Brasil venceu a Suécia na final, com Pelé aos 17 anos.'],
+['Bicampeonato mundial do Brasil (Chile)',1962,3,'Com Garrincha em destaque, o Brasil venceu a Tchecoslováquia na final.'],
+['Tricampeonato mundial do Brasil (México)',1970,2,'O Brasil venceu a Itália por 4 a 1 na final.'],
+['Tetracampeonato mundial do Brasil (EUA)',1994,1,'O Brasil venceu a Itália nos pênaltis, na final em Los Angeles.'],
+['Pentacampeonato mundial do Brasil (Coreia do Sul e Japão)',2002,1,'O Brasil venceu a Alemanha por 2 a 0 na final.'],
+['Copa do Mundo realizada no Brasil',2014,1,'A Alemanha foi campeã; o Brasil perdeu a semifinal por 7 a 1.'],
+['Jogos Olímpicos no Rio de Janeiro',2016,1,'Primeira Olimpíada realizada na América do Sul.'],
+['Renúncia de Jânio Quadros',1961,3,'Jânio renunciou menos de sete meses após tomar posse.'],
+['Decretação do AI-5',1968,2,'O Ato Institucional nº 5 endureceu a ditadura, fechando o Congresso e suspendendo direitos.'],
+['Lei da Anistia',1979,2,'Permitiu a volta de exilados políticos e perdoou crimes políticos do período.'],
+['Primeira eleição direta para presidente após a ditadura',1989,2,'Fernando Collor foi eleito no segundo turno contra Lula.'],
+['Conferência Rio-92 (Eco-92) sobre meio ambiente',1992,3,'Reuniu chefes de Estado no Rio de Janeiro e gerou a Agenda 21.'],
+['Lei que organiza o SUS (Lei 8.080)',1990,3,'Regulamentou o Sistema Único de Saúde previsto na Constituição de 1988.'],
+['Criação do Estatuto da Criança e do Adolescente (ECA)',1990,3,'Lei que garante direitos e proteção a crianças e adolescentes.'],
+['Fundação de Belém',1616,3,'Fundada pelos portugueses como Forte do Presépio, às margens da Baía do Guajará.'],
+['Morte de Ayrton Senna',1994,2,'O tricampeão de Fórmula 1 morreu no GP de San Marino, em Ímola.'],
+['Lei Maria da Penha',2006,3,'Criou mecanismos para coibir a violência doméstica e familiar contra a mulher.'],
+['Inauguração do Cristo Redentor',1931,2,'A estátua no Corcovado foi inaugurada em 12 de outubro de 1931.'],
+['Chegada dos primeiros imigrantes japoneses ao Brasil (Kasato Maru)',1908,2,'O navio chegou ao porto de Santos em 18 de junho de 1908.'],
+['Inauguração da Ponte Rio-Niterói',1974,3,'Ligou as duas cidades pela Baía de Guanabara.'],
+['Primeira transmissão de TV no Brasil (TV Tupi)',1950,3,'Assis Chateaubriand inaugurou a TV Tupi em São Paulo.'],
+['Tratado de Petrópolis (Acre passa ao Brasil)',1903,3,'O Brasil comprou o Acre da Bolívia, negociado pelo Barão do Rio Branco.'],
+['Eleição da primeira mulher presidente do Brasil',2010,2,'Dilma Rousseff foi eleita em 2010.'],
+['Fundação lendária de Roma',-753,3,'Segundo a lenda, Rômulo fundou Roma em 753 a.C.'],
+['Queda do Império Romano do Ocidente',476,1,'Em 476, Odoacro depôs o último imperador do Ocidente; marco do início da Idade Média.'],
+['Coroação de Carlos Magno como imperador',800,3,'O papa Leão III coroou Carlos Magno no Natal do ano 800.'],
+['Hégira (Maomé vai de Meca para Medina)',622,3,'Marca o início do calendário islâmico.'],
+['Assinatura da Magna Carta na Inglaterra',1215,3,'Limitou os poderes do rei João Sem-Terra.'],
+['Chegada da Peste Negra à Europa',1347,3,'A pandemia matou cerca de um terço da população europeia.'],
+['Convocação da Primeira Cruzada',1095,3,'O papa Urbano II convocou a cruzada no Concílio de Clermont.'],
+['Início da Guerra dos Cem Anos',1337,3,'Conflito entre Inglaterra e França que durou até 1453.'],
+['Chegada de Vasco da Gama à Índia',1498,2,'Abriu a rota marítima da Europa para a Índia contornando a África.'],
+['Conclusão da primeira volta ao mundo (expedição de Fernão de Magalhães)',1522,3,'Magalhães morreu no caminho; Juan Sebastián Elcano concluiu a viagem.'],
+['Queda de Tenochtitlán, capital asteca',1521,3,'Hernán Cortés e aliados indígenas conquistaram a cidade.'],
+['Batalha de Maratona',-490,3,'Os atenienses venceram os persas; a corrida de maratona homenageia o mensageiro dessa batalha.'],
+['Morte de Alexandre, o Grande',-323,3,'Morreu na Babilônia, aos 32 anos.'],
+['Assassinato de Júlio César',-44,2,'Foi morto no Senado romano nos Idos de Março de 44 a.C.'],
+['Erupção do Vesúvio que soterrou Pompeia',79,2,'As cinzas preservaram a cidade, redescoberta no século XVIII.'],
+['Édito de Milão (liberdade de culto aos cristãos)',313,3,'Assinado pelo imperador Constantino.'],
+['Revolução Gloriosa na Inglaterra',1688,3,'Estabeleceu a monarquia parlamentar inglesa.'],
+['Início da Guerra dos Trinta Anos',1618,3,'Conflito religioso e político na Europa Central.'],
+['Paz de Vestfália',1648,3,'Encerrou a Guerra dos Trinta Anos e é vista como marco da soberania dos Estados.'],
+['Coroação de Napoleão como imperador',1804,2,'Napoleão coroou a si mesmo na Catedral de Notre-Dame.'],
+['Batalha de Waterloo (derrota final de Napoleão)',1815,2,'Napoleão foi derrotado e exilado na ilha de Santa Helena.'],
+['Início do Congresso de Viena',1814,3,'Reorganizou o mapa da Europa após Napoleão.'],
+['Declaração de independência da Argentina',1816,3,'Proclamada em 9 de julho de 1816, em Tucumán.'],
+['Início da Guerra de Secessão nos EUA',1861,2,'Guerra civil entre o Norte e o Sul escravista.'],
+['Abolição da escravidão nos EUA (13ª Emenda)',1865,2,'A emenda foi ratificada no fim de 1865.'],
+['Assassinato de Abraham Lincoln',1865,3,'Lincoln foi baleado em um teatro em Washington.'],
+['Proclamação do Reino da Itália (unificação)',1861,3,'Vítor Emanuel II se tornou rei da Itália unificada.'],
+['Unificação da Alemanha (Império Alemão)',1871,3,'Proclamada em Versalhes após a vitória sobre a França.'],
+['Publicação de "A Origem das Espécies", de Darwin',1859,2,'Apresentou a teoria da evolução por seleção natural.'],
+['Patente do telefone por Graham Bell',1876,2,'Alexander Graham Bell patenteou o telefone nos EUA.'],
+['Primeira lâmpada incandescente prática de Edison',1879,3,'Edison desenvolveu uma lâmpada durável e comercialmente viável.'],
+['Primeiro voo dos irmãos Wright',1903,2,'O Flyer voou em Kitty Hawk, nos EUA, lançado com auxílio de trilho e vento.'],
+['Naufrágio do Titanic',1912,1,'O navio afundou em sua viagem inaugural, em abril de 1912.'],
+['Início da Revolução Mexicana',1910,3,'Movimento contra a ditadura de Porfirio Díaz.'],
+['Início da pandemia de gripe espanhola',1918,2,'Matou dezenas de milhões de pessoas no mundo.'],
+['Assinatura do Tratado de Versalhes',1919,2,'Impôs duras condições à Alemanha após a Primeira Guerra.'],
+['Hitler chega ao poder na Alemanha',1933,2,'Foi nomeado chanceler em janeiro de 1933.'],
+['Ataque japonês a Pearl Harbor',1941,2,'Levou os Estados Unidos a entrarem na Segunda Guerra.'],
+['Dia D (desembarque aliado na Normandia)',1944,2,'Em 6 de junho de 1944, os Aliados desembarcaram na França.'],
+['Bombas atômicas em Hiroshima e Nagasaki',1945,1,'Lançadas pelos EUA em agosto de 1945, levaram à rendição do Japão.'],
+['Independência da Índia',1947,2,'A Índia se tornou independente do Reino Unido; Gandhi foi uma das grandes lideranças.'],
+['Criação do Estado de Israel',1948,2,'Proclamado em 14 de maio de 1948.'],
+['Declaração Universal dos Direitos Humanos',1948,2,'Aprovada pela ONU em 10 de dezembro de 1948.'],
+['Proclamação da República Popular da China',1949,2,'Mao Tsé-tung proclamou a república após a revolução comunista.'],
+['Início da Guerra da Coreia',1950,3,'A Coreia do Norte invadiu a Coreia do Sul.'],
+['Vitória da Revolução Cubana',1959,2,'Fidel Castro e guerrilheiros derrubaram o ditador Fulgencio Batista.'],
+['Construção do Muro de Berlim',1961,2,'Separou Berlim Oriental e Ocidental até 1989.'],
+['Lançamento do Sputnik, primeiro satélite artificial',1957,2,'Lançado pela União Soviética, iniciou a corrida espacial.'],
+['Primeiro ser humano no espaço (Yuri Gagarin)',1961,1,'O soviético Gagarin orbitou a Terra em 12 de abril de 1961.'],
+['Assassinato de John F. Kennedy',1963,2,'O presidente dos EUA foi morto em Dallas.'],
+['Assassinato de Martin Luther King Jr.',1968,3,'O líder dos direitos civis foi morto em Memphis.'],
+['Queda de Saigon (fim da Guerra do Vietnã)',1975,3,'O Vietnã do Norte tomou Saigon, reunificando o país.'],
+['Acidente nuclear de Chernobyl',1986,2,'Explosão de um reator na Ucrânia, então parte da União Soviética.'],
+['Libertação de Nelson Mandela',1990,2,'Mandela saiu da prisão após 27 anos.'],
+['Eleição de Nelson Mandela como presidente da África do Sul',1994,3,'Primeiro presidente negro do país, após o fim do apartheid.'],
+['Reunificação da Alemanha',1990,2,'Em 3 de outubro de 1990, as duas Alemanhas se uniram.'],
+['Lançamento do primeiro iPhone',2007,1,'Apresentado por Steve Jobs, popularizou os smartphones com tela sensível ao toque.'],
+['Entrada em circulação das notas e moedas de euro',2002,3,'O euro já existia nas transações desde 1999; as cédulas chegaram em 2002.'],
+['Quebra do banco Lehman Brothers (crise financeira global)',2008,2,'Marco da crise financeira que atingiu o mundo todo.'],
+['Declaração da pandemia de Covid-19 pela OMS',2020,1,'A OMS declarou a pandemia em 11 de março de 2020.'],
+['Saída do Reino Unido da União Europeia (Brexit)',2020,3,'O Reino Unido deixou oficialmente a UE em 31 de janeiro de 2020.'],
+['Tratado de Maastricht, que criou a União Europeia',1992,3,'Assinado na Holanda em 1992.'],
+['Criação da OTAN',1949,3,'Aliança militar entre EUA, Canadá e países da Europa Ocidental.'],
+['Fundação do Google',1998,2,'Criado por Larry Page e Sergey Brin.'],
+['Criação do Facebook',2004,2,'Criado por Mark Zuckerberg e colegas em Harvard.'],
+['Fundação da Microsoft',1975,3,'Fundada por Bill Gates e Paul Allen.'],
+['Morte da rainha Elizabeth II',2022,1,'Reinou por 70 anos, o reinado mais longo da história britânica.'],
+['Eleição de Barack Obama, primeiro presidente negro dos EUA',2008,1,'Obama venceu a eleição de novembro de 2008.'],
+['Invasão em larga escala da Ucrânia pela Rússia',2022,1,'Começou em 24 de fevereiro de 2022.'],
+['Descoberta da penicilina por Alexander Fleming',1928,2,'Primeiro antibiótico, revolucionou o tratamento de infecções.'],
+['Publicação da teoria da relatividade restrita de Einstein',1905,3,'Em 1905, o "ano milagroso", Einstein publicou também E = mc².'],
+['Lançamento do Telescópio Espacial Hubble',1990,3,'Colocado em órbita pelo ônibus espacial Discovery.'],
+['Nascimento do primeiro bebê de proveta (Louise Brown)',1978,3,'Nasceu na Inglaterra, por fertilização in vitro.'],
+['Anúncio da clonagem da ovelha Dolly',1997,2,'Primeiro mamífero clonado a partir de uma célula adulta.'],
+['Conclusão do Projeto Genoma Humano',2003,3,'O sequenciamento do genoma humano foi declarado concluído em 2003.'],
+['Patente da máquina a vapor aperfeiçoada por James Watt',1769,3,'Tornou a máquina a vapor muito mais eficiente, impulsionando a Revolução Industrial.'],
+['Independência do Haiti',1804,3,'Primeira república fundada após uma revolta de escravizados.'],
+['Golpe militar de Pinochet no Chile',1973,3,'Derrubou o presidente Salvador Allende.'],
+['Revolução dos Cravos em Portugal',1974,3,'Pôs fim à ditadura salazarista em 25 de abril de 1974.'],
+['Independência de Angola e de Moçambique',1975,3,'Ambas se tornaram independentes de Portugal em 1975.'],
+['Eleição do papa Francisco',2013,2,'O argentino Jorge Mario Bergoglio foi o primeiro papa latino-americano.'],
+['Início do Concílio de Trento',1545,3,'Concílio da Igreja Católica em resposta à Reforma Protestante.'],
+['Galileu observa as luas de Júpiter com o telescópio',1610,3,'A observação reforçou o modelo heliocêntrico.'],
+['Publicação da obra de Copérnico sobre o heliocentrismo',1543,3,'Propôs que a Terra gira em torno do Sol.'],
+['Publicação dos "Principia" de Isaac Newton',1687,3,'Apresentou as leis do movimento e a gravitação universal.']];
+const EV=EVENTOS.concat(EV2);
+const anoT=y=>y<0?(-y)+' a.C.':String(y);
+const ROM=n=>{const v=[[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];let r='';for(const[k,s]of v)while(n>=k){r+=s;n-=k}return r};
+const secN=y=>Math.ceil(Math.abs(y)/100),secT=y=>'século '+ROM(secN(y))+(y<0?' a.C.':'');
+EV.forEach(e=>{const y=e[1],nv=e[2]-1,d=nv===0?[-50,-20,-10,10,20,50]:nv===1?[-20,-10,-5,5,10,20]:[-12,-6,-3,3,6,12];
+  const er=mix(d).map(k=>y+k).filter(x=>(x<0)===(y<0)&&x!==0).slice(0,3).map(anoT);
+  L[nv].push(Q('Em que ano aconteceu: '+e[0]+'?',anoT(y),er,e[3]))});
+/* século: ~90 eventos */
+mix(EV.filter((e,i)=>i%2===0||e[1]<1500)).slice(0,90).forEach(e=>{const y=e[1],n=secN(y),nv=e[2]===1?0:e[2]===2?1:2;
+  const er=[n-1,n+1,n+2].filter(k=>k>0).map(k=>'século '+ROM(k)+(y<0?' a.C.':''));
+  const ini=y>0?(n-1)*100+1:n*100,fim=y>0?n*100:(n-1)*100+1;
+  L[nv].push(Q('Em que século aconteceu: '+e[0]+' ('+anoT(y)+')?',secT(y),er,y>0?'O '+secT(y)+' vai do ano '+ini+' ao '+fim+'. Por isso '+y+' fica no '+secT(y)+'. ':'Antes de Cristo, os séculos são contados para trás: '+anoT(y)+' fica no '+secT(y)+'.'))});
+/* qual aconteceu primeiro: 60 grupos */
+for(let g=0;g<60;g++){const nv=g<20?0:g<40?1:2;const pool=EV.filter(e=>e[2]<=nv+1);let es=null;
+  for(let t=0;t<20;t++){const c=mix(pool).slice(0,4);if(new Set(c.map(x=>x[1])).size===4){es=c;break}}if(!es)continue;
+  const c=es.reduce((a,b)=>a[1]<b[1]?a:b);
+  L[nv].push(Q('Qual destes aconteceu PRIMEIRO?',c[0],es.filter(x=>x!==c).map(x=>x[0]),'Ordem: '+es.slice().sort((a,b)=>a[1]-b[1]).map(x=>x[0]+' ('+anoT(x[1])+')').join(' → ')+'.'))}
+const H=[
+[0,'Quem foi o primeiro imperador do Brasil?','D. Pedro I',['D. Pedro II','D. João VI','Deodoro da Fonseca'],'D. Pedro I governou de 1822 a 1831.'],
+[0,'Quem assinou a Lei Áurea?','Princesa Isabel',['D. Pedro II','Princesa Leopoldina','D. Pedro I'],'A princesa Isabel assinou a lei como regente, pois D. Pedro II estava na Europa.'],
+[0,'Que povo ocupava o território brasileiro antes da chegada dos portugueses?','Povos indígenas',['Africanos','Espanhóis','Holandeses'],'Estima-se que milhões de indígenas de centenas de povos viviam aqui em 1500.'],
+[0,'Qual foi o primeiro produto explorado pelos portugueses no Brasil?','Pau-brasil',['Café','Ouro','Borracha'],'A madeira dava uma tinta vermelha usada para tingir tecidos e deu nome ao país.'],
+[0,'Qual produto foi a base da economia do Brasil colonial no Nordeste nos séculos XVI e XVII?','Açúcar',['Café','Borracha','Algodão'],'Os engenhos de cana-de-açúcar usavam mão de obra escravizada.'],
+[0,'Qual metal precioso foi muito explorado em Minas Gerais no século XVIII?','Ouro',['Prata','Cobre','Ferro'],'O Ciclo do Ouro levou muita gente a Minas e enriqueceu Portugal.'],
+[0,'Que produto agrícola dominou a economia brasileira no fim do Império e na República Velha?','Café',['Açúcar','Soja','Cacau'],'O café fez de São Paulo e do Vale do Paraíba grandes centros econômicos.'],
+[0,'Onde ficava o Quilombo dos Palmares?','Na Serra da Barriga, em Alagoas',['No Recôncavo Baiano','No litoral do Rio de Janeiro','No interior de Minas Gerais'],'O quilombo ficava na Serra da Barriga, no atual estado de Alagoas.'],
+[0,'Qual civilização antiga é conhecida pelos filósofos Sócrates, Platão e Aristóteles?','Grega',['Romana','Egípcia','Persa'],'A Grécia Antiga é considerada o berço da filosofia ocidental.'],
+[0,'Qual civilização antiga construiu o Coliseu?','Romana',['Grega','Egípcia','Maia'],'O Coliseu de Roma foi inaugurado no ano 80.'],
+[0,'Em que país surgiram os Jogos Olímpicos da Antiguidade?','Grécia',['Itália','Egito','Turquia'],'Eram disputados em Olímpia, em homenagem a Zeus.'],
+[0,'Qual período histórico vem logo depois da Idade Média?','Idade Moderna',['Idade Antiga','Idade Contemporânea','Pré-História'],'Antiga → Média → Moderna → Contemporânea.'],
+[0,'Qual acontecimento marca o início da Idade Contemporânea?','Revolução Francesa',['Queda de Constantinopla','Descobrimento da América','Primeira Guerra Mundial'],'Por convenção, a Revolução Francesa (1789) inicia a Idade Contemporânea.'],
+[0,'O que marca o fim da Pré-História, segundo a divisão tradicional?','A invenção da escrita',['O uso do fogo','A agricultura','A roda'],'A escrita surgiu há mais de 5 mil anos, na Mesopotâmia.'],
+[0,'Que líder indiano ficou famoso pela resistência pacífica contra o domínio britânico?','Mahatma Gandhi',['Nehru','Buda','Dalai Lama'],'Gandhi pregava a não violência e a desobediência civil.'],
+[0,'Quem liderou a Alemanha nazista?','Adolf Hitler',['Benito Mussolini','Otto von Bismarck','Joseph Stalin'],'Hitler governou a Alemanha de 1933 a 1945.'],
+[0,'Quem foi o primeiro homem a pisar na Lua?','Neil Armstrong',['Yuri Gagarin','Buzz Aldrin','John Glenn'],'Armstrong desceu primeiro; Buzz Aldrin o seguiu minutos depois.'],
+[0,'Qual navegador chegou à América em 1492?','Cristóvão Colombo',['Vasco da Gama','Pedro Álvares Cabral','Fernão de Magalhães'],'Colombo navegava a serviço dos reis da Espanha.'],
+[0,'Qual era a capital do Brasil antes de Brasília?','Rio de Janeiro',['Salvador','São Paulo','Belo Horizonte'],'O Rio foi capital de 1763 até 1960.'],
+[0,'Qual foi a primeira capital do Brasil?','Salvador',['Rio de Janeiro','Recife','São Vicente'],'Salvador foi capital de 1549 a 1763.'],
+[0,'Quem foi o líder do Quilombo dos Palmares celebrado no Dia da Consciência Negra?','Zumbi',['Ganga Zumba','João Cândido','Chico Rei'],'O Dia da Consciência Negra, 20 de novembro, lembra a morte de Zumbi.'],
+[0,'Que grande muralha foi construída para proteger um país de invasões do norte?','Muralha da China',['Muralha de Adriano','Muro de Berlim','Muralha de Constantinopla'],'Foi construída e reconstruída ao longo de muitos séculos.'],
+[0,'Qual civilização antiga desenvolveu os hieróglifos?','Egípcia',['Grega','Romana','Chinesa'],'Os hieróglifos foram decifrados graças à Pedra de Roseta.'],
+[0,'Que invenção de Santos Dumont é considerada um marco da aviação?','14-Bis',['Zepelim','Helicóptero','Paraquedas'],'Em 1906, o 14-Bis voou em Paris decolando por meios próprios.'],
+[0,'Qual país foi o principal rival dos EUA na Guerra Fria?','União Soviética',['China','Alemanha','Japão'],'A Guerra Fria opôs o bloco capitalista (EUA) ao socialista (URSS).'],
+[1,'Que regime político o Brasil teve entre 1822 e 1889?','Monarquia (Império)',['República','Ditadura militar','Parlamentarismo republicano'],'O Brasil foi um império, com D. Pedro I e D. Pedro II.'],
+[1,'Como ficou conhecido o período de 1831 a 1840, entre D. Pedro I e D. Pedro II?','Período Regencial',['República Velha','Era Vargas','Segundo Reinado'],'Como D. Pedro II era criança, o país foi governado por regentes.'],
+[1,'Como se chamava a política da República Velha em que SP e MG se alternavam na presidência?','Política do café com leite',['Política dos governadores','Coronelismo','Voto de cabresto'],'SP (café) e MG (leite) se revezavam no poder federal.'],
+[1,'O que era o "voto de cabresto"?','Controle do voto pelos coronéis',['Voto secreto','Voto feminino','Voto obrigatório'],'Na República Velha, o voto era aberto e os coronéis pressionavam os eleitores.'],
+[1,'Quem foi o presidente conhecido como "pai dos pobres" e criador da CLT?','Getúlio Vargas',['Juscelino Kubitschek','João Goulart','Eurico Dutra'],'Vargas criou leis trabalhistas e o salário mínimo.'],
+[1,'Qual era o lema do governo de Juscelino Kubitschek?','50 anos em 5',['Ordem e Progresso','Brasil Grande','Pra frente, Brasil'],'JK queria acelerar 50 anos de desenvolvimento em 5 de governo.'],
+[1,'Qual movimento de 1984 pedia eleições diretas para presidente?','Diretas Já',['Caras-pintadas','Passeata dos Cem Mil','Marcha da Família'],'A emenda Dante de Oliveira foi rejeitada, mas o movimento enfraqueceu a ditadura.'],
+[1,'Como ficaram conhecidos os jovens que protestaram pelo impeachment de Collor em 1992?','Caras-pintadas',['Diretas Já','Tenentes','Cabanos'],'Pintavam o rosto de verde e amarelo nas manifestações.'],
+[1,'Que plano econômico de 1994 controlou a hiperinflação no Brasil?','Plano Real',['Plano Cruzado','Plano Collor','Plano Verão'],'Criou a URV e depois a moeda real.'],
+[1,'Qual foi o último imperador do Brasil?','D. Pedro II',['D. Pedro I','D. João VI','D. Luís'],'D. Pedro II governou de 1840 até a Proclamação da República, em 1889.'],
+[1,'O que foi o Renascimento?','Movimento cultural que valorizava o ser humano e a Antiguidade clássica',['Uma guerra religiosa','Uma revolução industrial','Um regime político'],'Começou na Itália, com artistas como Leonardo da Vinci e Michelangelo.'],
+[1,'Quem pintou a Mona Lisa?','Leonardo da Vinci',['Michelangelo','Rafael','Botticelli'],'Leonardo foi pintor, inventor e cientista do Renascimento.'],
+[1,'Quem pintou o teto da Capela Sistina?','Michelangelo',['Leonardo da Vinci','Rafael','Caravaggio'],'Michelangelo pintou o teto entre 1508 e 1512.'],
+[1,'Quem iniciou a Reforma Protestante?','Martinho Lutero',['João Calvino','Henrique VIII','Erasmo de Roterdã'],'Em 1517, Lutero publicou as 95 teses contra práticas da Igreja.'],
+[1,'O que era o feudalismo?','Sistema baseado na terra e nas relações entre senhores e servos',['Sistema industrial','Regime democrático','Comércio marítimo'],'Predominou na Europa durante a Idade Média.'],
+[1,'O que foram as Grandes Navegações?','Viagens marítimas europeias dos séculos XV e XVI',['Guerras entre Grécia e Roma','Migrações vikings','Expedições à Lua'],'Portugal e Espanha lideraram a busca por novas rotas comerciais.'],
+[1,'Qual país iniciou as Grandes Navegações?','Portugal',['Espanha','Inglaterra','Holanda'],'A conquista de Ceuta (1415) e a Escola de Sagres são marcos portugueses.'],
+[1,'Qual era o lema da Revolução Francesa?','Liberdade, Igualdade, Fraternidade',['Ordem e Progresso','Deus, Pátria, Família','Paz, Pão e Terra'],'O lema virou símbolo da República Francesa.'],
+[1,'Quais países formavam o Eixo na Segunda Guerra?','Alemanha, Itália e Japão',['EUA, Reino Unido e URSS','França, Alemanha e Japão','Itália, Espanha e Portugal'],'Os Aliados incluíam Reino Unido, EUA, URSS e França.'],
+[1,'O que foi o Holocausto?','O genocídio de cerca de 6 milhões de judeus pelos nazistas',['Uma batalha naval','Uma crise econômica','Uma revolução russa'],'Além dos judeus, ciganos, pessoas com deficiência e outros grupos foram perseguidos e mortos.'],
+[1,'Que país lançou as bombas atômicas sobre o Japão em 1945?','Estados Unidos',['União Soviética','Reino Unido','Alemanha'],'As cidades atingidas foram Hiroshima e Nagasaki.'],
+[1,'O que foi o apartheid?','Regime de segregação racial na África do Sul',['Guerra civil nos EUA','Revolução na Índia','Sistema feudal japonês'],'Vigorou de 1948 até o início dos anos 1990.'],
+[1,'Quem foi Martin Luther King Jr.?','Líder do movimento pelos direitos civis nos EUA',['Presidente dos EUA','Fundador da Reforma Protestante','General na Segunda Guerra'],'Famoso pelo discurso "Eu tenho um sonho", de 1963.'],
+[1,'O que foi a Revolução Industrial?','A passagem da produção manual para a produção com máquinas',['Uma revolta camponesa','A unificação da Alemanha','Uma reforma religiosa'],'Começou na Inglaterra no século XVIII.'],
+[1,'Quem foi Tiradentes?','Joaquim José da Silva Xavier, líder da Inconfidência Mineira',['Um imperador do Brasil','Um bandeirante paulista','O líder da Revolta da Vacina'],'Foi enforcado em 21 de abril de 1792, hoje feriado nacional.'],
+[1,'O que foi a Inconfidência Mineira?','Conspiração contra a cobrança de impostos de Portugal',['Revolta de escravizados','Guerra contra o Paraguai','Revolta contra a vacina'],'A cobrança da derrama motivou o movimento em Vila Rica (Ouro Preto).'],
+[1,'Quem eram os bandeirantes?','Exploradores que avançavam pelo interior do Brasil',['Soldados holandeses','Padres jesuítas','Comerciantes ingleses'],'Buscavam ouro, pedras preciosas e capturavam indígenas, expandindo o território.'],
+[1,'Qual era o objetivo principal dos jesuítas no Brasil colonial?','Catequizar os indígenas',['Explorar ouro','Comandar o exército','Cobrar impostos'],'Manuel da Nóbrega e José de Anchieta são jesuítas famosos.'],
+[1,'O que foi a Revolta da Vacina, em 1904?','Revolta contra a vacinação obrigatória no Rio de Janeiro',['Greve de médicos','Guerra contra a varíola na Europa','Revolta de escravizados'],'A população reagiu à lei da vacinação obrigatória contra a varíola, entre outros motivos.'],
+[1,'Qual guerra durou de 1914 a 1918?','Primeira Guerra Mundial',['Segunda Guerra Mundial','Guerra Fria','Guerra do Paraguai'],'Também chamada de Grande Guerra.'],
+[2,'O que foi a Guerra Fria?','Disputa de poder entre EUA e URSS sem conflito direto entre eles',['Guerra no Ártico','Guerra entre China e Japão','Conflito na Antártida'],'Durou de 1947 a 1991 e incluiu corrida armamentista e espacial.'],
+[2,'O que foi o Plano Marshall?','Ajuda dos EUA para reconstruir a Europa após a Segunda Guerra',['Plano soviético de industrialização','Plano de paz na Coreia','Plano econômico brasileiro'],'Também buscava conter a influência soviética na Europa Ocidental.'],
+[2,'O que foi o New Deal?','Programa de Roosevelt para tirar os EUA da crise de 1929',['Acordo de paz da Primeira Guerra','Tratado de comércio com o Brasil','Plano de guerra dos Aliados'],'Investiu em obras públicas e criou programas sociais.'],
+[2,'O que foi a Perestroika?','Reestruturação econômica da URSS promovida por Gorbachev',['Revolução comunista de 1917','Plano quinquenal de Stalin','Muro que dividia Berlim'],'Ao lado da Glasnost (abertura política), antecedeu o fim da URSS.'],
+[2,'Quem liderou a Revolução Russa de 1917 pelos bolcheviques?','Lenin',['Stalin','Gorbachev','Nicolau II'],'Lenin liderou a tomada do poder em outubro de 1917.'],
+[2,'Quem foi Simón Bolívar?','Líder da independência de vários países sul-americanos',['Rei da Espanha','Primeiro presidente do Brasil','Explorador português'],'É chamado de "Libertador" na Venezuela, Colômbia, Equador, Peru e Bolívia.'],
+[2,'O que foi a Conferência de Berlim (1884–1885)?','Reunião europeia que dividiu a África entre potências',['Tratado que encerrou a Segunda Guerra','Criação da ONU','Fim da Guerra Fria'],'Marcou a "partilha da África" pelo imperialismo europeu.'],
+[2,'O que era o mercantilismo?','Política econômica que buscava acumular metais preciosos e balança comercial favorável',['Sistema socialista','Economia feudal de subsistência','Livre mercado sem Estado'],'Predominou nos Estados europeus durante a Idade Moderna.'],
+[2,'O que foi o Iluminismo?','Movimento intelectual que defendia a razão e a liberdade',['Movimento artístico da Idade Média','Religião oriental','Revolução tecnológica'],'Pensadores como Voltaire, Rousseau e Montesquieu inspiraram revoluções.'],
+[2,'Quem propôs a separação dos poderes em Executivo, Legislativo e Judiciário?','Montesquieu',['Rousseau','Voltaire','Maquiavel'],'Ele defendeu essa ideia no livro "O Espírito das Leis" (1748).'],
+[2,'Quem escreveu "O Príncipe"?','Nicolau Maquiavel',['Thomas Hobbes','John Locke','Rousseau'],'Obra italiana do século XVI sobre como conquistar e manter o poder.'],
+[2,'Quem escreveu "O Contrato Social"?','Jean-Jacques Rousseau',['Montesquieu','Voltaire','John Locke'],'Publicado em 1762, defende a soberania do povo.'],
+[2,'O que foi o Tenentismo?','Movimento de jovens oficiais do Exército contra a República Velha',['Revolta de marinheiros','Partido comunista','Movimento de fazendeiros'],'Teve como marcos a Revolta dos 18 do Forte e a Coluna Prestes.'],
+[2,'Quem foi Antônio Conselheiro?','Líder religioso do arraial de Canudos',['Chefe da Balaiada','Líder da Revolta da Chibata','Ministro de Vargas'],'Canudos foi destruído pelo Exército em 1897.'],
+[2,'Quem liderou a Revolta da Chibata?','João Cândido',['Antônio Conselheiro','Luís Carlos Prestes','Zumbi'],'Ficou conhecido como "Almirante Negro".'],
+[2,'Quem foi Luís Carlos Prestes?','Líder tenentista e depois do Partido Comunista',['Primeiro presidente do Brasil','Imperador do Brasil','Líder de Canudos'],'Liderou a Coluna Prestes e foi chamado de "Cavaleiro da Esperança".'],
+[2,'Qual presidente brasileiro sofreu o golpe de 1964?','João Goulart',['Jânio Quadros','Juscelino Kubitschek','Getúlio Vargas'],'Jango foi deposto pelos militares e partiu para o exílio.'],
+[2,'Qual foi o primeiro presidente civil após a ditadura, que tomou posse em 1985?','José Sarney',['Tancredo Neves','Fernando Collor','Itamar Franco'],'Tancredo foi eleito, mas adoeceu e morreu; o vice Sarney assumiu.'],
+[2,'Qual presidente assumiu após a saída de Collor em 1992?','Itamar Franco',['Fernando Henrique Cardoso','José Sarney','Lula'],'Itamar era o vice; o Plano Real foi lançado em seu governo.'],
+[2,'Quem era o ministro da Fazenda quando o Plano Real foi lançado?','Fernando Henrique Cardoso',['Delfim Netto','Pedro Malan','Zélia Cardoso de Mello'],'FHC comandou a equipe do Plano Real e depois foi eleito presidente.'],
+[2,'O que foi o Milagre Econômico brasileiro?','Período de forte crescimento entre 1968 e 1973',['A estabilização do Plano Real','A descoberta do pré-sal','O ciclo do ouro'],'O PIB cresceu muito, mas a desigualdade e a dívida externa aumentaram.'],
+[2,'O que foi a Guerra dos Farrapos?','Revolta no Rio Grande do Sul contra o governo imperial',['Guerra contra a Argentina','Revolta em Pernambuco','Guerra contra os holandeses'],'Durou de 1835 a 1845 e chegou a proclamar a República Rio-Grandense.'],
+[2,'Quem foi Anita Garibaldi?','Heroína brasileira que lutou na Farroupilha e na unificação italiana',['Esposa de D. Pedro I','Líder da Revolta da Vacina','Primeira deputada do Brasil'],'É chamada de "heroína de dois mundos".'],
+[2,'Quem foi Maria Quitéria?','Mulher que se disfarçou de soldado para lutar pela independência na Bahia',['Primeira imperatriz do Brasil','Líder da Inconfidência','Escritora modernista'],'É considerada a primeira mulher a integrar uma unidade militar no Brasil.'],
+[2,'Quem, como regente, assinou em 1822 o decreto de separação de Portugal, apoiando D. Pedro?','Maria Leopoldina',['Princesa Isabel','Carlota Joaquina','Teresa Cristina'],'Leopoldina, esposa de D. Pedro, assinou o decreto em 2 de setembro de 1822 e depois foi a primeira imperatriz do Brasil.'],
+[2,'Qual civilização pré-colombiana tinha Cusco como capital?','Inca',['Asteca','Maia','Olmeca'],'O Império Inca se estendia pelos Andes.'],
+[2,'Qual civilização pré-colombiana fundou Tenochtitlán?','Asteca',['Inca','Maia','Tupi'],'Tenochtitlán ficava onde hoje é a Cidade do México.'],
+[2,'Que império tinha Constantinopla como capital?','Império Bizantino',['Império Romano do Ocidente','Império Persa','Império Mongol'],'Hoje a cidade se chama Istambul, na Turquia.'],
+[2,'Quem foi Gêngis Khan?','Fundador do Império Mongol',['Imperador chinês da Muralha','Líder turco otomano','Rei persa'],'O Império Mongol se tornou o maior império contíguo da história.'],
+[2,'O que foi a Rota da Seda?','Rede de rotas comerciais entre a China e o Ocidente',['Estrada romana na Itália','Rota marítima portuguesa','Ferrovia transiberiana'],'Por ela circulavam seda, especiarias, ideias e religiões.'],
+[2,'Qual foi a principal causa imediata da Primeira Guerra Mundial?','O assassinato do arquiduque Francisco Ferdinando',['A invasão da Polônia','O ataque a Pearl Harbor','A Revolução Russa'],'Ele foi morto em Sarajevo, em junho de 1914.'],
+[2,'Que evento é considerado o início da Segunda Guerra na Europa?','A invasão da Polônia pela Alemanha',['O ataque a Pearl Harbor','A anexação da Áustria','A Batalha de Stalingrado'],'Em 1º de setembro de 1939; França e Reino Unido declararam guerra à Alemanha.'],
+[2,'Qual batalha da Segunda Guerra é vista como a virada contra a Alemanha no front oriental?','Stalingrado',['Waterloo','Verdun','Somme'],'A derrota alemã em Stalingrado (1943) mudou o rumo da guerra.'],
+[2,'Que organização substituiu a Liga das Nações após a Segunda Guerra?','ONU',['OTAN','OEA','União Europeia'],'A ONU foi criada em 1945.'],
+[0,'Em que dia se comemora a Independência do Brasil?','7 de setembro',['15 de novembro','21 de abril','13 de maio'],'Em 7 de setembro de 1822, D. Pedro proclamou a independência.'],
+[0,'O que se comemora no Brasil em 15 de novembro?','Proclamação da República',['Independência','Abolição da escravidão','Descobrimento'],'A República foi proclamada em 15 de novembro de 1889.'],
+[0,'Quem é homenageado no feriado de 21 de abril?','Tiradentes',['D. Pedro I','Zumbi dos Palmares','Princesa Isabel'],'Tiradentes foi executado em 21 de abril de 1792.'],
+[0,'Em que dia foi assinada a Lei Áurea?','13 de maio',['7 de setembro','15 de novembro','22 de abril'],'A Lei Áurea foi assinada em 13 de maio de 1888.'],
+[0,'Quem foi o primeiro presidente dos Estados Unidos?','George Washington',['Abraham Lincoln','Thomas Jefferson','Benjamin Franklin'],'Washington governou de 1789 a 1797.'],
+[0,'Quem foi Napoleão Bonaparte?','Militar que se tornou imperador da França',['Rei da Inglaterra','Papa no século XIX','Navegador português'],'Conquistou boa parte da Europa no início do século XIX.'],
+[0,'Quem foi Cleópatra?','A última rainha do Egito ptolomaico',['Uma imperatriz romana','Uma deusa grega','Uma rainha persa'],'Aliou-se a Júlio César e depois a Marco Antônio.'],
+[0,'Qual cidade romana foi soterrada pela erupção do Vesúvio no ano 79?','Pompeia',['Roma','Veneza','Atenas'],'As cinzas preservaram a cidade, que hoje é um grande sítio arqueológico.'],
+[0,'Quem foi Júlio César?','General e governante da Roma Antiga',['Imperador da China','Rei do Egito','Filósofo grego'],'Foi assassinado no Senado em 44 a.C.'],
+[0,'Quem foi Nelson Mandela?','Líder contra o apartheid e presidente da África do Sul',['Presidente dos EUA','Rei do Egito','Líder da independência da Índia'],'Ficou preso 27 anos e recebeu o Nobel da Paz em 1993.'],
+[0,'Quem foi Abraham Lincoln?','Presidente dos EUA durante a Guerra de Secessão',['Primeiro presidente dos EUA','Rei da Inglaterra','Inventor do telefone'],'Seu governo levou à abolição da escravidão nos EUA.'],
+[0,'Qual era a capital do Império Romano?','Roma',['Atenas','Cairo','Paris'],'Mais tarde, Constantinopla se tornou a capital do Império do Oriente.'],
+[0,'Como se chamavam os navegadores e guerreiros nórdicos da Idade Média?','Vikings',['Samurais','Cavaleiros templários','Hunos'],'Vinham da Escandinávia e chegaram até a América do Norte.'],
+[0,'Como se chamavam os guerreiros tradicionais do Japão feudal?','Samurais',['Vikings','Gladiadores','Mamelucos'],'Seguiam um código de honra chamado bushido.'],
+[0,'Qual civilização construiu Machu Picchu?','Inca',['Asteca','Maia','Tupi'],'A cidade fica nos Andes peruanos.'],
+[0,'Qual documento relata a chegada dos portugueses ao Brasil em 1500?','A carta de Pero Vaz de Caminha',['A Lei Áurea','O Tratado de Tordesilhas','A Constituição de 1824'],'É considerada a "certidão de nascimento" do Brasil.'],
+[0,'Quem era o imperador do Brasil durante a Guerra do Paraguai?','D. Pedro II',['D. Pedro I','D. João VI','Deodoro da Fonseca'],'A guerra durou de 1864 a 1870.'],
+[0,'Onde D. Pedro proclamou a Independência?','Às margens do riacho Ipiranga, em São Paulo',['No Rio de Janeiro, no Paço Imperial','Em Salvador','Em Ouro Preto'],'Por isso o Hino Nacional fala nas "margens plácidas" do Ipiranga.'],
+[0,'O que foram as Cruzadas?','Expedições militares cristãs à Terra Santa',['Viagens portuguesas à Índia','Revoltas camponesas','Guerras entre Grécia e Roma'],'Aconteceram entre os séculos XI e XIII.'],
+[0,'Que doença matou cerca de um terço da população da Europa no século XIV?','Peste Negra',['Gripe espanhola','Varíola','Cólera'],'Era a peste bubônica, transmitida por pulgas de ratos.'],
+[0,'Como se chamavam os reis do Egito Antigo?','Faraós',['Czares','Césares','Sultões'],'Eram considerados divinos.'],
+[0,'Qual cidade grega é considerada o berço da democracia?','Atenas',['Esparta','Roma','Tróia'],'Na Atenas antiga, os cidadãos votavam diretamente nas assembleias.'],
+[0,'Qual país era governado por um czar até 1917?','Rússia',['Alemanha','China','Japão'],'O czar Nicolau II foi derrubado pela Revolução Russa.'],
+[0,'O que eram os quilombos?','Comunidades formadas por pessoas escravizadas que fugiam',['Fazendas de café','Fortes portugueses','Aldeias jesuítas'],'Palmares foi o maior e mais famoso.'],
+[0,'Qual era a língua do Império Romano?','Latim',['Grego','Italiano','Espanhol'],'Do latim vieram o português, o espanhol, o francês e o italiano.'],
+[0,'Qual moeda foi criada no Brasil em 1994?','Real',['Cruzeiro','Cruzado','Mil-réis'],'Fez parte do Plano Real, que controlou a inflação.'],
+[1,'Qual foi o primeiro nome dado ao Brasil pelos portugueses?','Ilha de Vera Cruz',['Terra Brasilis','Nova Lusitânia','Pindorama'],'Depois veio Terra de Santa Cruz e, por fim, Brasil.'],
+[1,'Qual cidade se chamava Vila Rica no período colonial?','Ouro Preto',['Mariana','Diamantina','Belo Horizonte'],'Foi o centro da mineração e da Inconfidência Mineira.'],
+[1,'De onde vem o lema "Ordem e Progresso" da bandeira?','Do positivismo, de Auguste Comte',['Do Hino Nacional','De D. Pedro II','Da Constituição de 1824'],'Os republicanos positivistas influenciaram a bandeira de 1889.'],
+[1,'Qual imperador romano concedeu liberdade de culto aos cristãos com o Édito de Milão?','Constantino',['Nero','Augusto','Calígula'],'O édito é do ano 313.'],
+[1,'Quem foi Joana d\'Arc?','Jovem francesa que liderou tropas na Guerra dos Cem Anos',['Rainha da Inglaterra','Esposa de Napoleão','Escritora do Iluminismo'],'Foi queimada em 1431 e depois declarada santa.'],
+[1,'Quem foi Winston Churchill?','Primeiro-ministro britânico na Segunda Guerra',['Presidente dos EUA','Rei da Inglaterra','General alemão'],'Liderou o Reino Unido contra a Alemanha nazista.'],
+[1,'Quem foi Marco Polo?','Viajante veneziano que chegou à China no século XIII',['Navegador português','Papa da Renascença','Imperador mongol'],'Seus relatos despertaram o interesse europeu pelo Oriente.'],
+[1,'Quem foi Che Guevara?','Revolucionário argentino que lutou na Revolução Cubana',['Presidente do Brasil','Ditador chileno','Escritor mexicano'],'Morreu na Bolívia em 1967.'],
+[1,'Quem foi Mikhail Gorbachev?','O último líder da União Soviética',['Fundador da URSS','Líder da Revolução Russa','Presidente da Polônia'],'Promoveu a Perestroika e a Glasnost.'],
+[1,'Quem foi Mao Tsé-tung?','Líder da revolução comunista chinesa',['Imperador do Japão','Líder do Vietnã','Fundador da Coreia do Norte'],'Proclamou a República Popular da China em 1949.'],
+[1,'Quem foi Chico Mendes?','Seringueiro e ambientalista do Acre',['Presidente da República','Líder da Coluna Prestes','Escritor modernista'],'Defendia a floresta e os povos da Amazônia; foi assassinado em 1988.'],
+[1,'Quem foi Luís XVI?','Rei da França guilhotinado durante a Revolução',['Imperador da Áustria','Rei de Portugal','Papa francês'],'Foi executado em 1793, assim como a rainha Maria Antonieta.'],
+[1,'Quem foi Carlos Magno?','Rei dos francos coroado imperador no ano 800',['Imperador romano do Oriente','Rei viking','Papa da Idade Média'],'Unificou grande parte da Europa Ocidental.'],
+[2,'Qual era a moeda do Brasil imediatamente antes do real?','Cruzeiro real',['Cruzado','Cruzado novo','Mil-réis'],'O cruzeiro real circulou de 1993 a 1994.'],
+[2,'Quem foi Otto von Bismarck?','Chanceler que liderou a unificação da Alemanha',['Imperador austríaco','General de Napoleão','Rei da Prússia'],'Foi chamado de "chanceler de ferro".'],
+[2,'Quem foi Robespierre?','Líder jacobino durante o período do Terror na Revolução Francesa',['Rei da França','General de Napoleão','Filósofo iluminista inglês'],'Acabou também guilhotinado, em 1794.'],
+[2,'O que foi o Código de Hamurábi?','Um dos primeiros conjuntos de leis escritas, da Babilônia',['A constituição de Atenas','O livro sagrado egípcio','As leis de Roma'],'Ficou famoso pela lei de talião: "olho por olho, dente por dente".'],
+[2,'Quem foi Péricles?','Governante de Atenas no auge da democracia',['Rei de Esparta','Imperador romano','Filósofo de Mileto'],'O século V a.C. ateniense é chamado de "Século de Péricles".'],
+[2,'Quem foi Ramsés II?','Um dos faraós mais poderosos do Egito',['Rei da Pérsia','Imperador romano','Profeta hebreu'],'Governou por cerca de 66 anos e construiu templos como Abu Simbel.']];
+H.forEach(h=>L[h[0]].push(Q(h[1],h[2],h[3],h[4])));
+juntar('his',L);}
+/* ---------- CIÊNCIAS ---------- */
+{const {pk,mix,Q,QL}=mk(404);const L=[[],[],[]];
+const EL=ELEMENTOS.concat([['Berílio','Be',4,3],['Boro','B',5,3],['Argônio','Ar',18,3],['Cromo','Cr',24,3],['Manganês','Mn',25,3],['Cobalto','Co',27,3],['Arsênio','As',33,3],['Selênio','Se',34,3],['Bromo','Br',35,3],['Criptônio','Kr',36,3],['Estrôncio','Sr',38,3],['Xenônio','Xe',54,3],['Césio','Cs',55,3],['Bário','Ba',56,3],['Tungstênio','W',74,3],['Polônio','Po',84,3],['Radônio','Rn',86,3],['Rádio','Ra',88,3],['Tório','Th',90,3],['Plutônio','Pu',94,3]]);
+const pista={Na:'natrium (latim)',K:'kalium (latim)',Fe:'ferrum (latim)',Cu:'cuprum (latim)',Ag:'argentum (latim)',Au:'aurum (latim)',Hg:'hydrargyrum (latim/grego)',Pb:'plumbum (latim)',Sn:'stannum (latim)',W:'wolfram (alemão)',Sb:'stibium'};
+EL.forEach(e=>{const nv=e[3]-1,ex=(pista[e[1]]?' O símbolo '+e[1]+' vem de '+pista[e[1]]+'.':'')+' Número atômico: '+e[2]+'.';
+  L[nv].push(QL('Qual é o símbolo químico do elemento '+e[0]+'?',e[1],EL.filter(x=>x[1][0]===e[1][0]||x[0][0]===e[0][0]).map(x=>x[1]).concat(EL.map(x=>x[1])),e[0]+' → '+e[1]+'.'+ex));
+  L[Math.min(2,nv+1)].push(QL('Qual elemento químico tem o símbolo '+e[1]+'?',e[0],EL.filter(x=>x[0][0]===e[1][0]||x[1][0]===e[1][0]).map(x=>x[0]).concat(EL.map(x=>x[0])),e[1]+' é o símbolo do '+e[0]+'.'+ex));
+  if(e[2]<=30)L[2].push(Q('Qual é o número atômico do '+e[0]+'?',String(e[2]),mix([e[2]-2,e[2]-1,e[2]+1,e[2]+2,e[2]*2].filter(x=>x>0)).slice(0,3).map(String),'O número atômico é a quantidade de prótons no núcleo. O '+e[0]+' ('+e[1]+') tem '+e[2]+'.'))});
+const CL={mamífero:'Mamíferos amamentam os filhotes (têm glândulas mamárias) e respiram por pulmões.',ave:'Aves têm penas e bico e põem ovos, mesmo as que não voam.',réptil:'Répteis têm pele com escamas ou placas, respiram por pulmões e a maioria põe ovos com casca.',anfíbio:'Anfíbios costumam nascer na água (como girinos) e viver depois também em terra, com pele úmida.',peixe:'Peixes vivem na água e respiram por brânquias.',inseto:'Insetos têm 6 patas e o corpo dividido em cabeça, tórax e abdome.',aracnídeo:'Aracnídeos têm 8 patas e não têm antenas.',crustáceo:'Crustáceos têm carapaça e dois pares de antenas; a maioria vive na água.',molusco:'Moluscos têm corpo mole, e muitos têm concha.',equinodermo:'Equinodermos são animais marinhos com espinhos na pele e corpo em simetria radial.',cnidário:'Cnidários, como águas-vivas e corais, têm células urticantes que "queimam".'};
+const ANI=[['golfinho','mamífero',1,'Não é peixe: respira ar por pulmões e amamenta os filhotes.'],['baleia','mamífero',1,'Apesar de viver no mar, respira por pulmões e amamenta.'],['morcego','mamífero',1,'É o único mamífero capaz de voar de verdade.'],['ornitorrinco','mamífero',2,'É um mamífero que põe ovos, mas amamenta os filhotes.'],['peixe-boi','mamífero',2,'Apesar do nome, é um mamífero aquático.'],['capivara','mamífero',1,'É o maior roedor do mundo.'],['canguru','mamífero',1,'É um marsupial: o filhote se desenvolve na bolsa da mãe.'],['tamanduá-bandeira','mamífero',2,'Come formigas e cupins com a língua comprida.'],['bicho-preguiça','mamífero',2,'Vive nas árvores e se move bem devagar.'],['lobo-guará','mamífero',2,'É o maior canídeo da América do Sul.'],['foca','mamífero',2,'Vive no mar, mas respira ar e amamenta.'],['onça-pintada','mamífero',1,'É o maior felino das Américas.'],['pinguim','ave',1,'Não voa, mas tem penas e bico: é uma ave que nada muito bem.'],['avestruz','ave',1,'É a maior ave do mundo e não voa.'],['ema','ave',2,'É a maior ave brasileira e não voa.'],['beija-flor','ave',1,'Consegue até voar para trás.'],['tucano','ave',1,'Seu bico grande é leve e ajuda a regular a temperatura.'],['coruja','ave',1,'É uma ave de hábitos noturnos.'],['tartaruga','réptil',1,'Tem carapaça e põe ovos com casca.'],['jacaré','réptil',1,'Tem pele com placas e põe ovos.'],['cobra','réptil',1,'Tem escamas e respira por pulmões.'],['camaleão','réptil',2,'É um lagarto capaz de mudar de cor.'],['jabuti','réptil',2,'É um quelônio terrestre, parente das tartarugas.'],['iguana','réptil',2,'É um lagarto.'],['sapo','anfíbio',1,'Nasce como girino na água e depois vive também em terra.'],['rã','anfíbio',1,'É anfíbio, assim como sapos e pererecas.'],['perereca','anfíbio',2,'Tem discos adesivos nos dedos para subir em plantas.'],['salamandra','anfíbio',3,'Parece um lagarto, mas tem pele úmida e sem escamas: é anfíbio.'],['tubarão','peixe',1,'É um peixe cartilaginoso: respira por brânquias.'],['cavalo-marinho','peixe',2,'Apesar da forma, é um peixe. O macho é quem carrega os ovos.'],['raia','peixe',2,'É um peixe cartilaginoso, parente dos tubarões.'],['piranha','peixe',1,'É um peixe de água doce dos rios sul-americanos.'],['enguia','peixe',3,'Parece uma cobra, mas é um peixe.'],['salmão','peixe',1,'Nasce em rios, vive no mar e volta aos rios para se reproduzir.'],['abelha','inseto',1,'Tem 6 patas e corpo em três partes.'],['formiga','inseto',1,'Vive em colônias organizadas.'],['borboleta','inseto',1,'Passa por metamorfose: lagarta, pupa (crisálida) e adulto.'],['joaninha','inseto',1,'É um besouro.'],['barata','inseto',1,'Existe há mais de 300 milhões de anos.'],['gafanhoto','inseto',2,'Tem as patas traseiras adaptadas para saltar.'],['aranha','aracnídeo',1,'Não é inseto: tem 8 patas e não tem antenas.'],['escorpião','aracnídeo',2,'Tem 8 patas e um ferrão na cauda.'],['carrapato','aracnídeo',2,'É parente dos ácaros e tem 8 patas quando adulto.'],['camarão','crustáceo',1,'Tem carapaça e antenas, como o caranguejo.'],['caranguejo','crustáceo',1,'É um crustáceo de carapaça dura.'],['lagosta','crustáceo',2,'É um crustáceo marinho.'],['tatuzinho-de-jardim','crustáceo',3,'É um dos poucos crustáceos que vivem em terra; gosta de lugares úmidos.'],['polvo','molusco',1,'É um molusco sem concha, com 8 braços.'],['lula','molusco',2,'É um molusco com uma pequena concha interna.'],['caracol','molusco',1,'É um molusco com concha.'],['lesma','molusco',2,'É um molusco terrestre sem concha externa.'],['ostra','molusco',2,'Tem concha com duas partes.'],['estrela-do-mar','equinodermo',2,'Não é peixe: é um equinodermo, parente do ouriço-do-mar.'],['ouriço-do-mar','equinodermo',3,'É um equinodermo coberto de espinhos.'],['água-viva','cnidário',2,'É um cnidário: tem células urticantes que "queimam".'],['coral','cnidário',3,'Corais são animais (cnidários), não plantas nem pedras.']];
+const CLS=Object.keys(CL);
+ANI.forEach(a=>{const conf={mamífero:['peixe','ave','réptil'],peixe:['mamífero','anfíbio','réptil'],ave:['mamífero','réptil','anfíbio'],réptil:['anfíbio','mamífero','peixe'],anfíbio:['réptil','peixe','mamífero'],inseto:['aracnídeo','crustáceo','molusco'],aracnídeo:['inseto','crustáceo','molusco'],crustáceo:['inseto','molusco','peixe'],molusco:['crustáceo','peixe','cnidário'],equinodermo:['peixe','molusco','cnidário'],cnidário:['molusco','peixe','equinodermo']}[a[1]];
+  L[a[2]-1].push(Q('Em que grupo de animais está: '+a[0]+'?',a[1],conf,a[3]+' '+CL[a[1]]))});
+const DOE=[['gripe','vírus',1],['dengue','vírus',1],['sarampo','vírus',1],['catapora','vírus',1],['Covid-19','vírus',1],['AIDS','vírus',2],['raiva','vírus',2],['febre amarela','vírus',2],['poliomielite (paralisia infantil)','vírus',2],['hepatite A','vírus',2],['caxumba','vírus',2],['zika','vírus',2],['chikungunya','vírus',3],['tuberculose','bactéria',1],['tétano','bactéria',2],['cólera','bactéria',2],['leptospirose','bactéria',2],['hanseníase','bactéria',3],['sífilis','bactéria',3],['coqueluche','bactéria',3],['difteria','bactéria',3],['malária','protozoário',2],['doença de Chagas','protozoário',2],['toxoplasmose','protozoário',3],['giardíase','protozoário',3],['leishmaniose','protozoário',3],['amebíase','protozoário',3],['micose de pele','fungo',2],['candidíase','fungo',3],['pé de atleta','fungo',2]];
+const DX={vírus:'Doenças virais não são tratadas com antibióticos; vacinas previnem várias delas.',bactéria:'Doenças bacterianas podem ser tratadas com antibióticos, com orientação médica.',protozoário:'Protozoários são seres unicelulares; muitos são transmitidos por insetos ou água e alimentos contaminados.',fungo:'Fungos gostam de lugares quentes e úmidos; o tratamento usa antifúngicos.'};
+DOE.forEach(d=>L[d[2]-1].push(Q('Que tipo de agente causa: '+d[0]+'?',d[1].charAt(0).toUpperCase()+d[1].slice(1),['Vírus','Bactéria','Protozoário','Fungo'].filter(x=>x.toLowerCase()!==d[1]),'Doença: '+d[0]+' → causada por '+(d[1]==='bactéria'?'uma bactéria':'um '+d[1])+'. '+DX[d[1]])));
+const DESC=[['a penicilina, o primeiro antibiótico','Alexander Fleming',1],['a lei da gravitação universal','Isaac Newton',1],['a teoria da relatividade','Albert Einstein',1],['a teoria da evolução por seleção natural','Charles Darwin',1],['a primeira vacina (contra a varíola)','Edward Jenner',2],['os elementos polônio e rádio','Marie e Pierre Curie',2],['as leis da hereditariedade, estudando ervilhas','Gregor Mendel',2],['a organização da tabela periódica','Dmitri Mendeleev',2],['a pasteurização','Louis Pasteur',2],['o modelo heliocêntrico moderno','Nicolau Copérnico',2],['as luas de Júpiter, observadas com telescópio','Galileu Galilei',2],['a estrutura em dupla hélice do DNA (1953)','James Watson e Francis Crick',3],['o elétron','J. J. Thomson',3],['o núcleo atômico','Ernest Rutherford',3],['a indução eletromagnética','Michael Faraday',3],['os raios X','Wilhelm Röntgen',3],['a vacina injetável contra a poliomielite','Jonas Salk',3],['o papel do oxigênio na combustão ("nada se cria, nada se perde, tudo se transforma")','Antoine Lavoisier',2],['a observação de microrganismos com microscópios artesanais','Antonie van Leeuwenhoek',3],['as leis do movimento dos planetas em órbitas elípticas','Johannes Kepler',3],['o princípio do empuxo ("Eureka!")','Arquimedes',2],['a doença de Chagas (agente, transmissor e sintomas)','Carlos Chagas',2],['o isolamento da insulina para tratar diabetes','Frederick Banting e Charles Best',3]];
+const NOMES=DESC.map(d=>d[1]);
+DESC.forEach(d=>L[d[2]-1].push(QL('Quem descobriu ou formulou '+d[0]+'?',d[1],NOMES,d[1]+' ficou conhecido por '+d[0]+'.')));
+const UN=[['comprimento','metro (m)',1],['massa','quilograma (kg)',1],['tempo','segundo (s)',1],['temperatura termodinâmica','kelvin (K)',3],['corrente elétrica','ampere (A)',2],['força','newton (N)',2],['energia','joule (J)',2],['potência','watt (W)',2],['pressão','pascal (Pa)',3],['frequência','hertz (Hz)',2],['tensão elétrica','volt (V)',2],['resistência elétrica','ohm (Ω)',3],['carga elétrica','coulomb (C)',3],['intensidade luminosa','candela (cd)',3],['quantidade de matéria','mol (mol)',3]];
+UN.forEach(u=>L[u[2]-1].push(QL('Qual é a unidade de '+u[0]+' no Sistema Internacional?',u[1],UN.map(x=>x[1]),'No SI, '+u[0]+' se mede em '+u[1]+'.')));
+const MUD=['Fusão','Solidificação','Vaporização','Condensação','Sublimação'];
+[['sólido para líquido','Fusão',1],['líquido para sólido','Solidificação',1],['líquido para gasoso','Vaporização',1],['gasoso para líquido','Condensação',1],['sólido direto para gasoso','Sublimação',2]].forEach(m=>L[m[2]-1].push(QL('Como se chama a passagem do estado '+m[0]+'?',m[1],MUD,'A passagem de '+m[0]+' é a '+m[1].toLowerCase()+'.')));
+[['O gelo derretendo num copo','Fusão',1],['A água virando gelo no congelador','Solidificação',1],['A roupa secando no varal','Vaporização',2],['O espelho do banheiro embaçando no banho quente','Condensação',1],['Bolinhas de naftalina "sumindo" no armário','Sublimação',2]].forEach(m=>L[m[2]-1].push(QL(m[0]+' é um exemplo de…',m[1],MUD,'É '+m[1].toLowerCase()+'.'+(m[1]==='Vaporização'?' A secagem lenta, abaixo da fervura, é a evaporação, um tipo de vaporização.':''))));
+const VIT=[['C','escorbuto (sangramento nas gengivas)',2],['D','raquitismo (ossos fracos)',2],['A','cegueira noturna',2],['B12','um tipo de anemia',3],['B1 (tiamina)','beribéri',3],['K','problemas de coagulação do sangue',3]];
+VIT.forEach(v=>L[v[2]-1].push(QL('A falta de vitamina '+v[0]+' pode causar…',v[1],VIT.map(x=>x[1]),'Deficiência de vitamina '+v[0]+' → '+v[1]+'.'+(v[0]==='D'?' O corpo produz vitamina D com a luz do sol.':v[0]==='C'?' Frutas cítricas são ricas em vitamina C.':''))));
+const ORG=[['faz as trocas gasosas (entra oxigênio, sai gás carbônico)','pulmões',1],['filtram o sangue e produzem a urina','rins',1],['produz a bile e é o maior órgão interno','fígado',2],['inicia a digestão das proteínas com suco ácido','estômago',2],['absorve a maior parte dos nutrientes dos alimentos','intestino delgado',2],['absorve água e forma as fezes','intestino grosso',2],['produz a insulina','pâncreas',2],['bombeia o sangue para todo o corpo','coração',1],['controla os movimentos, os pensamentos e as emoções','cérebro',1],['produz hormônios que regulam o metabolismo, no pescoço','tireoide',3],['armazena a urina antes de ser eliminada','bexiga',1],['armazena a bile','vesícula biliar',3],['leva o alimento da boca até o estômago','esôfago',2],['leva o ar até os brônquios','traqueia',2],['é o principal músculo da respiração','diafragma',3],['transportam o oxigênio no sangue','glóbulos vermelhos (hemácias)',2],['defendem o corpo contra infecções','glóbulos brancos (leucócitos)',2],['ajudam na coagulação do sangue','plaquetas',2]];
+ORG.forEach(o=>L[o[2]-1].push(QL('No corpo humano, complete: "_____ '+o[0]+'."',o[1],ORG.map(x=>x[1]),o[1].charAt(0).toUpperCase()+o[1].slice(1)+': '+o[0]+'.')));
+const H=[
+[0,'Qual é o maior planeta do Sistema Solar?','Júpiter',['Saturno','Netuno','Terra'],'Júpiter tem massa maior que a de todos os outros planetas juntos.'],
+[0,'Qual planeta é conhecido como "planeta vermelho"?','Marte',['Vênus','Júpiter','Mercúrio'],'A cor vem do óxido de ferro (ferrugem) no solo.'],
+[0,'Qual planeta é famoso pelos seus anéis bem visíveis?','Saturno',['Marte','Mercúrio','Vênus'],'Outros gigantes também têm anéis, mas os de Saturno são os mais brilhantes.'],
+[0,'Quantos planetas tem o Sistema Solar?','8',['7','9','10'],'Desde 2006, Plutão é classificado como planeta-anão.'],
+[0,'Qual é a estrela mais próxima da Terra?','O Sol',['Alfa Centauri','Sirius','Estrela Polar'],'Depois do Sol, a mais próxima é Proxima Centauri.'],
+[0,'Quanto tempo a Terra leva para dar uma volta em torno do Sol?','Cerca de 365 dias',['24 horas','30 dias','12 horas'],'Esse movimento é a translação. A volta em torno de si mesma (24 h) é a rotação.'],
+[0,'O que causa o dia e a noite?','A rotação da Terra',['A translação da Terra','As fases da Lua','A distância do Sol'],'A Terra gira em torno do próprio eixo em cerca de 24 horas.'],
+[0,'Qual é o planeta mais quente do Sistema Solar?','Vênus',['Mercúrio','Marte','Júpiter'],'A atmosfera densa de CO₂ cria um efeito estufa intenso, passando de 460 °C.'],
+[0,'Qual é o satélite natural da Terra?','A Lua',['O Sol','Marte','Vênus'],'A Lua leva cerca de 27 dias para dar uma volta na Terra.'],
+[0,'Quais seres produzem o próprio alimento pela fotossíntese?','Plantas e algas',['Fungos','Animais','Vírus'],'Eles usam luz, água e gás carbônico para produzir glicose.'],
+[0,'Qual parte da planta absorve água e sais minerais do solo?','Raiz',['Folha','Flor','Fruto'],'A água sobe pelo caule até as folhas.'],
+[0,'Qual parte da planta geralmente faz a maior parte da fotossíntese?','Folha',['Raiz','Caule','Semente'],'As folhas têm muita clorofila, o pigmento verde que capta a luz.'],
+[0,'Qual gás nós precisamos respirar para viver?','Oxigênio',['Gás carbônico','Hélio','Nitrogênio'],'O oxigênio é usado pelas células para obter energia dos alimentos.'],
+[0,'Qual gás nós liberamos ao expirar, em maior quantidade que inspiramos?','Gás carbônico',['Oxigênio','Hidrogênio','Ozônio'],'O CO₂ é produzido pelas células na respiração celular.'],
+[0,'Quantos sentidos básicos o ser humano tem, tradicionalmente?','5',['4','6','7'],'Visão, audição, olfato, paladar e tato.'],
+[0,'Quantos dentes tem, normalmente, um adulto com todos os dentes?','32',['28','20','36'],'Contando os quatro dentes do siso. Crianças têm 20 dentes de leite.'],
+[0,'Que tipo de animal se alimenta apenas de plantas?','Herbívoro',['Carnívoro','Onívoro','Decompositor'],'Ex.: boi, cavalo, capivara. Onívoros comem de tudo.'],
+[0,'O ser humano é…','Onívoro',['Herbívoro','Carnívoro','Decompositor'],'Pode se alimentar tanto de vegetais quanto de animais.'],
+[0,'Qual força nos mantém presos ao chão?','Gravidade',['Magnetismo','Atrito','Empuxo'],'A Terra atrai todos os corpos para o seu centro.'],
+[0,'A água pura ferve a quantos graus Celsius ao nível do mar?','100 °C',['90 °C','80 °C','120 °C'],'Em lugares altos, como La Paz, ela ferve a uma temperatura menor.'],
+[0,'A água congela a quantos graus Celsius (ao nível do mar)?','0 °C',['−10 °C','4 °C','10 °C'],'Água com sal congela abaixo de 0 °C.'],
+[0,'Que tipo de energia vem do Sol e é captada por painéis?','Solar',['Eólica','Nuclear','Geotérmica'],'Painéis fotovoltaicos transformam luz em eletricidade.'],
+[0,'Que tipo de energia vem dos ventos?','Eólica',['Solar','Hidrelétrica','Térmica'],'Aerogeradores transformam o movimento do vento em eletricidade.'],
+[0,'De onde vem a maior parte da eletricidade do Brasil?','Usinas hidrelétricas',['Usinas nucleares','Carvão','Petróleo'],'A força da água dos rios move turbinas. Eólica e solar crescem rápido.'],
+[0,'Qual é o osso mais longo do corpo humano?','Fêmur',['Tíbia','Úmero','Coluna'],'O fêmur fica na coxa.'],
+[0,'Qual é o menor osso do corpo humano?','Estribo',['Martelo','Falange','Rótula'],'Fica no ouvido médio e mede cerca de 3 mm.'],
+[0,'Onde fica o coração?','No tórax, entre os pulmões',['No abdome','No pescoço','Atrás do estômago'],'Fica levemente à esquerda, no centro do tórax.'],
+[0,'Qual sangue é chamado de "doador universal" para hemácias?','O negativo',['AB positivo','A positivo','B negativo'],'O tipo O negativo pode ser doado a todos em emergências. AB positivo é receptor universal.'],
+[0,'A Lua tem luz própria?','Não, ela reflete a luz do Sol',['Sim, como uma estrela','Só na lua cheia','Só durante a noite'],'As fases da Lua dependem de quanto da parte iluminada vemos.'],
+[0,'O que é um ímã?','Um objeto que atrai ferro e outros metais magnéticos',['Uma fonte de luz','Um tipo de bateria','Um isolante elétrico'],'Todo ímã tem polo norte e polo sul; polos iguais se repelem.'],
+[1,'Polos iguais de dois ímãs…','Se repelem',['Se atraem','Não interagem','Se transformam em ferro'],'Polos opostos se atraem; polos iguais se afastam.'],
+[1,'Qual é a função da clorofila?','Captar a energia da luz para a fotossíntese',['Absorver água','Proteger contra insetos','Produzir sementes'],'É o pigmento verde das plantas.'],
+[1,'O que são decompositores?','Seres que transformam restos de seres vivos em nutrientes',['Animais que comem plantas','Plantas que fazem fotossíntese','Animais predadores'],'Principalmente fungos e bactérias, que devolvem nutrientes ao solo.'],
+[1,'Numa cadeia alimentar, quem são os produtores?','Plantas e algas',['Herbívoros','Carnívoros','Fungos'],'Produzem o próprio alimento e sustentam toda a cadeia.'],
+[1,'O que é a camada de ozônio?','Uma camada da atmosfera que filtra raios ultravioleta',['Uma camada de nuvens de chuva','A poluição das cidades','Uma camada do solo'],'Fica na estratosfera e protege a vida da radiação UV.'],
+[1,'O que causa o aumento do efeito estufa?','Excesso de gases como CO₂ e metano na atmosfera',['O buraco na camada de ozônio','As fases da Lua','A rotação da Terra'],'Queimar combustíveis fósseis e desmatar liberam esses gases e aquecem o planeta.'],
+[1,'O que é um ecossistema?','Os seres vivos de um local e o ambiente em que vivem, interagindo',['Apenas os animais de um lugar','Apenas as plantas de um lugar','Um tipo de clima'],'Inclui seres vivos e fatores como água, luz e solo.'],
+[1,'O que acontece na meiose?','Formação de células reprodutivas com metade dos cromossomos',['Duplicação de células iguais para crescer','Digestão dos alimentos','Produção de energia'],'Gametas (óvulos e espermatozoides) são formados por meiose. A mitose gera células iguais.'],
+[1,'Quantos cromossomos tem uma célula humana comum (não reprodutiva)?','46',['23','48','44'],'São 23 pares. Os gametas têm 23 cromossomos.'],
+[1,'Onde fica o material genético (DNA) nas células humanas, principalmente?','No núcleo',['Na membrana','No citoplasma livre','Nos ribossomos'],'Há também um pouco de DNA nas mitocôndrias.'],
+[1,'Qual estrutura existe na célula vegetal, mas não na animal?','Parede celular',['Membrana plasmática','Núcleo','Mitocôndria'],'A parede de celulose dá rigidez à célula vegetal; os cloroplastos também são exclusivos.'],
+[1,'Em qual organela acontece a fotossíntese?','Cloroplasto',['Mitocôndria','Ribossomo','Núcleo'],'Os cloroplastos contêm clorofila.'],
+[1,'O que são os ribossomos?','Estruturas que produzem proteínas',['Estruturas que produzem energia','Depósitos de gordura','Parte do núcleo que guarda o DNA'],'Leem a mensagem do RNA e montam as proteínas.'],
+[1,'As vacinas funcionam porque…','Ensinam o sistema imunológico a reconhecer o agente da doença',['Matam todos os vírus do corpo','Substituem os glóbulos brancos','São antibióticos fortes'],'Assim, o corpo reage mais rápido se encontrar o micróbio de verdade.'],
+[1,'Antibióticos são eficazes contra…','Bactérias',['Vírus','Todos os micróbios','Alergias'],'Contra vírus eles não funcionam; o uso errado favorece bactérias resistentes.'],
+[1,'O que é uma mistura homogênea?','Mistura com aspecto de uma só fase, como água com açúcar dissolvido',['Mistura de água e óleo','Mistura de areia e pedras','Qualquer mistura com duas cores'],'Água e óleo formam mistura heterogênea (duas fases).'],
+[1,'Qual método separa a areia da água?','Filtração',['Destilação','Evaporação do filtro','Imantação'],'O filtro retém a areia e deixa a água passar.'],
+[1,'Qual método é usado para obter água pura da água do mar?','Destilação',['Filtração','Decantação','Peneiração'],'A água evapora, condensa e o sal fica para trás.'],
+[1,'O que é velocidade média?','Distância percorrida dividida pelo tempo',['Tempo dividido pela distância','Massa vezes aceleração','Força dividida pela área'],'Ex.: 120 km em 2 h dá 60 km/h.'],
+[1,'Um carro percorre 180 km em 2 horas. Qual a velocidade média?','90 km/h',['60 km/h','180 km/h','360 km/h'],'v = d ÷ t = 180 ÷ 2 = 90 km/h.'],
+[1,'Por que um objeto de ferro afunda e um navio de ferro flutua?','Pelo formato do navio, que desloca muita água (empuxo)',['O navio é feito de ferro mais leve','O mar segura o navio','O motor mantém o navio no alto'],'O casco oco desloca um volume de água cujo peso equilibra o do navio.'],
+[1,'O som se propaga no vácuo?','Não, o som precisa de um meio material',['Sim, mais rápido que no ar','Sim, igual ao ar','Só sons agudos'],'No espaço não há som; a luz, sim, se propaga no vácuo.'],
+[1,'Onde o som viaja mais rápido?','Nos sólidos',['No ar','No vácuo','Nos gases quentes'],'No ar, cerca de 340 m/s; na água, cerca de 1.500 m/s; no aço, bem mais.'],
+[1,'Por que vemos o relâmpago antes de ouvir o trovão?','Porque a luz é muito mais rápida que o som',['Porque o trovão acontece depois','Porque o som vem de outra nuvem','Porque o olho é mais sensível'],'A luz chega quase na hora; o som leva cerca de 3 s por quilômetro.'],
+[1,'Que cor de luz é formada pela mistura de todas as cores?','Branca',['Preta','Cinza','Marrom'],'Um prisma separa a luz branca nas cores do arco-íris.'],
+[1,'Qual metal é líquido em temperatura ambiente?','Mercúrio',['Chumbo','Alumínio','Ferro'],'O mercúrio é tóxico e foi usado em termômetros antigos.'],
+[1,'O que é um átomo?','A menor unidade de um elemento químico',['Um tipo de célula','Uma molécula de água','Uma partícula de luz'],'É formado por prótons e nêutrons no núcleo e elétrons ao redor.'],
+[1,'Água (H₂O) é uma…','Substância composta',['Substância simples','Mistura','Elemento químico'],'É formada por dois elementos diferentes: hidrogênio e oxigênio.'],
+[1,'O gás oxigênio (O₂) é uma…','Substância simples',['Substância composta','Mistura','Molécula orgânica'],'É formado por um só elemento, o oxigênio.'],
+[1,'Qual é a fórmula do sal de cozinha?','NaCl',['KCl','CaCO₃','NaOH'],'Cloreto de sódio: sódio (Na) e cloro (Cl).'],
+[1,'Suco de limão é…','Ácido',['Básico','Neutro','Salino puro'],'O limão tem pH por volta de 2, por causa do ácido cítrico.'],
+[1,'Qual é a função dos glóbulos brancos?','Defender o organismo',['Transportar oxigênio','Coagular o sangue','Produzir hormônios'],'São células do sistema imunológico.'],
+[1,'Qual é a função da insulina?','Ajudar a glicose a entrar nas células, baixando o açúcar no sangue',['Digerir gorduras','Transportar oxigênio','Aumentar a pressão arterial'],'É produzida pelo pâncreas. Sua falta ou mau funcionamento leva ao diabetes.'],
+[1,'O que são neurônios?','Células do sistema nervoso que transmitem impulsos',['Células do sangue','Células dos ossos','Células de gordura'],'Comunicam-se por sinapses.'],
+[1,'Qual é o papel da hemoglobina?','Transportar oxigênio no sangue',['Combater infecções','Digerir proteínas','Produzir anticorpos'],'Fica nos glóbulos vermelhos e contém ferro.'],
+[1,'Por que dizemos que a baleia é um mamífero?','Porque amamenta os filhotes e respira por pulmões',['Porque vive no mar','Porque é grande','Porque come peixes'],'Mamíferos aquáticos precisam subir à superfície para respirar.'],
+[1,'O que é metamorfose?','Grande transformação do corpo durante o desenvolvimento',['Troca de pele de cobras','Mudança de cor do camaleão','Hibernação no inverno'],'Ex.: lagarta → borboleta; girino → sapo.'],
+[1,'Qual é o maior órgão do sistema linfático e que ajuda a filtrar o sangue?','Baço',['Rim','Fígado','Pâncreas'],'O baço também remove hemácias velhas.'],
+[2,'Qual é a carga do próton?','Positiva',['Negativa','Neutra','Variável'],'Prótons (+) e nêutrons (sem carga) ficam no núcleo; elétrons (−) ficam na eletrosfera.'],
+[2,'O que são isótopos?','Átomos do mesmo elemento com números de nêutrons diferentes',['Átomos com cargas diferentes','Elementos diferentes com mesma massa','Moléculas de água pesada'],'Ex.: carbono-12 e carbono-14.'],
+[2,'O que é uma ligação iônica?','Transferência de elétrons entre átomos, formando íons',['Compartilhamento de elétrons','União de núcleos','Atração entre moléculas de água'],'Ocorre, por exemplo, no NaCl. Na ligação covalente os elétrons são compartilhados.'],
+[2,'O que diz a Lei de Lavoisier?','Numa reação em sistema fechado, a massa total se conserva',['A pressão de um gás é constante','Toda reação libera calor','A matéria pode ser destruída'],'"Na natureza nada se cria, nada se perde, tudo se transforma."'],
+[2,'O que é um catalisador?','Substância que acelera uma reação sem ser consumida',['Substância que impede reações','Produto final de uma reação','Um tipo de ácido forte'],'As enzimas são catalisadores biológicos.'],
+[2,'O que é a 1ª Lei de Newton (inércia)?','Um corpo tende a manter seu estado de repouso ou movimento',['Força é massa vezes aceleração','Toda ação tem uma reação','Os corpos se atraem pela massa'],'Por isso usamos cinto de segurança: o corpo tende a continuar em movimento.'],
+[2,'O que diz a 3ª Lei de Newton?','Toda ação tem uma reação de mesma intensidade e sentido oposto',['Corpos em repouso tendem a ficar em repouso','F = m · a','A energia se conserva'],'Ex.: o foguete empurra gases para baixo e é empurrado para cima.'],
+[2,'Qual é a fórmula da energia cinética?','E = m · v² / 2',['E = m · g · h','E = m · c²','E = F · d'],'Depende da massa e do quadrado da velocidade.'],
+[2,'Qual é a fórmula da energia potencial gravitacional?','E = m · g · h',['E = m · v² / 2','E = P · t','E = m · a'],'Depende da massa, da gravidade e da altura.'],
+[2,'Pela Lei de Ohm, U = R · i. Se R = 10 Ω e i = 2 A, qual é a tensão?','20 V',['5 V','12 V','0,2 V'],'U = 10 × 2 = 20 volts.'],
+[2,'Qual é a potência de um aparelho que usa 2 A em 110 V?','220 W',['55 W','112 W','440 W'],'P = U · i = 110 × 2 = 220 watts.'],
+[2,'O que é a refração da luz?','Mudança de direção ao passar de um meio para outro',['Reflexão em um espelho','Absorção pelo preto','Produção de luz pelo calor'],'Por isso um canudo parece "quebrado" dentro de um copo d\'água.'],
+[2,'Qual a aceleração da gravidade aproximada na superfície da Terra?','9,8 m/s²',['1,6 m/s²','98 m/s²','3,7 m/s²'],'Na Lua, é cerca de 1,6 m/s².'],
+[2,'Qual é a temperatura do zero absoluto em Celsius?','−273,15 °C',['−100 °C','0 °C','−459 °C'],'É 0 kelvin, a menor temperatura teórica possível.'],
+[2,'O que é o código genético?','A correspondência entre trincas de bases do RNA e aminoácidos',['A sequência de cromossomos sexuais','O número de genes de cada pessoa','Um exame de DNA da polícia'],'Cada trinca (códon) indica um aminoácido ou um sinal de parada.'],
+[2,'Qual é o RNA que leva a informação do DNA aos ribossomos?','RNA mensageiro',['RNA transportador','RNA ribossômico','DNA polimerase'],'O RNAm é "lido" nos ribossomos para formar proteínas.'],
+[2,'Na genética, o que é um alelo dominante?','Um gene que se manifesta mesmo em dose única',['Um gene que só aparece em dupla','Um gene do cromossomo Y','Uma mutação rara'],'Ex.: Aa expressa a característica de A.'],
+[2,'Cruzando Aa × Aa, qual a proporção esperada de aa?','1/4',['1/2','3/4','0'],'As combinações são AA, Aa, Aa e aa: 1 em 4.'],
+[2,'Que tipo de sangue é o "receptor universal" para hemácias?','AB positivo',['O negativo','A negativo','B positivo'],'Não tem anticorpos anti-A nem anti-B no plasma e é Rh+.'],
+[2,'O que é homeostase?','A manutenção do equilíbrio interno do organismo',['A divisão celular','O crescimento das plantas','A respiração das algas'],'Ex.: manter a temperatura corporal perto de 36,5 °C.'],
+[2,'Qual hormônio é produzido em situações de estresse e prepara o corpo para "lutar ou fugir"?','Adrenalina',['Insulina','Melatonina','Ocitocina'],'Aumenta os batimentos cardíacos e a pressão.'],
+[2,'Qual hormônio ajuda a regular o sono e é produzido no escuro?','Melatonina',['Adrenalina','Cortisol','Insulina'],'Telas e luzes fortes à noite podem atrapalhar sua produção.'],
+[2,'O que é seleção natural?','Indivíduos mais adaptados ao ambiente tendem a sobreviver e se reproduzir mais',['Escolha de animais pelo ser humano','Transformação proposital do corpo','Mudança causada pelo uso e desuso'],'Foi proposta por Darwin e Wallace. "Uso e desuso" é a ideia de Lamarck.'],
+[2,'O que é um ano-luz?','A distância que a luz percorre em um ano',['O tempo que a luz do Sol leva até a Terra','Um ano em outro planeta','A idade de uma estrela'],'Cerca de 9,46 trilhões de quilômetros.'],
+[2,'Quanto tempo a luz do Sol leva, aproximadamente, para chegar à Terra?','8 minutos',['8 segundos','1 hora','1 dia'],'A distância média é de cerca de 150 milhões de km.'],
+[2,'O que é um buraco negro?','Uma região do espaço com gravidade tão forte que nem a luz escapa',['Uma estrela apagada sem massa','Um planeta escuro','Um buraco na camada de ozônio'],'Pode se formar após o colapso de estrelas muito grandes.'],
+[2,'Qual é a galáxia onde fica o Sistema Solar?','Via Láctea',['Andrômeda','Triângulo','Nuvem de Magalhães'],'Andrômeda é a grande galáxia vizinha.'],
+[2,'O que causa as estações do ano?','A inclinação do eixo da Terra',['A distância variável até o Sol','A rotação da Terra','As fases da Lua'],'A inclinação faz cada hemisfério receber mais luz em épocas diferentes.'],
+[2,'O que é um eclipse solar?','A Lua passa entre o Sol e a Terra',['A Terra passa entre o Sol e a Lua','O Sol se apaga por instantes','Marte cobre o Sol'],'No eclipse lunar, é a Terra que fica entre o Sol e a Lua.'],
+[2,'O que causa as marés?','Principalmente a atração gravitacional da Lua',['O vento','A rotação do Sol','Os terremotos'],'O Sol também influencia, mas menos que a Lua.'],
+[2,'Qual é a camada mais externa da Terra?','Crosta',['Manto','Núcleo externo','Núcleo interno'],'Abaixo dela estão o manto e o núcleo.'],
+[2,'Que tipo de rocha se forma pelo resfriamento do magma?','Ígnea (magmática)',['Sedimentar','Metamórfica','Calcária'],'Ex.: granito e basalto.'],
+[2,'O mármore é uma rocha…','Metamórfica',['Ígnea','Sedimentar','Vulcânica'],'Forma-se quando o calcário é transformado por calor e pressão.'],
+[2,'Qual é o pH de uma solução neutra a 25 °C?','7',['0','5','14'],'Abaixo de 7 é ácido; acima é básico.'],
+[2,'Qual é a fórmula do gás carbônico?','CO₂',['CO','C₂O','O₂C₂'],'Um átomo de carbono e dois de oxigênio. CO é o monóxido, tóxico.'],
+[2,'O que é a fermentação?','Obtenção de energia sem oxigênio por alguns seres',['Fotossíntese noturna','Digestão no estômago','Respiração dos peixes'],'Leveduras fermentam açúcar produzindo álcool e CO₂, usados no pão e na cerveja.'],
+[2,'Qual a principal função das mitocôndrias?','Respiração celular e produção de ATP',['Fotossíntese','Produção de proteínas','Armazenar DNA'],'São as "usinas de energia" da célula.'],
+[2,'Quantas câmaras tem o coração humano?','4',['2','3','6'],'Dois átrios e dois ventrículos.'],
+[2,'Qual vaso sanguíneo leva o sangue rico em oxigênio do coração para o corpo?','Artéria aorta',['Veia cava','Artéria pulmonar','Veia porta'],'A aorta é a maior artéria do corpo.'],
+[2,'Qual é a principal diferença entre artérias e veias?','Artérias saem do coração; veias voltam para ele',['Artérias levam só sangue venoso','Veias têm paredes mais grossas','Não há diferença'],'A artéria pulmonar é exceção: leva sangue pobre em O₂ aos pulmões.'],
+[0,'Qual planeta fica mais distante do Sol?','Netuno',['Urano','Saturno','Plutão'],'Plutão hoje é considerado planeta-anão.'],
+[0,'Como se chama o caminho contínuo da água entre mares, nuvens, chuva e rios?','Ciclo da água',['Ciclo do carbono','Fotossíntese','Erosão'],'A água evapora, condensa nas nuvens, cai como chuva e volta aos rios e mares.'],
+[0,'Do que são formadas as nuvens?','Gotinhas de água ou cristais de gelo',['Fumaça','Algodão de vapor seco','Gás carbônico puro'],'O vapor de água condensa em gotinhas minúsculas.'],
+[0,'O que é um animal vertebrado?','Um animal com coluna vertebral',['Um animal que voa','Um animal sem ossos','Um animal que vive na água'],'Peixes, anfíbios, répteis, aves e mamíferos são vertebrados.'],
+[0,'Qual destes animais é invertebrado?','Minhoca',['Cachorro','Sapo','Peixe'],'A minhoca não tem esqueleto nem coluna vertebral.'],
+[0,'Quantas patas tem um inseto?','6',['4','8','10'],'Aranhas têm 8 patas e não são insetos.'],
+[0,'Quantas patas tem uma aranha?','8',['6','10','4'],'Aranhas são aracnídeos.'],
+[0,'Qual é o maior animal do mundo?','Baleia-azul',['Elefante-africano','Tubarão-baleia','Girafa'],'Pode passar de 30 metros de comprimento.'],
+[0,'Qual é o animal terrestre mais rápido?','Guepardo',['Leão','Cavalo','Avestruz'],'Em arrancadas curtas, pode passar de 100 km/h.'],
+[0,'Qual é o maior animal terrestre?','Elefante-africano',['Rinoceronte','Hipopótamo','Girafa'],'Um macho adulto pode pesar mais de 6 toneladas.'],
+[0,'Como se chama o filhote do sapo que vive na água?','Girino',['Larva','Pupa','Alevino'],'O girino respira por brânquias e depois passa por metamorfose.'],
+[0,'Qual sentido está ligado à língua?','Paladar',['Olfato','Tato','Audição'],'A língua percebe doce, salgado, azedo, amargo e umami.'],
+[0,'Qual sentido está ligado ao nariz?','Olfato',['Paladar','Visão','Tato'],'O olfato também ajuda a sentir o sabor dos alimentos.'],
+[0,'Qual estrutura óssea protege o cérebro?','Crânio',['Costelas','Coluna','Bacia'],'As costelas protegem o coração e os pulmões.'],
+[0,'Quantos litros de sangue tem, em média, um adulto?','Cerca de 5 litros',['Cerca de 1 litro','Cerca de 15 litros','Cerca de 50 litros'],'Varia com o tamanho do corpo, mas fica em torno de 5 litros.'],
+[0,'O que acontece com o coração durante um exercício intenso?','Bate mais rápido',['Para de bater','Bate mais devagar','Não muda'],'Assim leva mais oxigênio aos músculos.'],
+[0,'Por que lavar as mãos ajuda a evitar doenças?','Remove micróbios que podem causar infecções',['Deixa as mãos mais fortes','Aumenta a imunidade do sangue','Mata vírus dentro do corpo'],'Água e sabão removem e destroem muitos micróbios da pele.'],
+[0,'Qual nutriente é a principal fonte de energia rápida do corpo?','Carboidratos',['Proteínas','Vitaminas','Fibras'],'Arroz, pão, massas e frutas são ricos em carboidratos.'],
+[0,'Qual nutriente é essencial para formar e reparar músculos?','Proteínas',['Carboidratos','Fibras','Água'],'Carnes, ovos, leite e feijão são fontes de proteína.'],
+[0,'Qual mineral é muito importante para ossos e dentes?','Cálcio',['Sódio','Ferro','Iodo'],'Leite e derivados são ricos em cálcio.'],
+[0,'Qual mineral, presente no feijão e nas carnes, ajuda a prevenir anemia?','Ferro',['Cálcio','Potássio','Flúor'],'O ferro faz parte da hemoglobina.'],
+[0,'Na coleta seletiva do Brasil, qual é a cor da lixeira de plástico?','Vermelha',['Azul','Verde','Amarela'],'Padrão: azul = papel, vermelho = plástico, verde = vidro, amarelo = metal, marrom = orgânico.'],
+[0,'Na coleta seletiva, qual é a cor da lixeira de papel?','Azul',['Vermelha','Verde','Amarela'],'Azul = papel e papelão.'],
+[0,'Na coleta seletiva, qual é a cor da lixeira de vidro?','Verde',['Azul','Vermelha','Amarela'],'Verde = vidro.'],
+[0,'Na coleta seletiva, qual é a cor da lixeira de metal?','Amarela',['Azul','Verde','Vermelha'],'Amarelo = metal, como latinhas.'],
+[0,'Qual instrumento mede a temperatura?','Termômetro',['Barômetro','Balança','Bússola'],'O barômetro mede a pressão do ar.'],
+[0,'Qual instrumento usamos para ver seres muito pequenos, como células?','Microscópio',['Telescópio','Binóculo','Periscópio'],'O telescópio é usado para observar astros.'],
+[0,'Qual gás as plantas liberam na fotossíntese?','Oxigênio',['Gás carbônico','Nitrogênio','Hélio'],'Elas absorvem gás carbônico e liberam oxigênio.'],
+[0,'O que é germinação?','O início do desenvolvimento de uma semente em nova planta',['A queda das folhas','A produção de frutos','A morte da planta'],'Precisa de água, ar e temperatura adequada.'],
+[0,'Qual é a função principal da flor?','Reprodução da planta',['Absorver água','Fazer fotossíntese','Sustentar o caule'],'Depois da fecundação, parte da flor se transforma em fruto.'],
+[0,'O que é polinização?','O transporte do pólen entre flores',['A queda das sementes','A absorção de água pela raiz','A troca de folhas'],'Abelhas, borboletas, aves, morcegos e o vento são polinizadores.'],
+[0,'Um material que deixa a corrente elétrica passar facilmente é um…','Condutor',['Isolante','Ímã','Semicondutor perfeito'],'Metais como o cobre são bons condutores.'],
+[0,'A borracha e o plástico são bons…','Isolantes elétricos',['Condutores elétricos','Ímãs','Geradores'],'Por isso os fios são cobertos de plástico.'],
+[0,'Que tipo de mistura são água e óleo?','Heterogênea',['Homogênea','Substância pura','Solução'],'Dá para ver as duas fases separadas.'],
+[0,'Qual destes astros é uma estrela?','Sol',['Lua','Terra','Marte'],'O Sol é uma estrela de tamanho médio.'],
+[0,'Qual gás é usado para encher balões que sobem sozinhos?','Hélio',['Oxigênio','Gás carbônico','Nitrogênio'],'O hélio é mais leve que o ar e não pega fogo.'],
+[0,'Que tipo de animal é a galinha, quanto ao nascimento dos filhotes?','Ovípara',['Vivípara','Ovovivípara','Marsupial'],'Ovíparos nascem de ovos postos fora do corpo da mãe.'],
+[1,'O que é a chuva ácida?','Chuva com poluentes, como óxidos de enxofre e nitrogênio',['Chuva com sal do mar','Chuva de granizo','Chuva com cinzas vulcânicas apenas'],'Esses gases vêm principalmente da queima de combustíveis.'],
+[1,'O que é o genoma?','O conjunto de todo o material genético de um ser vivo',['Uma célula do sangue','Um tipo de proteína','Um órgão do corpo'],'O genoma humano tem cerca de 3 bilhões de pares de bases.'],
+[1,'O que é biodiversidade?','A variedade de seres vivos de um lugar ou do planeta',['O número de pessoas de um país','Um tipo de clima','A quantidade de rios'],'O Brasil tem uma das maiores biodiversidades do mundo.'],
+[1,'O que é assoreamento de um rio?','Acúmulo de terra e sedimentos no leito do rio',['Aumento da quantidade de peixes','Criação de uma represa','Poluição por esgoto'],'O desmatamento das margens (mata ciliar) favorece o assoreamento.'],
+[1,'O que é erosão?','Desgaste e transporte do solo e das rochas pela água, vento ou gelo',['Formação de vulcões','Crescimento de florestas','Congelamento de lagos'],'Solos sem vegetação sofrem mais erosão.'],
+[1,'Quais são os três tipos de tecido muscular?','Esquelético, liso e cardíaco',['Ósseo, nervoso e adiposo','Rápido, lento e médio','Interno, externo e central'],'O cardíaco só existe no coração; o liso fica em órgãos como o intestino.'],
+[1,'O que são anticorpos?','Proteínas de defesa produzidas pelo sistema imune',['Bactérias boas do intestino','Glóbulos vermelhos','Hormônios do crescimento'],'Reconhecem e ajudam a neutralizar invasores.'],
+[1,'Quais são os produtos da fotossíntese?','Glicose e oxigênio',['Gás carbônico e água','Proteínas e gordura','Nitrogênio e hélio'],'Os reagentes são gás carbônico e água, com energia da luz.'],
+[1,'O que caracteriza um animal vivíparo?','O filhote se desenvolve dentro do corpo da mãe',['Põe ovos com casca','Nasce de um ovo na água','Não tem mãe'],'A maioria dos mamíferos é vivípara.'],
+[1,'Um piolho na cabeça de uma pessoa é um exemplo de…','Parasitismo',['Mutualismo','Predatismo','Comensalismo'],'O parasita se beneficia e prejudica o hospedeiro.'],
+[1,'Um leão caçando uma zebra é um exemplo de…','Predatismo',['Parasitismo','Mutualismo','Competição entre iguais'],'O predador mata e come a presa.'],
+[1,'Qual é a velocidade aproximada do som no ar?','340 m/s',['3.400 m/s','34 m/s','300.000 km/s'],'300.000 km/s é a velocidade da luz.'],
+[1,'Qual força se opõe ao deslizamento entre duas superfícies?','Atrito',['Empuxo','Gravidade','Magnetismo'],'Sem atrito não conseguiríamos andar.'],
+[1,'Qual é o elemento químico mais abundante no universo?','Hidrogênio',['Oxigênio','Carbono','Ferro'],'Na Terra, o oxigênio é o mais abundante na crosta.'],
+[1,'Por que o gelo boia na água?','Porque é menos denso que a água líquida',['Porque tem ar preso dentro sempre','Porque é mais pesado','Porque a água empurra só o frio'],'A água se expande ao congelar, algo raro entre as substâncias.'],
+[1,'Que nome se dá à troca de pele das cobras?','Muda (ecdise)',['Metamorfose','Hibernação','Camuflagem'],'A cobra cresce e substitui a camada externa da pele.'],
+[2,'Abelhas visitando flores, com benefício para as duas, é um exemplo de…','Mutualismo',['Parasitismo','Predatismo','Competição'],'A abelha obtém néctar e a planta é polinizada.'],
+[2,'Qual é a densidade aproximada da água líquida?','1 g/cm³',['10 g/cm³','0,1 g/cm³','100 g/cm³'],'1 litro de água tem cerca de 1 kg.'],
+[2,'Qual é a temperatura de fusão do gelo em kelvin?','273 K',['0 K','100 K','373 K'],'0 °C ≈ 273 K; a água ferve a cerca de 373 K.'],
+[2,'Qual a diferença entre evaporação e ebulição?','Evaporação é lenta e na superfície; ebulição é rápida e no líquido todo',['São a mesma coisa','Evaporação só acontece a 100 °C','Ebulição acontece só no gelo'],'A roupa seca por evaporação; a panela ferve por ebulição.'],
+[2,'O aço é uma liga formada principalmente por…','Ferro e carbono',['Cobre e estanho','Cobre e zinco','Alumínio e prata'],'O carbono deixa o ferro mais duro e resistente.'],
+[2,'O bronze é uma liga de…','Cobre e estanho',['Ferro e carbono','Cobre e zinco','Ouro e prata'],'Deu nome à Idade do Bronze.'],
+[2,'O latão é uma liga de…','Cobre e zinco',['Cobre e estanho','Ferro e níquel','Chumbo e estanho'],'É usado em instrumentos de sopro e metais decorativos.'],
+[2,'Qual é a principal função do sistema endócrino?','Produzir hormônios',['Digerir alimentos','Filtrar o sangue','Movimentar os ossos'],'Glândulas como tireoide, pâncreas e suprarrenais fazem parte dele.'],
+[2,'Que tipo de célula não tem núcleo organizado (carioteca)?','Procarionte, como as bactérias',['Eucarionte animal','Eucarionte vegetal','Neurônio'],'Nas bactérias, o DNA fica solto no citoplasma.'],
+[2,'Qual é o nome da teoria que explica a formação do universo a partir de uma grande expansão?','Big Bang',['Deriva continental','Geração espontânea','Panspermia'],'Indica que o universo começou há cerca de 13,8 bilhões de anos.'],
+[2,'O que diz a teoria da deriva continental?','Os continentes já estiveram unidos e se afastaram lentamente',['Os continentes flutuam no mar','Os continentes nunca se moveram','Os oceanos estão secando'],'O supercontinente Pangeia se fragmentou ao longo de milhões de anos.'],
+[2,'Quem propôs a teoria da deriva continental?','Alfred Wegener',['Charles Darwin','Isaac Newton','Galileu Galilei'],'Ele a apresentou em 1912; depois veio a tectônica de placas.']];
+H.forEach(h=>L[h[0]].push(Q(h[1],h[2],h[3],h[4])));
+juntar('cie',L);}
+/* ---------- PORTUGUÊS ---------- */
+{const {pk,mix,Q,QL}=mk(505);const L=[[],[],[]];
+const AC='Pelo Acordo Ortográfico (em vigor no Brasil desde 2009/2016), ';
+const ORT2=[['necessário','nescessário',1],['exceto','esceto',1],['ansioso','ancioso',1],['pretensão','pretenção',2],['extensão','extenção',1],['compreensão','compreenção',2],['chuchu','xuxu',1],['enxaqueca','enchaqueca',2],['enchente','enxente',1],['enxada','enchada',1],['flecha','frecha',1],['berinjela','beringela',2],['majestade','magestade',2],['gorjeta','gorgeta',2],['tigela','tijela',2],['estrangeiro','estranjeiro',1],['laje','lage',2],['viajar','viagar',1],['ojeriza','ogeriza',3],['jiló','giló',2],['canjica','cangica',2],['exceder','esceder',2],['piscina','pissina',1],['crescer','cresser',1],['consciência','consiência',2],['disciplina','dissiplina',1],['obcecado','obsecado',3],['paralisia','paralizia',2],['catequese','catequeze',3],['improvisar','improvizar',2],['atrasado','atrazado',1],['vazamento','vasamento',2],['deslizar','deslisar',2],['batizado','batisado',1],['analisar','analizar',1],['cinquenta','cincoenta',1],['bueiro','boeiro',3],['prateleira','prataleira',1],['eletricista','eletrecista',2],['beneficência','beneficiência',3],['meteorologia','metereologia',2],['iogurte','iorgute',1],['lagartixa','largatixa',1],['bicicleta','bicicreta',1],['irrequieto','irriquieto',3],['digladiar','degladiar',3],['receoso','receioso',3],['entretido','entertido',2],['intitular','entitular',2],['umbigo','imbigo',1],['poleiro','puleiro',2],['xampu','champu',2],['abóbora','abóbra',1],['propriedade','propiedade',1],['própria','própia',1],['cérebro','célebro',1],['caranguejo','carangueijo',2],['sobrancelha','sombrancelha',1],['excursão','escursão',2],['extravagante','estravagante',2],['estender','extender',2],['expectativa','espectativa',2],['experiência','esperiência',1],['explicação','esplicação',1],['hesitar','exitar',3],['sossego','socego',2],['açúcar','assúcar',1],['cansaço','cansasso',1],['endereço','endereso',1],['paçoca','passoca',1],['muçulmano','mulçumano',3],['rubrica (sem acento)','rúbrica',3],['gratuito (sem acento no i)','gratuíto',3],['ruim (sem acento)','ruím',2],['juiz (sem acento)','juíz',2],['raiz (sem acento)','raíz',2],['ideia','idéia',2,1],['heroico','heróico',2,1],['voo','vôo',2,1],['enjoo','enjôo',2,1],['leem','lêem',3,1],['assembleia','assembléia',2,1],['paranoico','paranóico',3,1],['linguiça','lingüiça',1,1],['frequente','freqüente',1,1],['tranquilo','tranqüilo',1,1],['plateia','platéia',2,1],['jiboia','jibóia',2,1],['feiura','feiúra',3,1],['autoestima','auto-estima',3,1],['antissocial','anti-social',3,1],['micro-ondas','microondas',3,1],['minissaia','mini-saia',3,1],['semiaberto','semi-aberto',3,1]];
+ORTOGRAFIA.forEach((p,i)=>L[i<20?0:1].push(Q('Qual é a grafia correta?',p[0],[p[1]],'O correto é "'+p[0]+'".')));
+ORT2.forEach(p=>{const certo=p[0].replace(/ \(.*\)/,'');L[p[2]-1].push(Q('Qual é a grafia correta?',certo,[p[1]],'O correto é "'+certo+'".'+(p[3]?' '+AC+'"'+p[1]+'" deixou de ser a forma correta.':'')))});
+const SIN2=[['ameno','agradável',2],['astuto','esperto',2],['audaz','ousado',2],['cético','descrente',3],['débil','fraco',2],['elucidar','esclarecer',3],['enfadonho','chato',2],['erudito','culto',3],['escárnio','zombaria',3],['estupefato','espantado',3],['exausto','cansado',1],['fidedigno','confiável',3],['gélido','frio',1],['hostil','agressivo',2],['idôneo','honesto',3],['imprescindível','indispensável',2],['inerte','parado',2],['inexorável','implacável',3],['insólito','incomum',3],['lacônico','breve',3],['límpido','claro',2],['meticuloso','minucioso',2],['módico','barato',3],['notório','conhecido',2],['obsoleto','ultrapassado',2],['ocioso','desocupado',2],['pernicioso','nocivo',3],['plácido','sereno',3],['pródigo','esbanjador',3],['ratificar','confirmar',3],['retificar','corrigir',3],['soberbo','orgulhoso',3],['taciturno','calado',3],['tenaz','persistente',3],['trivial','comum',2],['vetusto','antigo',3],['vil','desprezível',3],['voraz','faminto',2],['zangado','irritado',1],['anuir','concordar',3],['abdicar','renunciar',3],['acurado','preciso',3],['adversidade','dificuldade',2],['afável','gentil',2],['contente','alegre',1],['belo','bonito',1],['veloz','rápido',1],['começar','iniciar',1],['morada','casa',1],['enorme','gigante',1],['medo','temor',1],['triste','abatido',1],['bravo','corajoso',1],['ajudar','auxiliar',1]];
+const SIN=SINONIMOS.concat(SIN2),ANT2=[['alto','baixo',1],['claro','escuro',1],['cheio','vazio',1],['rico','pobre',1],['forte','fraco',1],['quente','frio',1],['antigo','moderno',1],['aceitar','recusar',1],['acender','apagar',1],['ausente','presente',1],['bondade','maldade',1],['construir','destruir',1],['culpado','inocente',1],['entrada','saída',1],['feliz','triste',1],['fácil','difícil',1],['grosso','fino',1],['interno','externo',1],['lembrar','esquecer',1],['lucro','prejuízo',2],['máximo','mínimo',1],['nascer','morrer',1],['obedecer','desobedecer',1],['paz','guerra',1],['permitir','proibir',1],['raro','comum',2],['ruidoso','silencioso',2],['seco','molhado',1],['sempre','nunca',1],['tímido','extrovertido',2],['verdade','mentira',1],['vitória','derrota',1],['anterior','posterior',2],['benéfico','maléfico',2],['cômico','trágico',2],['concreto','abstrato',2],['desprezar','valorizar',2],['expandir','contrair',2],['heterogêneo','homogêneo',3],['louvar','criticar',3],['tácito','explícito',3],['vulnerável','protegido',2],['ímpar','par',1],['amador','profissional',2],['ofensivo','defensivo',2],['otimismo','pessimismo',2],['apogeu','declínio',3],['prudente','imprudente',2]];
+SINONIMOS.forEach(p=>L[2].push(QL('Qual é um sinônimo de "'+p[0]+'"?',p[1],SIN.map(x=>x[1]),'"'+p[0]+'" significa o mesmo que "'+p[1]+'".')));
+SIN2.forEach(p=>L[p[2]-1].push(QL('Qual é um sinônimo de "'+p[0]+'"?',p[1],SIN.map(x=>x[1]),'"'+p[0]+'" significa o mesmo que "'+p[1]+'". Sinônimos são palavras de sentido parecido.')));
+const ANT=ANTONIMOS.concat(ANT2);
+ANTONIMOS.forEach(p=>L[0].push(QL('Qual é o antônimo (oposto) de "'+p[0]+'"?',p[1],ANT.map(x=>x[1]),'O oposto de "'+p[0]+'" é "'+p[1]+'".')));
+ANT2.forEach(p=>L[p[2]-1].push(QL('Qual é o antônimo (oposto) de "'+p[0]+'"?',p[1],ANT.map(x=>x[1]),'O oposto de "'+p[0]+'" é "'+p[1]+'". Antônimos são palavras de sentido contrário.')));
+const TON2=[['você','oxítona',1],['maracujá','oxítona',1],['urubu','oxítona',1],['abacaxi','oxítona',1],['parabéns','oxítona',2],['ninguém','oxítona',2],['também','oxítona',2],['avó','oxítona',1],['robô','oxítona',1],['jiló','oxítona',1],['computador','oxítona',1],['papel','oxítona',1],['feliz','oxítona',1],['Brasil','oxítona',1],['útil','paroxítona',2],['bíceps','paroxítona',3],['vírus','paroxítona',2],['hífen','paroxítona',3],['pólen','paroxítona',3],['fórum','paroxítona',3],['órfã','paroxítona',3],['tórax','paroxítona',3],['caneta','paroxítona',1],['janela','paroxítona',1],['ideia','paroxítona',2],['amável','paroxítona',2],['túnel','paroxítona',2],['júri','paroxítona',2],['rubrica','paroxítona',3],['recorde','paroxítona',3],['fôlego','proparoxítona',1],['sábado','proparoxítona',1],['lógico','proparoxítona',2],['pêssego','proparoxítona',1],['química','proparoxítona',2],['relâmpago','proparoxítona',2],['xícara','proparoxítona',1],['óculos','proparoxítona',2],['cédula','proparoxítona',2],['fósforo','proparoxítona',2],['número','proparoxítona',1],['gramática','proparoxítona',2],['político','proparoxítona',2]];
+const TX={oxítona:'a sílaba mais forte é a última',paroxítona:'a sílaba mais forte é a penúltima',proparoxítona:'a sílaba mais forte é a antepenúltima (e toda proparoxítona leva acento)'};
+const TONS=['oxítona','paroxítona','proparoxítona'];
+TONICAS.forEach(w=>L[1].push(Q('A palavra "'+w[0]+'" é…',w[1],TONS,'"'+w[0]+'" é '+w[1]+': '+TX[w[1]]+'.')));
+TON2.forEach(w=>L[w[2]-1].push(Q('A palavra "'+w[0]+'" é…',w[1],TONS,'"'+w[0]+'" é '+w[1]+': '+TX[w[1]]+'.')));
+const PLU=[['pão','pães',['pãos','pões'],1],['mão','mãos',['mães','mões'],1],['alemão','alemães',['alemãos','alemões'],2],['capitão','capitães',['capitãos','capitões'],2],['limão','limões',['limãos','limães'],1],['cristão','cristãos',['cristães','cristões'],2],['órgão','órgãos',['órgães','órgões'],2],['cão','cães',['cãos','cões'],1],['irmão','irmãos',['irmães','irmões'],1],['anel','anéis',['anels','aneles'],1],['papel','papéis',['papels','papeles'],1],['pastel','pastéis',['pastels','pasteles'],1],['farol','faróis',['farols','faroles'],1],['lençol','lençóis',['lençols','lençoles'],1],['álcool','álcoois',['álcools','alcoóis'],3],['fuzil','fuzis',['fuzíeis','fuzils'],2],['réptil','répteis',['réptis','répteles'],3],['funil','funis',['funíeis','funils'],2],['túnel','túneis',['túnels','túnes'],2],['cônsul','cônsules',['cônsuis','cônsuls'],3],['mal','males',['mais','mals'],2],['gás','gases',['gás','gáses'],2],['mês','meses',['mêses','mês'],1],['país','países',['paises','paízes'],1],['lápis','lápis',['lápises','lápiss'],1],['ônibus','ônibus',['ônibuses','ônibusses'],1],['tórax','tórax',['tóraxes','tóraces'],3],['cartaz','cartazes',['cartaz','cartazs'],1],['raiz','raízes',['raizes','raízs'],2],['chapéu','chapéus',['chapéis','chapéues'],1],['degrau','degraus',['degrais','degraues'],2],['troféu','troféus',['troféis','troféues'],2],['cachorro-quente','cachorros-quentes',['cachorro-quentes','cachorros-quente'],2],['guarda-chuva','guarda-chuvas',['guardas-chuvas','guardas-chuva'],2],['couve-flor','couves-flores',['couve-flores','couves-flor'],3],['beija-flor','beija-flores',['beijas-flores','beijas-flor'],2],['segunda-feira','segundas-feiras',['segunda-feiras','segundas-feira'],2],['obra-prima','obras-primas',['obra-primas','obras-prima'],3],['arco-íris','arco-íris',['arcos-íris','arco-írises'],3],['caráter','caracteres',['caráteres','carácteres'],3],['júnior','juniores',['júniors','juniôres'],3]];
+PLU.forEach(p=>L[p[3]-1].push(Q('Qual é o plural de "'+p[0]+'"?',p[1],p[2],'O plural de "'+p[0]+'" é "'+p[1]+'".'+(p[0]===p[1]?' Palavras terminadas em -s ou -x que não são oxítonas não mudam no plural.':p[0].includes('-')?' Em compostos, variam as palavras que mudam de forma (substantivos e adjetivos); verbos não vão para o plural.':''))));
+const COL=[['lobos','alcateia',1],['peixes','cardume',1],['abelhas','enxame',1],['cães','matilha',1],['ovelhas','rebanho',1],['estrelas','constelação',1],['ilhas','arquipélago',1],['livros organizados em um lugar','biblioteca',1],['montanhas','cordilheira',2],['navios de guerra','esquadra',2],['músicos','banda',1],['pessoas aglomeradas','multidão',1],['atores de um filme ou peça','elenco',2],['palavras de uma língua','vocabulário',2],['quadros (pinturas)','pinacoteca',3],['animais de uma região','fauna',2],['plantas de uma região','flora',2],['aves','bando',1],['soldados','tropa',2],['camelos','cáfila',3],['alhos ou cebolas amarrados','réstia',3],['mapas','atlas',2],['letras','alfabeto',1],['árvores frutíferas','pomar',1],['padres','clero',3],['bois','boiada',1],['porcos','vara',3],['uvas','cacho',1],['chaves','molho',2],['espectadores','plateia',2],['alunos','turma',1],['ladrões','quadrilha',2],['navios mercantes','frota',3],['elefantes','manada',2],['discos','discoteca',3]];
+COL.forEach(c=>L[c[2]-1].push(QL('Qual é o coletivo de '+c[0]+'?',c[1],COL.map(x=>x[1]),'Coletivo é o substantivo que indica um conjunto: '+c[0]+' → '+c[1]+'.')));
+const OBR=[['Memórias Póstumas de Brás Cubas','Machado de Assis',1],['Quincas Borba','Machado de Assis',3],['O Alienista','Machado de Assis',2],['Iracema','José de Alencar',1],['O Guarani','José de Alencar',2],['Senhora','José de Alencar',2],['Vidas Secas','Graciliano Ramos',1],['São Bernardo','Graciliano Ramos',3],['Grande Sertão: Veredas','Guimarães Rosa',2],['Sagarana','Guimarães Rosa',3],['A Hora da Estrela','Clarice Lispector',2],['Perto do Coração Selvagem','Clarice Lispector',3],['Capitães da Areia','Jorge Amado',1],['Gabriela, Cravo e Canela','Jorge Amado',2],['Dona Flor e Seus Dois Maridos','Jorge Amado',2],['O Cortiço','Aluísio Azevedo',2],['Macunaíma','Mário de Andrade',2],['Os Sertões','Euclides da Cunha',2],['Triste Fim de Policarpo Quaresma','Lima Barreto',2],['O Quinze','Rachel de Queiroz',2],['Morte e Vida Severina','João Cabral de Melo Neto',2],['Auto da Compadecida','Ariano Suassuna',1],['O Tempo e o Vento','Erico Verissimo',2],['A Moreninha','Joaquim Manuel de Macedo',3],['Memórias de um Sargento de Milícias','Manuel Antônio de Almeida',3],['O Ateneu','Raul Pompeia',3],['Os Lusíadas','Luís de Camões',1],['O Primo Basílio','Eça de Queirós',3],['Os Maias','Eça de Queirós',3],['Ensaio sobre a Cegueira','José Saramago',2],['O Navio Negreiro','Castro Alves',2],['Canção do Exílio','Gonçalves Dias',1],['I-Juca Pirama','Gonçalves Dias',3],['Sítio do Picapau Amarelo','Monteiro Lobato',1],['Marília de Dirceu','Tomás Antônio Gonzaga',3],['Eu (livro de poemas)','Augusto dos Anjos',3],['Romanceiro da Inconfidência','Cecília Meireles',3],['Alguma Poesia','Carlos Drummond de Andrade',3],['Mensagem','Fernando Pessoa',3],['Inocência','Visconde de Taunay',3],['Fogo Morto','José Lins do Rego',3],['Menino de Engenho','José Lins do Rego',3],['A Paixão segundo G.H.','Clarice Lispector',3],['O Pagador de Promessas','Dias Gomes',3],['Lucíola','José de Alencar',3]];
+const AUT=[...new Set(OBR.map(o=>o[1]))];
+OBR.forEach(o=>L[o[2]-1].push(QL('Quem escreveu "'+o[0]+'"?',o[1],AUT,'"'+o[0]+'" é obra de '+o[1]+'.')));
+const FIG=['Metáfora','Comparação','Hipérbole','Personificação','Ironia','Eufemismo','Antítese','Metonímia','Onomatopeia','Pleonasmo'];
+const FD={Metáfora:'compara sem usar "como"',Comparação:'compara usando "como", "tal qual"…',Hipérbole:'é um exagero intencional',Personificação:'dá características humanas a seres não humanos',Ironia:'diz o contrário do que se pensa',Eufemismo:'suaviza uma ideia desagradável',Antítese:'aproxima ideias opostas',Metonímia:'troca uma palavra por outra com relação próxima (autor pela obra, recipiente pelo conteúdo…)',Onomatopeia:'imita um som',Pleonasmo:'repete uma ideia já expressa'};
+[['"Ela é uma flor."','Metáfora',1],['"Ele é forte como um touro."','Comparação',1],['"Já te disse isso um milhão de vezes."','Hipérbole',1],['"O vento cantava na janela."','Personificação',1],['"Que beleza! Tirou zero na prova."','Ironia',2],['"Ele partiu desta para melhor."','Eufemismo',2],['"Li Machado de Assis nas férias."','Metonímia',3],['"O tique-taque do relógio não me deixava dormir."','Onomatopeia',1],['"Subi lá para cima."','Pleonasmo',2],['"Na vida há alegria e tristeza, chegadas e partidas."','Antítese',2],['"Estou morrendo de fome."','Hipérbole',1],['"Bebi um copo de água."','Metonímia',3],['"Ele faltou com a verdade."','Eufemismo',2],['"As estrelas piscavam para nós."','Personificação',1],['"Seus olhos são duas jabuticabas."','Metáfora',2],['"Vi com meus próprios olhos."','Pleonasmo',2],['"O sol nasceu como uma bola de fogo."','Comparação',1],['"Que maravilha, choveu bem no dia da praia!"','Ironia',2],['"O cachorro fez au-au a noite toda."','Onomatopeia',1]].forEach(f=>L[f[2]-1].push(QL('Qual figura de linguagem aparece em: '+f[0],f[1],FIG,f[1]+': '+FD[f[1]]+'.')));
+const CLA=['Substantivo','Adjetivo','Verbo','Advérbio','Pronome','Numeral','Conjunção','Preposição','Interjeição','Artigo'];
+[['Ele chegou ONTEM.','Advérbio',2],['A casa AMARELA é minha.','Adjetivo',1],['NÓS vamos ao cinema.','Pronome',1],['Eu CORRO todo dia.','Verbo',1],['Comprei TRÊS livros.','Numeral',1],['Saí cedo, MAS cheguei tarde.','Conjunção',2],['O livro está SOBRE a mesa.','Preposição',2],['AI! Machuquei o dedo.','Interjeição',1],['O GATO dormiu.','Substantivo',1],['UMA menina chegou.','Artigo',2],['Ele fala MUITO bem.','Advérbio',3],['A FELICIDADE é contagiante.','Substantivo',2],['Esta bolsa é MINHA.','Pronome',2],['Ele é o PRIMEIRO da fila.','Numeral',2],['Estudei PORQUE quero passar.','Conjunção',3],['Vou DE ônibus.','Preposição',2],['O jantar estava DELICIOSO.','Adjetivo',1],['Eles ESTUDARAM muito.','Verbo',1],['OBA! Chegaram as férias.','Interjeição',1],['O médico falou CALMAMENTE.','Advérbio',1],['O AZUL do céu estava lindo.','Substantivo',3]].forEach(c=>L[c[2]-1].push(QL('Na frase "'+c[0]+'", a palavra em maiúsculas é…',c[1],CLA,'Nessa frase, a palavra destacada funciona como '+c[1].toLowerCase()+'.'+(c[0].startsWith('O AZUL')?' Com artigo antes ("o azul"), o adjetivo virou substantivo.':c[0].includes('MUITO')?' "Muito" modifica o advérbio "bem", então é advérbio de intensidade.':''))));
+const H=[
+[0,'Complete: "Ele é um homem ___."','mau',['mal','mão','maul'],'Mau é o contrário de bom; mal é o contrário de bem.'],
+[0,'Complete: "Ela dormiu ___ esta noite."','mal',['mau','mau-mau','maul'],'Mal é o contrário de bem: dormiu bem / dormiu mal.'],
+[0,'Complete: "Não fui à aula ___ estava doente."','porque',['por que','por quê','porquê'],'"Porque" (junto e sem acento) dá uma explicação ou causa.'],
+[0,'Complete: "___ você não veio?"','Por que',['Porque','Porquê','Por quê'],'Em perguntas, no início ou meio da frase, usa-se "por que" (separado e sem acento).'],
+[0,'Complete: "Você não veio por ___?"','quê',['que','porque','porquê'],'No fim da frase, o "que" leva acento: "por quê?".'],
+[0,'Complete: "Não sei o ___ da sua raiva."','porquê',['porque','por que','por quê'],'"O porquê" é substantivo (= o motivo): junto e com acento.'],
+[0,'Complete: "Daqui ___ dois dias será feriado."','a',['há','à','ah'],'Para tempo futuro, usa-se "a". Para tempo passado, "há".'],
+[0,'Qual frase está correta?','Nós vamos à escola.',['Nós vamos a escola.','Nós vamos à pé.','Nós vamos à casa dela à pé.'],'"Ir a" + "a escola" = "à escola". Antes de "pé" (masculino) não há crase.'],
+[0,'Qual palavra é escrita com "ss"?','pássaro',['pasáro','paçaro','passáro'],'Pás-sa-ro: com dois "s" e acento no "a" da primeira sílaba.'],
+[0,'Quantas sílabas tem a palavra "casa"?','2',['1','3','4'],'Ca-sa: 2 sílabas.'],
+[0,'Quantas sílabas tem a palavra "borboleta"?','4',['3','5','2'],'Bor-bo-le-ta: 4 sílabas (polissílaba).'],
+[0,'Qual palavra é um substantivo próprio?','Brasil',['cidade','mesa','alegria'],'Substantivos próprios nomeiam um ser específico e começam com letra maiúscula.'],
+[0,'Qual é o feminino de "ator"?','atriz',['atora','atoriz','atresa'],'Ator → atriz. Outros: imperador → imperatriz.'],
+[0,'Qual é o feminino de "cavalo"?','égua',['cavala','cavalha','potra'],'Alguns femininos usam palavras diferentes: cavalo/égua, boi/vaca, bode/cabra.'],
+[0,'Qual é o feminino de "galo"?','galinha',['gala','galoa','galeta'],'Galo → galinha.'],
+[0,'Qual é o aumentativo de "casa"?','casarão',['casinha','casota','casarinha'],'Casa → casarão (aumentativo) e casinha (diminutivo).'],
+[0,'Qual é o diminutivo de "pão"?','pãozinho',['pãozão','pãozito','panzinho'],'Pão → pãozinho.'],
+[0,'Que sinal se usa no fim de uma pergunta?','Ponto de interrogação',['Ponto final','Ponto de exclamação','Vírgula'],'O ponto de interrogação (?) indica pergunta direta.'],
+[1,'Complete: "___ muitas pessoas na festa."','Havia',['Haviam','Houveram','Tinham havido'],'O verbo haver no sentido de existir é impessoal: fica no singular.'],
+[1,'Complete: "Os alunos ___ cedo hoje."','chegaram',['chegou','chegamos','chegará'],'O verbo concorda com o sujeito: os alunos (plural) chegaram.'],
+[1,'Qual frase está correta?','Fazia dois anos que não o via.',['Faziam dois anos que não o via.','Fizeram dois anos que não o via.','Faziam-se dois anos que não o via.'],'Fazer indicando tempo é impessoal: fica no singular.'],
+[1,'Complete: "Para ___ fazer o trabalho, preciso de ajuda."','eu',['mim','me','comigo'],'Antes de verbo no infinitivo, usa-se "eu": para eu fazer. "Para mim" é usado sem verbo: "Isso é para mim".'],
+[1,'Complete: "Isto é para ___."','mim',['eu','me','meu'],'Depois de preposição e sem verbo depois, usa-se "mim".'],
+[1,'Complete: "Entre ___ e você não há segredos."','mim',['eu','me','comigo'],'Depois da preposição "entre", usa-se "mim": entre mim e você.'],
+[1,'Qual frase está correta?','Assisti ao filme ontem.',['Assisti o filme ontem.','Assisti no filme ontem.','Assisti pelo filme ontem.'],'No sentido de ver, "assistir" pede a preposição "a": assistir ao filme.'],
+[1,'Qual frase está correta?','Ele chegou à escola atrasado.',['Ele chegou na escola atrasado.','Ele chegou a escola atrasado.','Ele chegou em a escola atrasado.'],'Na norma culta, o verbo chegar pede "a": chegar à escola.'],
+[1,'Complete: "A reunião será ___ portas fechadas."','a',['à','há','as'],'Antes de palavra no plural sem artigo ("portas"), não há crase.'],
+[1,'Complete: "Fui ___ farmácia e ___ padaria."','à / à',['a / a','à / a','a / à'],'Ir a + a farmácia = à farmácia; o mesmo vale para a padaria.'],
+[1,'Qual frase usa a vírgula corretamente?','Maria, venha aqui!',['Maria venha, aqui!','Maria venha aqui,!','Maria venha aqui!,'],'O vocativo (quem é chamado) vem separado por vírgula.'],
+[1,'Qual frase tem erro de vírgula?','O menino, comeu o bolo.',['Ontem, choveu muito.','Comprei pão, leite e frutas.','João, venha aqui.'],'Não se separa o sujeito ("o menino") do verbo com vírgula.'],
+[1,'O que é um verbo no infinitivo?','A forma básica do verbo, terminada em -ar, -er ou -ir',['O verbo no passado','O verbo no plural','O verbo no futuro'],'Ex.: cantar, vender, partir.'],
+[1,'Em "Os meninos jogam bola", qual é o sujeito?','Os meninos',['jogam','bola','jogam bola'],'Sujeito é o termo sobre o qual se declara algo; o verbo concorda com ele.'],
+[1,'Em "Comprei um carro", qual é o sujeito?','Oculto (eu)',['um carro','Comprei','Inexistente'],'O sujeito "eu" está implícito na terminação do verbo.'],
+[1,'O que é um sujeito composto?','Sujeito com dois ou mais núcleos',['Sujeito escondido','Sujeito que não existe','Sujeito com uma só palavra'],'Ex.: "Pedro e Ana viajaram."'],
+[1,'Em "Comprei flores para minha mãe", "flores" é…','Objeto direto',['Sujeito','Objeto indireto','Adjunto adverbial'],'Liga-se ao verbo sem preposição: comprei o quê? Flores.'],
+[1,'Qual é o gênero textual que conta uma história curta com moral, muitas vezes com animais?','Fábula',['Crônica','Notícia','Receita'],'Ex.: "A cigarra e a formiga".'],
+[2,'Qual frase está correta?','Alugam-se casas.',['Aluga-se casas.','Alugam-se de casas.','Aluga-se de casas.'],'Na voz passiva sintética, o verbo concorda com o sujeito: "Alugam-se casas" (casas são alugadas).'],
+[2,'Qual frase está correta?','Precisa-se de funcionários.',['Precisam-se de funcionários.','Precisa-se funcionários.','Precisam-se funcionários.'],'Com preposição ("de"), o "se" indetermina o sujeito e o verbo fica no singular.'],
+[2,'Qual frase está correta?','Prefiro estudar a trabalhar.',['Prefiro mais estudar do que trabalhar.','Prefiro estudar do que trabalhar.','Prefiro mais estudar que trabalhar.'],'Na norma culta: preferir algo A outra coisa, sem "mais" e sem "do que".'],
+[2,'Qual frase está correta?','Obedeça aos sinais de trânsito.',['Obedeça os sinais de trânsito.','Obedeça dos sinais de trânsito.','Obedeça nos sinais de trânsito.'],'O verbo obedecer pede a preposição "a".'],
+[2,'Qual frase está correta?','Eu me lembrei do aniversário.',['Eu lembrei do aniversário.','Eu me lembrei o aniversário.','Eu lembrei-me o aniversário.'],'Lembrar-se DE algo (pronominal) ou lembrar algo (sem pronome e sem "de"), na norma culta.'],
+[2,'Complete: "Segue ___ as fotos que você pediu."','anexas',['anexo','anexa','em anexos'],'"Anexo" é adjetivo e concorda: as fotos seguem anexas. ("Em anexo" é invariável.)'],
+[2,'Complete: "Ela ficou ___ preocupada."','meio',['meia','meios','meias'],'No sentido de "um pouco", "meio" é advérbio e não varia.'],
+[2,'Complete: "Era meio-dia e ___."','meia',['meio','meias','meio e meia'],'Meio-dia e meia (hora): "meia" se refere à metade da hora.'],
+[2,'Qual frase está correta?','É proibida a entrada de animais.',['É proibido a entrada de animais.','É proibida entrada de animais.','São proibido a entrada de animais.'],'Com artigo ("a entrada"), "proibida" concorda. Sem artigo: "É proibido entrada".'],
+[2,'Qual é a função da conjunção "embora"?','Concessão',['Causa','Conclusão','Adição'],'Embora indica uma ideia contrária que não impede a principal: "Embora chovesse, saímos."'],
+[2,'Qual é a função da conjunção "portanto"?','Conclusão',['Oposição','Causa','Condição'],'Ex.: "Estudou; portanto, passou."'],
+[2,'Qual é a função da conjunção "se" em "Se chover, não vou"?','Condição',['Causa','Tempo','Comparação'],'Indica a condição para que algo aconteça.'],
+[2,'O que é uma oração subordinada?','Oração que depende de outra para ter sentido completo',['Oração sem verbo','Oração independente','Frase sem sujeito'],'Ex.: "Quero QUE VOCÊ VENHA."'],
+[2,'Qual movimento literário brasileiro teve como marco a Semana de Arte Moderna de 1922?','Modernismo',['Romantismo','Realismo','Barroco'],'Mário de Andrade e Oswald de Andrade foram grandes nomes do Modernismo.'],
+[2,'Qual movimento literário valorizava o índio como herói nacional, como em "Iracema"?','Romantismo (Indianismo)',['Realismo','Naturalismo','Parnasianismo'],'José de Alencar e Gonçalves Dias foram autores indianistas.'],
+[2,'Qual movimento literário é marcado por "Memórias Póstumas de Brás Cubas" (1881)?','Realismo',['Romantismo','Modernismo','Arcadismo'],'O livro de Machado de Assis inaugura o Realismo no Brasil.'],
+[2,'Quem é chamado de "Poeta dos Escravos"?','Castro Alves',['Gonçalves Dias','Olavo Bilac','Álvares de Azevedo'],'Autor de "O Navio Negreiro", denunciou a escravidão.'],
+[2,'Qual é a diferença entre "sessão" e "seção"?','Sessão é reunião ou exibição; seção é divisão ou departamento',['São sinônimos','Sessão é divisão; seção é reunião','Seção é com "ss" na norma culta'],'Sessão de cinema; seção de roupas da loja. (Cessão = ato de ceder.)'],
+[2,'Qual é a diferença entre "mas" e "mais"?','"Mas" indica oposição; "mais" indica quantidade',['São iguais','"Mais" indica oposição','"Mas" indica quantidade'],'"Quero ir, mas estou cansado." / "Quero mais café."'],
+[2,'Qual é o sentido de "ao encontro de"?','A favor de, em harmonia com',['Contra, em oposição a','No lugar de','Por causa de'],'"De encontro a" significa contra: "O carro foi de encontro ao muro."']];
+H.filter(h=>h[4]).forEach(h=>L[h[0]].push(Q(h[1],h[2],h[3],h[4])));
+juntar('por',L);}
+return B;})();
+
+function saberBanco(m,nv){return MATERIAS[m].n[nv-1].concat((EXTRAS[m]&&EXTRAS[m][nv-1])||[],(BANCO[m]&&BANCO[m][nv-1])||[])}
 function saberEscolher(){
   const ks=Object.keys(MATERIAS),fm=[...FOCO.mat].filter(k=>MATERIAS[k]);
   const m=fm.length&&Math.random()<.85?pick(fm):pick(ks);
   const nv=saberNivel(m),sb=saber(m);
-  const banco=MATERIAS[m].n[nv-1].concat((EXTRAS[m]&&EXTRAS[m][nv-1])||[]);
-  if(Math.random()<.5){const g=gerarPergunta(m,nv);if(g)return{m,nv,i:-1,q:g}}
+  const banco=saberBanco(m,nv);
   let livres=banco.map((q,i)=>i).filter(i=>!sb.vistos.includes(nv+'-'+i));
   if(!livres.length){sb.vistos=sb.vistos.filter(v=>!v.startsWith(nv+'-'));livres=banco.map((q,i)=>i)}
   const i=pick(livres);return{m,nv,i,q:banco[i]};
