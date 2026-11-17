@@ -473,8 +473,8 @@ body.duo-on{overflow:hidden}
 .duo-mini{border:2px solid var(--line);border-radius:18px;padding:16px;text-align:center;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;--dg:#58cc02;--dgs:#58a700;--dl:rgba(127,127,127,.35);--dbl:#1cb0f6}
 .duo-mini-t{background:var(--c);color:#fff;border-radius:14px;padding:12px;margin-bottom:14px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
 .duo-mini-t small{display:block;font-size:11.5px;font-weight:800;opacity:.85}.duo-mini-t b{font-size:19px;font-weight:800}
-.duo-mini-n{display:flex;justify-content:center;gap:10px;margin-bottom:12px}
-.duo-mini-n i{width:42px;height:38px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;color:#fff;background:rgba(127,127,127,.35)}
+.duo-mini-n{display:flex;justify-content:center;gap:8px;margin-bottom:12px}
+.duo-mini-n i{width:38px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;color:#fff;background:rgba(127,127,127,.35)}
 .duo-mini-n i.ok{background:#ffc800}.duo-mini-n i.at{background:var(--c);box-shadow:0 0 0 4px rgba(88,204,2,.25)}
 .duo-mini p{font-size:15px;margin-bottom:14px;font-weight:600}
 </style>
@@ -4066,13 +4066,14 @@ dica:{en:'Condicional: "If I had…, I would…". "For" + duração e "since" + 
 DUO_UNI.forEach(u=>{u.rows=u.it.trim().split('\n').map(l=>l.split('|'))});
 const DUO_CORES=['#58cc02','#ce82ff','#00cd9c','#1cb0f6','#ff9600','#ff4b4b','#2b70c9','#a5ed6e'];
 const DUO_ELOGIO=['Excelente!','Muito bem!','Perfeito!','Incrível!','Mandou bem!','Isso aí!','Arrasou!'];
-function duoTr(l){const I=idiomas();I.tr=I.tr||{};if(!I.tr[l]){const a=I.ac[l]||0;I.tr[l]={u:Math.min(3,Math.floor(a/40)),n:0,lic:0}}return I.tr[l]}
+const DUO_LIC=5,DUO_POR=4,DUO_REV=DUO_LIC;   // 5 lições curtas de 4 itens + 1 revisão por unidade
+function duoTr(l){const I=idiomas();I.tr=I.tr||{};if(!I.tr[l]){const a=I.ac[l]||0;I.tr[l]={u:Math.min(3,Math.floor(a/40)),n:0,lic:0,v:2}}const T=I.tr[l];if(!T.v){if(T.n>=4)T.n=DUO_REV;T.v=2}return T}
 const duoTxt=(r,l)=>r[IDIOMAS[l].col];
 const duoPal=t=>String(t).replace(/\s*\(.*\)\s*$/,'').split(' ').length;
 function duoEl(){let d=document.getElementById('duo');if(!d){d=document.createElement('div');d.id='duo';document.body.appendChild(d)}d.className='duo'+(document.body.classList.contains('zen')?' claro':'');d.style.display='flex';try{document.body.classList.add('duo-on')}catch(e){}return d}
 function duoFechar(){const d=document.getElementById('duo');if(d){d.style.display='none';d.innerHTML=''}try{speechSynthesis.cancel()}catch(e){}document.body.classList.remove('duo-on')}
 /* distratores: textos diferentes, de preferência do mesmo tipo (palavra x frase) */
-function duoOps(l,certo,pool,campo){const alvo=campo(certo),nw=duoPal(alvo),viz=pool.filter(r=>r!==certo&&campo(r)!==alvo&&r[0]!==certo[0]);
+function duoOps(l,certo,pool,campo){const alvo=campo(certo),nw=duoPal(alvo),ct=duoTxt(certo,l),viz=pool.filter(r=>r!==certo&&campo(r)!==alvo&&r[0]!==certo[0]&&duoTxt(r,l)!==ct);
   const parecidos=embaralhar(viz.filter(r=>Math.abs(duoPal(campo(r))-nw)<=Math.max(1,nw/3))),resto=embaralhar(viz);const out=[],vis=new Set([alvo]);
   for(const r of parecidos.concat(resto)){const t=campo(r);if(vis.has(t))continue;vis.add(t);out.push(r);if(out.length===3)break}
   return embaralhar([certo].concat(out))}
@@ -4082,26 +4083,25 @@ function duoTipo(l,r,voz){const ts=['pl','lp'];if(voz)ts.push('escuta');if(duoMo
 function duoFila(l,u,n){
   const U=DUO_UNI[u],voz=temVoz(l),todos=DUO_UNI.slice(0,u+1).flatMap(x=>x.rows),pool=U.rows.concat(DUO_UNI.slice(Math.max(0,u-2),u).flatMap(x=>x.rows));
   const F=[];
-  if(n<4){const novos=U.rows.slice(n*5,n*5+5);
+  if(n<DUO_REV){const novos=U.rows.slice(n*DUO_POR,n*DUO_POR+DUO_POR);
     if(n===0&&U.dica&&U.dica[l])F.push({k:'dica',u});
     novos.forEach(r=>{F.push({k:'nova',r});F.push({k:duoTipo(l,r,voz),r})});
     F.push({k:'pares',rs:novos.slice()});
-    embaralhar(novos).slice(0,3).forEach(r=>F.push({k:duoTipo(l,r,voz),r}));
-    const ant=U.rows.slice(0,n*5).concat(u>0?DUO_UNI[u-1].rows:[]);if(ant.length)embaralhar(ant).slice(0,2).forEach(r=>F.push({k:duoTipo(l,r,voz),r}));
-  }else{const rs=embaralhar(U.rows).slice(0,9).concat(embaralhar(todos.filter(r=>!U.rows.includes(r))).slice(0,3));
-    rs.forEach(r=>F.push({k:duoTipo(l,r,voz),r}));F.splice(6,0,{k:'pares',rs:embaralhar(U.rows).slice(0,5)})}
+    const ant=U.rows.slice(0,n*DUO_POR).concat(u>0?DUO_UNI[u-1].rows:[]);if(ant.length)embaralhar(ant).slice(0,1).forEach(r=>F.push({k:duoTipo(l,r,voz),r}));
+  }else{const rs=embaralhar(U.rows).slice(0,6).concat(embaralhar(todos.filter(r=>!U.rows.includes(r))).slice(0,2));
+    rs.forEach(r=>F.push({k:duoTipo(l,r,voz),r}));F.splice(4,0,{k:'pares',rs:embaralhar(U.rows).slice(0,4)})}
   F.forEach(x=>x.pool=pool);return F;
 }
 /* ---------- trilha ---------- */
 function duoTrilha(l){
   const I=idiomas();if(!I.sel.length){idiModal();return}l=l&&I.sel.includes(l)?l:(I.duoL&&I.sel.includes(I.duoL)?I.duoL:I.sel[0]);I.duoL=l;
   const T=duoTr(l),L=IDIOMAS[l],d=duoEl();
-  const off=[0,52,72,52,0];
+  const off=[0,48,72,48,0,-40];
   d.innerHTML='<div class="duo-top"><button class="duo-x" data-x>✕</button><div class="duo-langs">'+I.sel.map(k=>'<button class="duo-flag'+(k===l?' on':'')+'" data-lang="'+k+'">'+IDIOMAS[k].flag+'</button>').join('')+'</div><div class="duo-stat">⭐ '+(T.lic||0)+'</div></div>'+
     '<div class="duo-scroll" id="duoSc">'+DUO_UNI.map((U,ui)=>{const cor=DUO_CORES[ui%DUO_CORES.length],bloq=ui>T.u;
       return'<div class="duo-uni" data-ui="'+ui+'"><div class="duo-ban" style="background:'+(bloq?'var(--dl)':cor)+'"><div><small>UNIDADE '+(ui+1)+'</small><b>'+U.ico+' '+U.t+'</b></div><button class="duo-guia" data-guia="'+ui+'">📖 GUIA</button></div>'+
-        '<div class="duo-path">'+[0,1,2,3,4].map(n=>{const st=ui<T.u||(ui===T.u&&n<T.n)?'ok':ui===T.u&&n===T.n?'at':'lk';
-          return'<div class="duo-nwrap" style="transform:translateX('+(ui%2?-off[n]:off[n])+'px)">'+(st==='at'?'<div class="duo-bal">COMEÇAR</div>':'')+'<button class="duo-node '+st+'" data-node="'+ui+'-'+n+'" style="--c:'+cor+'">'+(st==='ok'?'✓':n===4?'🏆':st==='lk'?'🔒':'★')+'</button></div>'}).join('')+'</div></div>'}).join('')+
+        '<div class="duo-path">'+[...Array(DUO_LIC+1).keys()].map(n=>{const st=ui<T.u||(ui===T.u&&n<T.n)?'ok':ui===T.u&&n===T.n?'at':'lk';
+          return'<div class="duo-nwrap" style="transform:translateX('+(ui%2?-off[n]:off[n])+'px)">'+(st==='at'?'<div class="duo-bal">COMEÇAR</div>':'')+'<button class="duo-node '+st+'" data-node="'+ui+'-'+n+'" style="--c:'+cor+'">'+(st==='ok'?'✓':n===DUO_REV?'🏆':st==='lk'?'🔒':'★')+'</button></div>'}).join('')+'</div></div>'}).join('')+
     '<p class="duo-fim">'+L.flag+' '+DUO_UNI.length+' unidades · '+DUO_UNI.length*20+' palavras e frases</p></div>';
   d.querySelector('[data-x]').onclick=duoFechar;
   d.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{I.duoL=b.dataset.lang;salvar();duoTrilha(b.dataset.lang)});
@@ -4134,18 +4134,18 @@ function duoLicao(l,u,n,opt){
     f.innerHTML='<div class="duo-res"><b>'+(ok?'✓ '+pick(DUO_ELOGIO):'✕ Resposta correta:')+'</b>'+(ok?'':'<div>'+certo+'</div>')+(extra?'<small>'+extra+'</small>':'')+'</div>'+btn(ok?'CONTINUAR':'ENTENDI','dNx',ok?'':'red');
     f.querySelector('#dNx').onclick=prox};
   const fim=()=>{const seg=Math.round((Date.now()-t0)/1000),prec=Math.round(acertos/Math.max(1,acertos+erros)*100);
-    if(u===T.u&&n===T.n){T.n++;if(T.n>4){T.n=0;T.u=Math.min(DUO_UNI.length,T.u+1)}}T.lic=(T.lic||0)+1;salvar();try{renderSaber()}catch(e){}
+    if(u===T.u&&n===T.n){T.n++;if(T.n>DUO_REV){T.n=0;T.u=Math.min(DUO_UNI.length,T.u+1)}}T.lic=(T.lic||0)+1;salvar();try{renderSaber()}catch(e){}
     let ganho=0;if(opt&&opt.onEnd)ganho=opt.onEnd(acertos,acertos+erros)||0;
     const dd=document.getElementById('duo');if(!dd||dd.style.display==='none'){if(!opt||!opt.semTela)return}
     duoEl().innerHTML='<div class="duo-body duo-end"><div class="duo-troph">'+(prec>=90?'🏆':prec>=70?'🎉':'💪')+'</div><h2>Lição concluída!</h2><p>'+(prec>=90?'Que precisão! Você está mandando muito bem.':prec>=70?'Bom trabalho! Cada lição te deixa mais fluente.':'Continue praticando: errar faz parte de aprender.')+'</p>'+
       '<div class="duo-cards"><div class="c1"><small>XP</small><b>'+(ganho?'+'+ganho:'—')+'</b></div><div class="c2"><small>PRECISÃO</small><b>'+prec+'%</b></div><div class="c3"><small>TEMPO</small><b>'+Math.floor(seg/60)+':'+String(seg%60).padStart(2,'0')+'</b></div></div>'+
-      (n===4&&T.u>u?'<p class="duo-up">🎓 Unidade '+(u+1)+' concluída!'+(DUO_UNI[u+1]?' Próxima: '+DUO_UNI[u+1].ico+' '+DUO_UNI[u+1].t:'')+'</p>':'')+'</div><div class="duo-foot">'+btn('CONTINUAR','dEnd')+'</div>';
+      (n===DUO_REV&&T.u>u?'<p class="duo-up">🎓 Unidade '+(u+1)+' concluída!'+(DUO_UNI[u+1]?' Próxima: '+DUO_UNI[u+1].ico+' '+DUO_UNI[u+1].t:'')+'</p>':'')+'</div><div class="duo-foot">'+btn('CONTINUAR','dEnd')+'</div>';
     document.getElementById('dEnd').onclick=()=>{if(opt&&opt.depois)opt.depois();else duoFechar()};
     try{SFX.sucesso()}catch(e){}};
   const prox=()=>{if(i>=F.length){fim();return}const x=F[i++],r=x.r;
     if(x.k==='dica'){const U=DUO_UNI[x.u];shell('<div class="duo-tag" style="background:#1cb0f6">💡 DICA DA UNIDADE</div><h2 class="duo-h">'+U.ico+' '+U.t+'</h2><div class="duo-dica">'+U.dica[l]+'</div>',btn('CONTINUAR','dC'));d.querySelector('#dC').onclick=prox;return}
     if(x.k==='nova'){const t=duoTxt(r,l);shell('<div class="duo-tag">✨ NOVA '+(duoPal(t)>2?'FRASE':'PALAVRA')+'</div><div class="duo-nova">'+som(t,1)+'<b>'+t+'</b><span>'+r[0]+'</span></div><p class="duo-mut">Toque no 🔊 para ouvir de novo (duas vezes = devagar).</p>',btn('CONTINUAR','dC'));ligSom();d.querySelector('#dC').onclick=prox;setTimeout(()=>fala(t),250);return}
-    if(x.k==='pares'){const rs=x.rs,esq=embaralhar(rs.map((r,k)=>({k,t:duoTxt(r,l)}))),dir=embaralhar(rs.map((r,k)=>({k,t:r[0]})));let sel=null,certos=0,err=0;
+    if(x.k==='pares'){const rs=[],vt=new Set();x.rs.forEach(r=>{const a=duoTxt(r,l);if(!vt.has(a)&&!vt.has('pt:'+r[0])){vt.add(a);vt.add('pt:'+r[0]);rs.push(r)}});if(rs.length<3){prox();return}const esq=embaralhar(rs.map((r,k)=>({k,t:duoTxt(r,l)}))),dir=embaralhar(rs.map((r,k)=>({k,t:r[0]})));let sel=null,certos=0,err=0;
       shell('<h2 class="duo-h">Toque nos pares</h2><div class="duo-pares"><div>'+esq.map(o=>'<button class="duo-op" data-a="'+o.k+'">'+o.t+'</button>').join('')+'</div><div>'+dir.map(o=>'<button class="duo-op" data-b="'+o.k+'">'+o.t+'</button>').join('')+'</div></div>','<p class="duo-mut" style="margin:0">Toque em uma palavra e depois na tradução dela.</p>');
       const bs=[...d.querySelectorAll('[data-a],[data-b]')];
       bs.forEach(b=>b.onclick=()=>{if(b.classList.contains('feito'))return;const lado=b.dataset.a!=null?'a':'b',k=b.dataset.a!=null?b.dataset.a:b.dataset.b;if(lado==='a')fala(b.textContent);
@@ -4189,11 +4189,11 @@ function cardIdioma(el,fim){
     idiLigar(J);J.querySelector('#idOk').onclick=()=>{if(!idiomas().sel.length){toast('Escolha pelo menos um idioma');return}cardIdioma(el,fim)};return;
   }
   I.vez=(I.vez||0)+1;const lsel=I.sel.filter(x=>FOCO.idi.has(x)),l=lsel.length&&Math.random()<.85?pick(lsel):I.sel[I.vez%I.sel.length],L=IDIOMAS[l],T=duoTr(l);
-  const fimTrilha=T.u>=DUO_UNI.length,u=fimTrilha?rr(0,DUO_UNI.length-1):T.u,n=fimTrilha?4:T.n,U=DUO_UNI[u],cor=DUO_CORES[u%DUO_CORES.length];
+  const fimTrilha=T.u>=DUO_UNI.length,u=fimTrilha?rr(0,DUO_UNI.length-1):T.u,n=fimTrilha?DUO_REV:T.n,U=DUO_UNI[u],cor=DUO_CORES[u%DUO_CORES.length];
   cabecalho(el,L.flag,'Lição de '+L.nome,'UNIDADE '+(u+1),'cy','até +'+xpA(15)+' XP · MENTE');
   J.innerHTML='<div class="duo-mini" style="--c:'+cor+'"><div class="duo-mini-t"><small>UNIDADE '+(u+1)+' DE '+DUO_UNI.length+'</small><b>'+U.ico+' '+U.t+'</b></div>'+
-    '<div class="duo-mini-n">'+[0,1,2,3,4].map(k=>'<i class="'+(k<n?'ok':k===n?'at':'')+'">'+(k<n?'✓':k===4?'🏆':'★')+'</i>').join('')+'</div>'+
-    '<p>'+(n===4?'Revisão da unidade: misture tudo que aprendeu.':'Lição '+(n+1)+' de 4: 5 '+(U.rows.slice(n*5,n*5+5).some(r=>duoPal(duoTxt(r,l))>2)?'novas palavras e frases':'novas palavras')+'.')+'</p>'+
+    '<div class="duo-mini-n">'+[...Array(DUO_LIC+1).keys()].map(k=>'<i class="'+(k<n?'ok':k===n?'at':'')+'">'+(k<n?'✓':k===DUO_REV?'🏆':'★')+'</i>').join('')+'</div>'+
+    '<p>'+(n===DUO_REV?'Revisão da unidade: misture tudo que aprendeu.':'Lição '+(n+1)+' de '+DUO_LIC+': '+DUO_POR+' '+(U.rows.slice(n*DUO_POR,n*DUO_POR+DUO_POR).some(r=>duoPal(duoTxt(r,l))>2)?'novas palavras e frases':'novas palavras')+'.')+'</p>'+
     '<button class="duo-btn" data-go>▶ COMEÇAR LIÇÃO</button><button class="duo-btn sec" data-tr>🗺️ VER TRILHA</button></div><p class="ar-msg"></p>';
   let feito=false;
   J.querySelector('[data-tr]').onclick=()=>duoTrilha(l);
@@ -5091,7 +5091,7 @@ function saberExtraHtml(){
   h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="h cy" style="font-size:12px">🌍 Idiomas</div><button class="h gd" data-idesc style="font-size:11px;letter-spacing:.08em">ESCOLHER</button></div>';
   if(!I.sel.length)h+='<p class="mut" style="font-size:13px;margin:6px 0">Nenhum idioma escolhido ainda.</p>';
   I.sel.forEach(l=>{const D=IDIOMAS[l],n=idiNivel(l),a=I.ac[l]||0,i0=IDI_NIVEIS[n-1],p=IDI_NIVEIS[n],pc2=n>=10?100:Math.round((a-i0)/(p-i0)*100);
-    const Tr=duoTr(l),uu=Math.min(Tr.u,DUO_UNI.length),pcT=Math.round((uu*5+(Tr.u<DUO_UNI.length?Tr.n:0))/(DUO_UNI.length*5)*100);
+    const Tr=duoTr(l),uu=Math.min(Tr.u,DUO_UNI.length),pcT=Math.round((uu*(DUO_LIC+1)+(Tr.u<DUO_UNI.length?Tr.n:0))/(DUO_UNI.length*(DUO_LIC+1))*100);
     h+='<div class="stat" data-trilha="'+l+'" style="cursor:pointer"><div class="nm">'+D.flag+' '+D.nome+' <span class="gd" style="font-size:11px">🗺️ TRILHA</span></div><div><div class="bar"><i style="width:'+pcT+'%"></i></div><small>'+(Tr.u>=DUO_UNI.length?'Trilha completa!':'Unidade '+(uu+1)+'/'+DUO_UNI.length+' · '+DUO_UNI[uu].t)+' · '+a+' acertos</small></div><div class="vl cy">'+pcT+'%</div></div>'});
   return h;
 }
