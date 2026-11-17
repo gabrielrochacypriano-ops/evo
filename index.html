@@ -378,6 +378,105 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .sys .box{width:100%;max-width:380px;border:1.5px solid var(--cyan);border-radius:12px;padding:24px;text-align:center;background:rgba(8,14,18,.96);box-shadow:0 0 40px rgba(24,240,255,.3);animation:fade .3s}
 .sys.red .box{border-color:var(--red);box-shadow:0 0 40px rgba(255,46,77,.35)}
 .sys .box p{margin:12px 0 20px;font-size:17px;line-height:1.4}
+
+/* ===== Idiomas estilo Duolingo ===== */
+.duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
+.duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
+body.duo-on{overflow:hidden}
+.duo *{font-family:inherit;letter-spacing:0}
+.duo-top{display:flex;align-items:center;gap:14px;padding:calc(14px + env(safe-area-inset-top)) 16px 10px}
+.duo-x{font-size:22px;color:var(--dm);background:none;border:0;min-width:28px;font-weight:800}
+.duo-prog{flex:1;height:16px;border-radius:99px;background:var(--dl);overflow:hidden}
+.duo-prog i{display:block;height:100%;border-radius:99px;background:var(--dg);box-shadow:inset 0 -4px 0 rgba(0,0,0,.12),inset 0 4px 0 rgba(255,255,255,.25);transition:width .4s}
+.duo-stat{font-size:17px;font-weight:800;color:#ffc800;min-width:28px;text-align:right}
+.duo-body{flex:1;overflow-y:auto;padding:8px 18px 18px;display:flex;flex-direction:column}
+.duo-h{font-size:23px;font-weight:800;margin:6px 0 18px;line-height:1.25}
+.duo-mut{color:var(--dm);font-size:14px;text-align:center;margin-top:14px}
+.duo-bub{display:flex;align-items:flex-end;gap:10px;margin-bottom:20px}
+.duo-av{font-size:44px;line-height:1}
+.duo-bub>div{border:2px solid var(--dl);border-radius:16px;padding:12px 14px;font-size:18px;position:relative;line-height:1.35}
+.duo-som{width:44px;height:44px;border-radius:12px;background:var(--dbl);color:#fff;border:0;box-shadow:0 4px 0 #1899d6;font-size:20px;vertical-align:middle}
+.duo-som.g{width:96px;height:96px;border-radius:22px;font-size:42px;box-shadow:0 6px 0 #1899d6}
+.duo-som:active{transform:translateY(3px);box-shadow:0 1px 0 #1899d6}
+.duo-ops{display:flex;flex-direction:column;gap:10px}
+.duo-op{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border:2px solid var(--dl);border-bottom-width:4px;border-radius:14px;background:var(--dc);color:var(--dt);font-size:17px;font-weight:700;min-height:54px}
+.duo-op span{width:28px;height:28px;flex:0 0 28px;border:2px solid var(--dl);border-radius:8px;display:grid;place-items:center;font-size:13px;color:var(--dm)}
+.duo-op.sel{border-color:var(--dbl);background:var(--dsel);color:var(--dbl)}
+.duo-op.sel span{border-color:var(--dbl);color:var(--dbl)}
+.duo-op.certa{border-color:var(--dg);background:rgba(88,204,2,.14);color:var(--dg)}
+.duo-op.errada{border-color:#ff4b4b;background:rgba(255,75,75,.12);color:#ff4b4b}
+.duo-pares{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.duo-pares>div{display:flex;flex-direction:column;gap:10px}
+.duo-pares .duo-op{justify-content:center;text-align:center;font-size:15px;padding:12px 8px}
+.duo-op.feito{opacity:.35;border-color:var(--dl);background:transparent;color:var(--dm);pointer-events:none}
+.duo-op.errou{border-color:#ff4b4b;color:#ff4b4b;animation:duoTreme .35s}
+@keyframes duoTreme{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.duo-linha{min-height:112px;border-top:2px solid var(--dl);border-bottom:2px solid var(--dl);background:repeating-linear-gradient(to bottom,transparent 0 54px,var(--dl) 54px 56px);display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:6px 0;margin-bottom:22px}
+.duo-banco{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.duo-ch{padding:9px 14px;border:2px solid var(--dl);border-bottom-width:4px;border-radius:12px;background:var(--dc);color:var(--dt);font-size:17px;font-weight:700}
+.duo-ch.vazio{background:var(--dl);color:transparent;border-color:var(--dl);pointer-events:none}
+.duo-foot{padding:14px 16px calc(16px + env(safe-area-inset-bottom));border-top:2px solid var(--dl);display:flex;flex-direction:column;gap:10px}
+.duo-foot.ok{background:rgba(88,204,2,.16);border-color:transparent}
+.duo-foot.no{background:rgba(255,75,75,.15);border-color:transparent}
+.duo.claro .duo-foot.ok{background:#d7ffb8}.duo.claro .duo-foot.no{background:#ffdfe0}
+.duo-res b{font-size:21px;font-weight:800}
+.duo-foot.ok .duo-res{color:var(--dg)}.duo.claro .duo-foot.ok .duo-res{color:#58a700}
+.duo-foot.no .duo-res{color:#ff4b4b}.duo.claro .duo-foot.no .duo-res{color:#ea2b2b}
+.duo-res div{font-size:16px;margin-top:4px}.duo-res small{display:block;font-size:14px;margin-top:4px;opacity:.85;font-weight:600}
+.duo-btn{width:100%;padding:14px;border-radius:16px;border:0;background:var(--dg);color:#fff;font-size:16px;font-weight:800;letter-spacing:.06em;box-shadow:0 4px 0 var(--dgs);text-transform:uppercase}
+.duo-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--dgs)}
+.duo-btn.off{background:var(--dl);color:var(--dm);box-shadow:0 4px 0 rgba(0,0,0,.15);pointer-events:none}
+.duo-btn.red{background:#ff4b4b;box-shadow:0 4px 0 #ea2b2b}
+.duo-btn.sec{background:transparent;color:var(--dbl);border:2px solid var(--dl);box-shadow:0 4px 0 var(--dl);margin-top:10px}
+.duo-tag{align-self:flex-start;background:#ce82ff;color:#fff;font-size:12px;font-weight:800;letter-spacing:.08em;padding:5px 10px;border-radius:8px;margin:6px 0 16px}
+.duo-nova{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;margin-top:16px}
+.duo-nova b{font-size:30px;font-weight:800;line-height:1.25}
+.duo-nova span{font-size:19px;color:var(--dm)}
+.duo-dica{font-size:17px;line-height:1.55;font-weight:600;border:2px solid var(--dl);border-radius:16px;padding:16px}
+.duo-end{align-items:center;justify-content:center;text-align:center}
+.duo-troph{font-size:84px}
+.duo-end h2{font-size:28px;font-weight:800;color:#ffc800;margin:8px 0}
+.duo-end p{color:var(--dm);font-size:16px;max-width:320px}
+.duo-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-top:22px}
+.duo-cards div{border:2px solid;border-radius:14px;overflow:hidden}
+.duo-cards small{display:block;color:#fff;font-size:11px;font-weight:800;padding:4px 0}
+.duo-cards b{display:block;font-size:20px;padding:10px 0}
+.duo-cards .c1{border-color:#ffc800}.duo-cards .c1 small{background:#ffc800}.duo-cards .c1 b{color:#ffc800}
+.duo-cards .c2{border-color:#58cc02}.duo-cards .c2 small{background:#58cc02}.duo-cards .c2 b{color:#58cc02}
+.duo-cards .c3{border-color:#1cb0f6}.duo-cards .c3 small{background:#1cb0f6}.duo-cards .c3 b{color:#1cb0f6}
+.duo-up{color:var(--dg)!important;font-size:17px!important;margin-top:18px}
+/* trilha */
+.duo-langs{flex:1;display:flex;gap:8px;overflow-x:auto}
+.duo-flag{font-size:26px;background:none;border:2px solid transparent;border-radius:12px;padding:2px 6px;opacity:.55}
+.duo-flag.on{border-color:var(--dl);opacity:1}
+.duo-scroll{flex:1;overflow-y:auto;padding:4px 16px 40px}
+.duo-uni{margin-bottom:18px}
+.duo-ban{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.duo-ban small{display:block;font-size:12px;font-weight:800;opacity:.85}
+.duo-ban b{font-size:18px;font-weight:800}
+.duo-guia{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);color:#fff;border-radius:12px;padding:8px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.duo-path{display:flex;flex-direction:column;align-items:center;gap:16px;padding:22px 0 6px}.duo-path .duo-nwrap:has(.duo-bal){margin-top:30px}
+.duo-nwrap{position:relative;display:flex;flex-direction:column;align-items:center}
+.duo-node{width:70px;height:64px;border-radius:50%;border:0;font-size:26px;font-weight:800;color:#fff;background:var(--c);box-shadow:0 7px 0 rgba(0,0,0,.25)}
+.duo-node:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.duo-node.ok{background:#ffc800;box-shadow:0 7px 0 #e5a800}
+.duo-node.lk{background:var(--dl);color:var(--dm);box-shadow:0 7px 0 rgba(0,0,0,.25);font-size:20px}
+.duo-node.at{outline:6px solid rgba(255,255,255,.08);outline-offset:6px;animation:duoPulsa 1.6s infinite}
+@keyframes duoPulsa{50%{outline-color:rgba(88,204,2,.35)}}
+.duo-bal{position:absolute;top:-42px;white-space:nowrap;background:var(--dc);color:var(--dg);border:2px solid var(--dl);border-radius:12px;padding:6px 12px;font-size:13px;font-weight:800;animation:duoBal 1.2s ease-in-out infinite}
+@keyframes duoBal{50%{transform:translateY(-4px)}}
+.duo-fim{text-align:center;color:var(--dm);font-size:14px;margin-top:10px}
+.duo-gl{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.duo-gl button{font-size:20px;flex:0 0 auto}
+.duo-gl b{display:block;font-size:15.5px}.duo-gl small{color:var(--mut);font-size:13.5px}
+/* mini card na Arena */
+.duo-mini{border:2px solid var(--line);border-radius:18px;padding:16px;text-align:center;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;--dg:#58cc02;--dgs:#58a700;--dl:rgba(127,127,127,.35);--dbl:#1cb0f6}
+.duo-mini-t{background:var(--c);color:#fff;border-radius:14px;padding:12px;margin-bottom:14px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.duo-mini-t small{display:block;font-size:11.5px;font-weight:800;opacity:.85}.duo-mini-t b{font-size:19px;font-weight:800}
+.duo-mini-n{display:flex;justify-content:center;gap:10px;margin-bottom:12px}
+.duo-mini-n i{width:42px;height:38px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;color:#fff;background:rgba(127,127,127,.35)}
+.duo-mini-n i.ok{background:#ffc800}.duo-mini-n i.at{background:var(--c);box-shadow:0 0 0 4px rgba(88,204,2,.25)}
+.duo-mini p{font-size:15px;margin-bottom:14px;font-weight:600}
 </style>
 </head>
 <body class="scan">
@@ -2668,7 +2767,7 @@ function saberHtml(){
 }
 function renderSaber(){document.querySelectorAll('.saber-box').forEach(el=>{
   el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div class="h cy" style="font-size:12px">📚 Conhecimentos</div><span class="mut" style="font-size:12px">toque para focar</span></div>'+saberHtml()+saberExtraHtml();
-  el.querySelectorAll('[data-idesc]').forEach(b=>b.onclick=idiModal);
+  el.querySelectorAll('[data-idesc]').forEach(b=>b.onclick=idiModal);el.querySelectorAll('[data-trilha]').forEach(b=>b.onclick=()=>duoTrilha(b.dataset.trilha));
   el.querySelectorAll('[data-m]').forEach(r=>r.onclick=()=>{const k=r.dataset.m;FOCO.mat.has(k)?FOCO.mat.delete(k):FOCO.mat.add(k);renderSaber();try{arenaTopo()}catch(e){}toast(FOCO.mat.has(k)?'Foco em '+MATERIAS[k].nome+' (até fechar o app)':'Foco removido')});
   })}
 
@@ -3432,6 +3531,677 @@ const IDI_DICAS={
  de:'Em alemão, todo substantivo começa com letra maiúscula: das Buch, der Hund.',
  ja:'O japonês usa três escritas: hiragana, katakana e kanji. Entre parênteses está a pronúncia (romaji).'
 };
+
+/* ============ IDIOMAS · TRILHA (estilo Duolingo) ============
+   Cada linha: português | inglês | espanhol | francês | italiano | alemão | japonês (romaji)
+   ATENÇÃO: só acrescente itens/unidades NO FIM (o progresso usa a posição). */
+const DUO_UNI=[
+{t:'Cumprimentos',ico:'👋',it:`olá|hello|hola|bonjour|ciao|hallo|こんにちは (konnichiwa)
+tchau|goodbye|adiós|au revoir|arrivederci|tschüss|さようなら (sayōnara)
+obrigado|thank you|gracias|merci|grazie|danke|ありがとう (arigatō)
+por favor|please|por favor|s'il vous plaît|per favore|bitte|お願いします (onegaishimasu)
+sim|yes|sí|oui|sì|ja|はい (hai)
+não|no|no|non|no|nein|いいえ (iie)
+bom dia|good morning|buenos días|bonjour|buongiorno|guten Morgen|おはようございます (ohayō gozaimasu)
+boa noite|good night|buenas noches|bonne nuit|buonanotte|gute Nacht|おやすみなさい (oyasuminasai)
+desculpe|sorry|perdón|pardon|scusa|Entschuldigung|すみません (sumimasen)
+de nada|you're welcome|de nada|de rien|prego|bitte schön|どういたしまして (dō itashimashite)
+até logo|see you later|hasta luego|à plus tard|a dopo|bis später|またね (mata ne)
+bem-vindo|welcome|bienvenido|bienvenue|benvenuto|willkommen|ようこそ (yōkoso)
+Tudo bem?|How are you?|¿Cómo estás?|Comment ça va ?|Come stai?|Wie geht es dir?|元気ですか (genki desu ka)
+Estou bem, obrigado.|I am fine, thank you.|Estoy bien, gracias.|Je vais bien, merci.|Sto bene, grazie.|Mir geht es gut, danke.|元気です、ありがとう (genki desu, arigatō)
+Meu nome é Ana.|My name is Ana.|Me llamo Ana.|Je m'appelle Ana.|Mi chiamo Ana.|Ich heiße Ana.|私の名前はアナです (watashi no namae wa Ana desu)
+Como você se chama?|What is your name?|¿Cómo te llamas?|Comment tu t'appelles ?|Come ti chiami?|Wie heißt du?|お名前は何ですか (onamae wa nan desu ka)
+Prazer em conhecer você.|Nice to meet you.|Mucho gusto.|Enchanté.|Piacere di conoscerti.|Freut mich.|はじめまして (hajimemashite)
+Boa tarde!|Good afternoon!|¡Buenas tardes!|Bon après-midi !|Buon pomeriggio!|Guten Tag!|こんにちは (konnichiwa)
+Até amanhã!|See you tomorrow!|¡Hasta mañana!|À demain !|A domani!|Bis morgen!|また明日 (mata ashita)
+Com licença.|Excuse me.|Disculpe.|Excusez-moi.|Mi scusi.|Entschuldigen Sie.|失礼します (shitsurei shimasu)`,
+dica:{en:'"Hello" serve para qualquer hora. "Good night" é só para despedida antes de dormir; para chegar à noite, diga "good evening".',es:'Em espanhol, perguntas e exclamações abrem com sinais invertidos: ¿Cómo estás? ¡Hola! O "h" de "hola" é mudo.',fr:'"Bonjour" vale para o dia todo; "bonsoir" à noite. Antes de ? ! : ; o francês usa um espaço.',it:'"Ciao" serve tanto para oi quanto para tchau, entre amigos. Com desconhecidos, use "buongiorno" e "arrivederci".',de:'Alemão tem o "du" (você, informal) e o "Sie" (o senhor/a senhora, formal). "Wie geht es dir?" é informal; o formal é "Wie geht es Ihnen?".',ja:'O japonês usa três escritas: hiragana, katakana e kanji. Entre parênteses está o romaji (pronúncia). "Desu" deixa a frase educada.'}},
+{t:'Pessoas e família',ico:'👨‍👩‍👧',it:`eu|I|yo|je|io|ich|私 (watashi)
+você|you|tú|tu|tu|du|あなた (anata)
+ele|he|él|il|lui|er|彼 (kare)
+ela|she|ella|elle|lei|sie|彼女 (kanojo)
+nós|we|nosotros|nous|noi|wir|私たち (watashitachi)
+mãe|mother|madre|mère|madre|Mutter|母 (haha)
+pai|father|padre|père|padre|Vater|父 (chichi)
+irmão|brother|hermano|frère|fratello|Bruder|兄 / 弟 (ani / otōto)
+irmã|sister|hermana|sœur|sorella|Schwester|姉 / 妹 (ane / imōto)
+filho|son|hijo|fils|figlio|Sohn|息子 (musuko)
+filha|daughter|hija|fille|figlia|Tochter|娘 (musume)
+avó|grandmother|abuela|grand-mère|nonna|Großmutter|祖母 (sobo)
+avô|grandfather|abuelo|grand-père|nonno|Großvater|祖父 (sofu)
+família|family|familia|famille|famiglia|Familie|家族 (kazoku)
+homem|man|hombre|homme|uomo|Mann|男の人 (otoko no hito)
+mulher|woman|mujer|femme|donna|Frau|女の人 (onna no hito)
+criança|child|niño|enfant|bambino|Kind|子供 (kodomo)
+Esta é a minha mãe.|This is my mother.|Esta es mi madre.|C'est ma mère.|Questa è mia madre.|Das ist meine Mutter.|こちらは私の母です (kochira wa watashi no haha desu)
+Eu tenho dois irmãos.|I have two brothers.|Tengo dos hermanos.|J'ai deux frères.|Ho due fratelli.|Ich habe zwei Brüder.|兄弟が二人います (kyōdai ga futari imasu)
+Ela é minha amiga.|She is my friend.|Ella es mi amiga.|Elle est mon amie.|Lei è mia amica.|Sie ist meine Freundin.|彼女は私の友達です (kanojo wa watashi no tomodachi desu)`,
+dica:{en:'"I" (eu) sempre se escreve com letra maiúscula. "You" serve para você e vocês.',es:'Em espanhol, muitas vezes o pronome some: "Tengo dos hermanos" já significa "eu tenho". "Hermanos" também pode significar "irmãos e irmãs".',fr:'"Mon, ma, mes" = meu, minha, meus. Diante de vogal, usa-se "mon" mesmo no feminino: "mon amie".',it:'Com parentes no singular, o italiano não usa artigo: "mia madre", mas "le mie sorelle".',de:'Todo substantivo alemão começa com maiúscula: die Mutter, der Vater, das Kind. Der/die/das indicam o gênero.',ja:'Em japonês, irmão e irmã mudam se forem mais velhos ou mais novos: ani (irmão mais velho), otōto (mais novo), ane (irmã mais velha), imōto (mais nova). A família de outra pessoa é chamada de forma mais respeitosa: a sua mãe é "haha"; a mãe de outra pessoa é "okāsan".'}},
+{t:'Números',ico:'🔢',it:`um|one|uno|un|uno|eins|一 (ichi)
+dois|two|dos|deux|due|zwei|二 (ni)
+três|three|tres|trois|tre|drei|三 (san)
+quatro|four|cuatro|quatre|quattro|vier|四 (yon)
+cinco|five|cinco|cinq|cinque|fünf|五 (go)
+seis|six|seis|six|sei|sechs|六 (roku)
+sete|seven|siete|sept|sette|sieben|七 (nana)
+oito|eight|ocho|huit|otto|acht|八 (hachi)
+nove|nine|nueve|neuf|nove|neun|九 (kyū)
+dez|ten|diez|dix|dieci|zehn|十 (jū)
+onze|eleven|once|onze|undici|elf|十一 (jūichi)
+doze|twelve|doce|douze|dodici|zwölf|十二 (jūni)
+vinte|twenty|veinte|vingt|venti|zwanzig|二十 (nijū)
+cem|one hundred|cien|cent|cento|hundert|百 (hyaku)
+mil|one thousand|mil|mille|mille|tausend|千 (sen)
+zero|zero|cero|zéro|zero|null|ゼロ (zero)
+Quantos anos você tem?|How old are you?|¿Cuántos años tienes?|Quel âge as-tu ?|Quanti anni hai?|Wie alt bist du?|何歳ですか (nansai desu ka)
+Eu tenho trinta anos.|I am thirty years old.|Tengo treinta años.|J'ai trente ans.|Ho trent'anni.|Ich bin dreißig Jahre alt.|三十歳です (sanjussai desu)
+Eu tenho três gatos.|I have three cats.|Tengo tres gatos.|J'ai trois chats.|Ho tre gatti.|Ich habe drei Katzen.|猫を三匹飼っています (neko o sanbiki katte imasu)
+Meu telefone é nove, oito, sete.|My phone is nine, eight, seven.|Mi teléfono es nueve, ocho, siete.|Mon téléphone est neuf, huit, sept.|Il mio telefono è nove, otto, sette.|Meine Nummer ist neun, acht, sieben.|電話番号は九、八、七です (denwa bangō wa kyū, hachi, nana desu)`,
+dica:{en:'Para dizer a idade, o inglês usa o verbo "to be": "I am thirty" (eu sou trinta), e não "I have".',es:'Em espanhol, idade é com "tener", como no português: "tengo treinta años".',fr:'Em francês, idade usa "avoir" (ter): "j\'ai trente ans". Os números 70, 80 e 90 são compostos: soixante-dix (60+10), quatre-vingts (4×20).',it:'Em italiano, idade usa "avere": "ho trent\'anni". O "h" de "ho" é mudo.',de:'Em alemão, as dezenas vêm depois das unidades: 21 = einundzwanzig ("um e vinte"). Idade usa "sein": "ich bin dreißig".',ja:'O japonês usa contadores diferentes para coisas: animais pequenos usam "hiki" (sanbiki = 3 bichinhos), pessoas usam "nin" (futari = 2 pessoas).'}},
+{t:'Comida e bebida',ico:'🍎',it:`água|water|agua|eau|acqua|Wasser|水 (mizu)
+pão|bread|pan|pain|pane|Brot|パン (pan)
+café|coffee|café|café|caffè|Kaffee|コーヒー (kōhī)
+leite|milk|leche|lait|latte|Milch|牛乳 (gyūnyū)
+arroz|rice|arroz|riz|riso|Reis|ご飯 (gohan)
+carne|meat|carne|viande|carne|Fleisch|肉 (niku)
+peixe|fish|pescado|poisson|pesce|Fisch|魚 (sakana)
+fruta|fruit|fruta|fruit|frutta|Obst|果物 (kudamono)
+maçã|apple|manzana|pomme|mela|Apfel|りんご (ringo)
+queijo|cheese|queso|fromage|formaggio|Käse|チーズ (chīzu)
+ovo|egg|huevo|œuf|uovo|Ei|卵 (tamago)
+suco|juice|jugo|jus|succo|Saft|ジュース (jūsu)
+chá|tea|té|thé|tè|Tee|お茶 (ocha)
+açúcar|sugar|azúcar|sucre|zucchero|Zucker|砂糖 (satō)
+sal|salt|sal|sel|sale|Salz|塩 (shio)
+Eu como pão.|I eat bread.|Yo como pan.|Je mange du pain.|Io mangio il pane.|Ich esse Brot.|私はパンを食べます (watashi wa pan o tabemasu)
+Eu bebo água.|I drink water.|Yo bebo agua.|Je bois de l'eau.|Io bevo acqua.|Ich trinke Wasser.|私は水を飲みます (watashi wa mizu o nomimasu)
+Estou com fome.|I am hungry.|Tengo hambre.|J'ai faim.|Ho fame.|Ich habe Hunger.|お腹がすきました (onaka ga sukimashita)
+Estou com sede.|I am thirsty.|Tengo sed.|J'ai soif.|Ho sete.|Ich habe Durst.|喉が渇きました (nodo ga kawakimashita)
+Eu gosto de café.|I like coffee.|Me gusta el café.|J'aime le café.|Mi piace il caffè.|Ich mag Kaffee.|コーヒーが好きです (kōhī ga suki desu)`,
+dica:{en:'Fome e sede usam "to be" em inglês: "I am hungry" (eu estou faminto).',es:'"Me gusta" funciona ao contrário do português: literalmente "o café me agrada". Para plural: "me gustan las manzanas".',fr:'O francês usa "du, de la, de l\'" para quantidades indefinidas: "je mange du pain" (eu como [um pouco de] pão).',it:'"Mi piace" = me agrada. Fome e sede são com "avere": "ho fame", "ho sete".',de:'Fome e sede são "ter" em alemão: "Ich habe Hunger". O verbo fica sempre na 2ª posição da frase.',ja:'Em japonês o verbo vai no fim da frase. A partícula "o" marca o objeto: pan o tabemasu = pão (objeto) como.'}},
+{t:'Cores e descrições',ico:'🎨',it:`vermelho|red|rojo|rouge|rosso|rot|赤 (aka)
+azul|blue|azul|bleu|blu|blau|青 (ao)
+verde|green|verde|vert|verde|grün|緑 (midori)
+amarelo|yellow|amarillo|jaune|giallo|gelb|黄色 (kiiro)
+preto|black|negro|noir|nero|schwarz|黒 (kuro)
+branco|white|blanco|blanc|bianco|weiß|白 (shiro)
+grande|big|grande|grand|grande|groß|大きい (ōkii)
+pequeno|small|pequeño|petit|piccolo|klein|小さい (chiisai)
+bonito|beautiful|bonito|beau|bello|schön|きれい (kirei)
+novo|new|nuevo|nouveau|nuovo|neu|新しい (atarashii)
+velho|old|viejo|vieux|vecchio|alt|古い (furui)
+bom|good|bueno|bon|buono|gut|良い (yoi)
+ruim|bad|malo|mauvais|cattivo|schlecht|悪い (warui)
+quente|hot|caliente|chaud|caldo|heiß|熱い (atsui)
+frio|cold|frío|froid|freddo|kalt|冷たい (tsumetai)
+fácil|easy|fácil|facile|facile|leicht|簡単 (kantan)
+difícil|difficult|difícil|difficile|difficile|schwierig|難しい (muzukashii)
+O carro é vermelho.|The car is red.|El coche es rojo.|La voiture est rouge.|La macchina è rossa.|Das Auto ist rot.|車は赤いです (kuruma wa akai desu)
+A casa é muito grande.|The house is very big.|La casa es muy grande.|La maison est très grande.|La casa è molto grande.|Das Haus ist sehr groß.|家はとても大きいです (ie wa totemo ōkii desu)
+O café está quente.|The coffee is hot.|El café está caliente.|Le café est chaud.|Il caffè è caldo.|Der Kaffee ist heiß.|コーヒーは熱いです (kōhī wa atsui desu)`,
+dica:{en:'Em inglês, o adjetivo vem ANTES do substantivo e não muda no plural: "a red car", "two red cars".',es:'Em espanhol, o adjetivo concorda em gênero e número: "coche rojo", "casa roja", "coches rojos". "Coche" é usado na Espanha; na América Latina, "carro" ou "auto".',fr:'A maioria dos adjetivos franceses vem depois do substantivo (une voiture rouge), mas alguns curtos vêm antes: un petit chat, une belle maison.',it:'Adjetivos italianos concordam: "la macchina rossa", "il libro rosso". "Molto" = muito.',de:'Depois de "ist" (é), o adjetivo alemão não muda: "Das Auto ist rot". Antes do substantivo ele ganha terminação: "ein rotes Auto".',ja:'Adjetivos japoneses terminados em "-i" (akai, ōkii) funcionam quase como verbos; com "desu" a frase fica educada.'}}
+,{t:'Casa',ico:'🏠',it:`casa|house|casa|maison|casa|Haus|家 (ie)
+quarto|bedroom|dormitorio|chambre|camera da letto|Schlafzimmer|寝室 (shinshitsu)
+cozinha|kitchen|cocina|cuisine|cucina|Küche|台所 (daidokoro)
+banheiro|bathroom|baño|salle de bain|bagno|Badezimmer|お風呂場 (ofuroba)
+porta|door|puerta|porte|porta|Tür|ドア (doa)
+janela|window|ventana|fenêtre|finestra|Fenster|窓 (mado)
+mesa|table|mesa|table|tavolo|Tisch|テーブル (tēburu)
+cadeira|chair|silla|chaise|sedia|Stuhl|椅子 (isu)
+cama|bed|cama|lit|letto|Bett|ベッド (beddo)
+sofá|sofa|sofá|canapé|divano|Sofa|ソファー (sofā)
+chave|key|llave|clé|chiave|Schlüssel|鍵 (kagi)
+televisão|television|televisión|télévision|televisione|Fernseher|テレビ (terebi)
+geladeira|refrigerator|nevera|réfrigérateur|frigorifero|Kühlschrank|冷蔵庫 (reizōko)
+jardim|garden|jardín|jardin|giardino|Garten|庭 (niwa)
+Onde fica o banheiro?|Where is the bathroom?|¿Dónde está el baño?|Où sont les toilettes ?|Dov'è il bagno?|Wo ist die Toilette?|トイレはどこですか (toire wa doko desu ka)
+A chave está na mesa.|The key is on the table.|La llave está en la mesa.|La clé est sur la table.|La chiave è sul tavolo.|Der Schlüssel ist auf dem Tisch.|鍵はテーブルの上にあります (kagi wa tēburu no ue ni arimasu)
+Eu moro em uma casa pequena.|I live in a small house.|Vivo en una casa pequeña.|J'habite dans une petite maison.|Abito in una casa piccola.|Ich wohne in einem kleinen Haus.|私は小さい家に住んでいます (watashi wa chiisai ie ni sunde imasu)
+Feche a janela, por favor.|Close the window, please.|Cierra la ventana, por favor.|Ferme la fenêtre, s'il te plaît.|Chiudi la finestra, per favore.|Mach bitte das Fenster zu.|窓を閉めてください (mado o shimete kudasai)
+A cozinha é muito limpa.|The kitchen is very clean.|La cocina está muy limpia.|La cuisine est très propre.|La cucina è molto pulita.|Die Küche ist sehr sauber.|台所はとてもきれいです (daidokoro wa totemo kirei desu)
+Meu quarto tem duas janelas.|My bedroom has two windows.|Mi dormitorio tiene dos ventanas.|Ma chambre a deux fenêtres.|La mia camera ha due finestre.|Mein Zimmer hat zwei Fenster.|私の部屋には窓が二つあります (watashi no heya ni wa mado ga futatsu arimasu)`,
+dica:{en:'"In" = dentro (in the kitchen); "on" = sobre uma superfície (on the table).',es:'"Estar" indica localização e estado: "la llave está en la mesa". "Ser" indica característica permanente.',fr:'"Où sont les toilettes ?" usa plural: em francês, "toilettes" no sentido de banheiro é sempre plural.',it:'"Sul" = su + il (sobre o). O italiano junta preposição e artigo: nel, sul, dal, al.',de:'Em alemão, alguns verbos se separam: "zumachen" (fechar) vira "Mach das Fenster zu".',ja:'"Kudasai" depois do verbo na forma -te faz um pedido educado: shimete kudasai = feche, por favor.'}},
+{t:'Dias e tempo',ico:'📅',it:`hoje|today|hoy|aujourd'hui|oggi|heute|今日 (kyō)
+amanhã|tomorrow|mañana|demain|domani|morgen|明日 (ashita)
+ontem|yesterday|ayer|hier|ieri|gestern|昨日 (kinō)
+agora|now|ahora|maintenant|adesso|jetzt|今 (ima)
+dia|day|día|jour|giorno|Tag|日 (hi)
+noite|night|noche|nuit|notte|Nacht|夜 (yoru)
+semana|week|semana|semaine|settimana|Woche|週 (shū)
+mês|month|mes|mois|mese|Monat|月 (tsuki)
+ano|year|año|an|anno|Jahr|年 (toshi)
+segunda-feira|Monday|lunes|lundi|lunedì|Montag|月曜日 (getsuyōbi)
+terça-feira|Tuesday|martes|mardi|martedì|Dienstag|火曜日 (kayōbi)
+quarta-feira|Wednesday|miércoles|mercredi|mercoledì|Mittwoch|水曜日 (suiyōbi)
+quinta-feira|Thursday|jueves|jeudi|giovedì|Donnerstag|木曜日 (mokuyōbi)
+sexta-feira|Friday|viernes|vendredi|venerdì|Freitag|金曜日 (kin'yōbi)
+sábado|Saturday|sábado|samedi|sabato|Samstag|土曜日 (doyōbi)
+domingo|Sunday|domingo|dimanche|domenica|Sonntag|日曜日 (nichiyōbi)
+Que dia é hoje?|What day is today?|¿Qué día es hoy?|Quel jour sommes-nous ?|Che giorno è oggi?|Welcher Tag ist heute?|今日は何曜日ですか (kyō wa nan'yōbi desu ka)
+Hoje é sexta-feira.|Today is Friday.|Hoy es viernes.|Aujourd'hui, c'est vendredi.|Oggi è venerdì.|Heute ist Freitag.|今日は金曜日です (kyō wa kin'yōbi desu)
+Que horas são?|What time is it?|¿Qué hora es?|Quelle heure est-il ?|Che ore sono?|Wie spät ist es?|今何時ですか (ima nanji desu ka)
+São três horas.|It is three o'clock.|Son las tres.|Il est trois heures.|Sono le tre.|Es ist drei Uhr.|三時です (sanji desu)`,
+dica:{en:'Em inglês, dias da semana e meses sempre começam com letra maiúscula: Monday, January.',es:'Em espanhol, dias e meses se escrevem com minúscula: lunes, enero. "Mañana" significa amanhã e também manhã.',fr:'Dias e meses em francês são escritos com minúscula: lundi, janvier.',it:'Em italiano, os dias de segunda a sexta terminam em "-dì" com acento: lunedì, martedì.',de:'Os dias alemães são masculinos: der Montag. "Morgen" é amanhã; "der Morgen" é a manhã.',ja:'Os dias em japonês vêm dos astros e elementos: getsu (lua), ka (fogo), sui (água), moku (madeira), kin (metal/ouro), do (terra), nichi (sol).'}},
+{t:'Verbos do dia a dia',ico:'🏃',it:`comer|to eat|comer|manger|mangiare|essen|食べる (taberu)
+beber|to drink|beber|boire|bere|trinken|飲む (nomu)
+dormir|to sleep|dormir|dormir|dormire|schlafen|寝る (neru)
+trabalhar|to work|trabajar|travailler|lavorare|arbeiten|働く (hataraku)
+estudar|to study|estudiar|étudier|studiare|lernen|勉強する (benkyō suru)
+ler|to read|leer|lire|leggere|lesen|読む (yomu)
+escrever|to write|escribir|écrire|scrivere|schreiben|書く (kaku)
+falar|to speak|hablar|parler|parlare|sprechen|話す (hanasu)
+ir|to go|ir|aller|andare|gehen|行く (iku)
+vir|to come|venir|venir|venire|kommen|来る (kuru)
+querer|to want|querer|vouloir|volere|wollen|欲しい (hoshii)
+ver|to see|ver|voir|vedere|sehen|見る (miru)
+ouvir|to listen|escuchar|écouter|ascoltare|hören|聞く (kiku)
+correr|to run|correr|courir|correre|laufen|走る (hashiru)
+Eu falo português.|I speak Portuguese.|Hablo portugués.|Je parle portugais.|Parlo portoghese.|Ich spreche Portugiesisch.|私はポルトガル語を話します (watashi wa porutogarugo o hanashimasu)
+Ela lê um livro.|She reads a book.|Ella lee un libro.|Elle lit un livre.|Lei legge un libro.|Sie liest ein Buch.|彼女は本を読みます (kanojo wa hon o yomimasu)
+Nós trabalhamos muito.|We work a lot.|Trabajamos mucho.|Nous travaillons beaucoup.|Lavoriamo molto.|Wir arbeiten viel.|私たちはたくさん働きます (watashitachi wa takusan hatarakimasu)
+Eu quero dormir.|I want to sleep.|Quiero dormir.|Je veux dormir.|Voglio dormire.|Ich will schlafen.|寝たいです (netai desu)
+Você estuda inglês?|Do you study English?|¿Estudias inglés?|Tu étudies l'anglais ?|Studi inglese?|Lernst du Englisch?|英語を勉強していますか (eigo o benkyō shite imasu ka)
+Eles vão ao parque.|They go to the park.|Ellos van al parque.|Ils vont au parc.|Vanno al parco.|Sie gehen in den Park.|彼らは公園に行きます (karera wa kōen ni ikimasu)`,
+dica:{en:'Na 3ª pessoa do singular (he, she, it), o verbo ganha "-s" no presente: I read → she reads.',es:'Os verbos espanhóis terminam em -ar, -er, -ir, como no português: hablar, comer, vivir.',fr:'Os verbos franceses mais comuns terminam em "-er" (parler, manger). Muitas letras finais não são pronunciadas: "ils parlent" soa como "il parle".',it:'Em italiano o pronome costuma cair: "parlo" já é "eu falo", porque a terminação mostra a pessoa.',de:'O verbo alemão muda com a pessoa: ich lerne, du lernst, er lernt. "Lernen" é estudar/aprender; "studieren" é cursar faculdade.',ja:'Verbos japoneses no dicionário terminam em "-u" (taberu, nomu). Para falar com educação, use a forma "-masu": tabemasu, nomimasu.'}},
+{t:'Cidade e direções',ico:'🏙️',it:`rua|street|calle|rue|strada|Straße|通り (tōri)
+cidade|city|ciudad|ville|città|Stadt|町 (machi)
+escola|school|escuela|école|scuola|Schule|学校 (gakkō)
+hospital|hospital|hospital|hôpital|ospedale|Krankenhaus|病院 (byōin)
+banco|bank|banco|banque|banca|Bank|銀行 (ginkō)
+mercado|market|mercado|marché|mercato|Markt|市場 (ichiba)
+restaurante|restaurant|restaurante|restaurant|ristorante|Restaurant|レストラン (resutoran)
+hotel|hotel|hotel|hôtel|albergo|Hotel|ホテル (hoteru)
+estação|station|estación|gare|stazione|Bahnhof|駅 (eki)
+praia|beach|playa|plage|spiaggia|Strand|ビーチ (bīchi)
+parque|park|parque|parc|parco|Park|公園 (kōen)
+igreja|church|iglesia|église|chiesa|Kirche|教会 (kyōkai)
+museu|museum|museo|musée|museo|Museum|博物館 (hakubutsukan)
+à esquerda|on the left|a la izquierda|à gauche|a sinistra|links|左に (hidari ni)
+à direita|on the right|a la derecha|à droite|a destra|rechts|右に (migi ni)
+em frente|straight ahead|todo recto|tout droit|sempre dritto|geradeaus|まっすぐ (massugu)
+perto|near|cerca|près|vicino|nah|近い (chikai)
+longe|far|lejos|loin|lontano|weit|遠い (tōi)
+Onde fica a estação?|Where is the station?|¿Dónde está la estación?|Où est la gare ?|Dov'è la stazione?|Wo ist der Bahnhof?|駅はどこですか (eki wa doko desu ka)
+Vire à direita na rua principal.|Turn right on the main street.|Gira a la derecha en la calle principal.|Tournez à droite dans la rue principale.|Gira a destra nella strada principale.|Biegen Sie rechts in die Hauptstraße ab.|大通りで右に曲がってください (ōdōri de migi ni magatte kudasai)`,
+dica:{en:'Em inglês, use "on the left/right" para posição e "turn left/right" para direção.',es:'Cuidado: "calle" é rua; "todo recto" (ou "derecho", na América Latina) é em frente.',fr:'"Gare" é estação de trem; "station" em francês é mais usado para metrô: "station de métro".',it:'"Dov\'è" = dove + è (onde é/fica). O apóstrofo junta as palavras.',de:'Em alemão, o "ß" (eszett) soa como "ss": Straße. Com desconhecidos, use "Sie": "Biegen Sie rechts ab".',ja:'"Doko desu ka?" = onde fica? Basta colocar o lugar antes: eki wa doko desu ka? (onde fica a estação?).'}},
+{t:'Roupas e compras',ico:'🛍️',it:`camisa|shirt|camisa|chemise|camicia|Hemd|シャツ (shatsu)
+calça|pants|pantalón|pantalon|pantaloni|Hose|ズボン (zubon)
+sapato|shoe|zapato|chaussure|scarpa|Schuh|靴 (kutsu)
+vestido|dress|vestido|robe|vestito|Kleid|ドレス (doresu)
+casaco|coat|abrigo|manteau|cappotto|Mantel|コート (kōto)
+dinheiro|money|dinero|argent|soldi|Geld|お金 (okane)
+preço|price|precio|prix|prezzo|Preis|値段 (nedan)
+barato|cheap|barato|bon marché|economico|billig|安い (yasui)
+caro|expensive|caro|cher|caro|teuer|高い (takai)
+loja|store|tienda|magasin|negozio|Geschäft|店 (mise)
+tamanho|size|talla|taille|taglia|Größe|サイズ (saizu)
+comprar|to buy|comprar|acheter|comprare|kaufen|買う (kau)
+pagar|to pay|pagar|payer|pagare|bezahlen|払う (harau)
+cartão|card|tarjeta|carte|carta|Karte|カード (kādo)
+Quanto custa?|How much is it?|¿Cuánto cuesta?|Combien ça coûte ?|Quanto costa?|Wie viel kostet das?|いくらですか (ikura desu ka)
+É muito caro.|It is very expensive.|Es muy caro.|C'est très cher.|È molto caro.|Das ist sehr teuer.|とても高いです (totemo takai desu)
+Eu quero comprar um casaco.|I want to buy a coat.|Quiero comprar un abrigo.|Je veux acheter un manteau.|Voglio comprare un cappotto.|Ich will einen Mantel kaufen.|コートを買いたいです (kōto o kaitai desu)
+Posso pagar com cartão?|Can I pay by card?|¿Puedo pagar con tarjeta?|Je peux payer par carte ?|Posso pagare con la carta?|Kann ich mit Karte zahlen?|カードで払えますか (kādo de haraemasu ka)
+Você tem um tamanho maior?|Do you have a bigger size?|¿Tiene una talla más grande?|Vous avez une taille plus grande ?|Ha una taglia più grande?|Haben Sie das eine Nummer größer?|もっと大きいサイズはありますか (motto ōkii saizu wa arimasu ka)
+Vou levar este.|I will take this one.|Me llevo este.|Je prends celui-ci.|Prendo questo.|Ich nehme das.|これにします (kore ni shimasu)`,
+dica:{en:'"Pants" é calça nos EUA; no Reino Unido é "trousers" (lá, "pants" é cueca!).',es:'"Tienda" é loja; "tarjeta" é cartão. "Carta" em espanhol é carta (de correio) ou cardápio.',fr:'"Cher" significa caro e também querido. "Argent" é dinheiro e também prata.',it:'"Soldi" (dinheiro) é sempre plural em italiano: "non ho soldi".',de:'Com vendedores, use o formal "Sie": "Haben Sie…?". "Teuer" = caro; "billig" = barato.',ja:'"Takai" quer dizer caro e também alto. "Yasui" é barato. Para pedir algo, "-tai desu" expressa desejo: kaitai desu = quero comprar.'}}
+,{t:'Corpo e saúde',ico:'🩺',it:`cabeça|head|cabeza|tête|testa|Kopf|頭 (atama)
+mão|hand|mano|main|mano|Hand|手 (te)
+pé|foot|pie|pied|piede|Fuß|足 (ashi)
+olho|eye|ojo|œil|occhio|Auge|目 (me)
+boca|mouth|boca|bouche|bocca|Mund|口 (kuchi)
+nariz|nose|nariz|nez|naso|Nase|鼻 (hana)
+orelha|ear|oreja|oreille|orecchio|Ohr|耳 (mimi)
+braço|arm|brazo|bras|braccio|Arm|腕 (ude)
+perna|leg|pierna|jambe|gamba|Bein|脚 (ashi)
+coração|heart|corazón|cœur|cuore|Herz|心臓 (shinzō)
+dente|tooth|diente|dent|dente|Zahn|歯 (ha)
+médico|doctor|médico|médecin|medico|Arzt|医者 (isha)
+remédio|medicine|medicina|médicament|medicina|Medikament|薬 (kusuri)
+dor|pain|dolor|douleur|dolore|Schmerz|痛み (itami)
+Estou doente.|I am sick.|Estoy enfermo.|Je suis malade.|Sono malato.|Ich bin krank.|病気です (byōki desu)
+Estou cansado.|I am tired.|Estoy cansado.|Je suis fatigué.|Sono stanco.|Ich bin müde.|疲れています (tsukarete imasu)
+Minha cabeça dói.|My head hurts.|Me duele la cabeza.|J'ai mal à la tête.|Mi fa male la testa.|Mein Kopf tut weh.|頭が痛いです (atama ga itai desu)
+Preciso de um médico.|I need a doctor.|Necesito un médico.|J'ai besoin d'un médecin.|Ho bisogno di un medico.|Ich brauche einen Arzt.|医者が必要です (isha ga hitsuyō desu)
+Tome este remédio duas vezes por dia.|Take this medicine twice a day.|Toma este medicamento dos veces al día.|Prends ce médicament deux fois par jour.|Prendi questa medicina due volte al giorno.|Nimm dieses Medikament zweimal am Tag.|この薬を一日二回飲んでください (kono kusuri o ichinichi nikai nonde kudasai)
+Eu durmo oito horas por noite.|I sleep eight hours a night.|Duermo ocho horas por noche.|Je dors huit heures par nuit.|Dormo otto ore a notte.|Ich schlafe acht Stunden pro Nacht.|毎晩八時間寝ます (maiban hachijikan nemasu)`,
+dica:{en:'Para dores, o inglês usa "hurt" ou "-ache": "My head hurts" = "I have a headache".',es:'"Me duele" funciona como "me gusta": "me duele la cabeza", "me duelen los pies".',fr:'Dor em francês: "avoir mal à" + parte do corpo: j\'ai mal à la tête, j\'ai mal au dos.',it:'"Mi fa male" = me dói. Atenção: "il braccio" vira "le braccia" no plural.',de:'"Weh tun" = doer: "Mein Kopf tut weh". "Müde" = cansado (de sono); "krank" = doente.',ja:'Em japonês, "ashi" (足/脚) significa pé e perna. Para remédio, o verbo é "nomu" (beber): kusuri o nomu.'}},
+{t:'Animais e natureza',ico:'🌳',it:`cachorro|dog|perro|chien|cane|Hund|犬 (inu)
+gato|cat|gato|chat|gatto|Katze|猫 (neko)
+pássaro|bird|pájaro|oiseau|uccello|Vogel|鳥 (tori)
+cavalo|horse|caballo|cheval|cavallo|Pferd|馬 (uma)
+vaca|cow|vaca|vache|mucca|Kuh|牛 (ushi)
+árvore|tree|árbol|arbre|albero|Baum|木 (ki)
+flor|flower|flor|fleur|fiore|Blume|花 (hana)
+sol|sun|sol|soleil|sole|Sonne|太陽 (taiyō)
+lua|moon|luna|lune|luna|Mond|月 (tsuki)
+chuva|rain|lluvia|pluie|pioggia|Regen|雨 (ame)
+mar|sea|mar|mer|mare|Meer|海 (umi)
+montanha|mountain|montaña|montagne|montagna|Berg|山 (yama)
+rio|river|río|rivière|fiume|Fluss|川 (kawa)
+céu|sky|cielo|ciel|cielo|Himmel|空 (sora)
+estrela|star|estrella|étoile|stella|Stern|星 (hoshi)
+floresta|forest|bosque|forêt|foresta|Wald|森 (mori)
+O gato dorme no sofá.|The cat sleeps on the sofa.|El gato duerme en el sofá.|Le chat dort sur le canapé.|Il gatto dorme sul divano.|Die Katze schläft auf dem Sofa.|猫はソファーで寝ています (neko wa sofā de nete imasu)
+O cachorro é meu melhor amigo.|The dog is my best friend.|El perro es mi mejor amigo.|Le chien est mon meilleur ami.|Il cane è il mio migliore amico.|Der Hund ist mein bester Freund.|犬は私の親友です (inu wa watashi no shin'yū desu)
+O céu está azul hoje.|The sky is blue today.|El cielo está azul hoy.|Le ciel est bleu aujourd'hui.|Il cielo è azzurro oggi.|Der Himmel ist heute blau.|今日は空が青いです (kyō wa sora ga aoi desu)
+Há muitas árvores no parque.|There are many trees in the park.|Hay muchos árboles en el parque.|Il y a beaucoup d'arbres dans le parc.|Ci sono molti alberi nel parco.|Im Park gibt es viele Bäume.|公園にはたくさんの木があります (kōen ni wa takusan no ki ga arimasu)`,
+dica:{en:'"There is" (singular) e "there are" (plural) = "há/existe".',es:'"Hay" = há/existe, igual para singular e plural: hay un árbol, hay muchos árboles.',fr:'"Il y a" = há. "Beaucoup de" + substantivo: beaucoup d\'arbres.',it:'"C\'è" (singular) e "ci sono" (plural) = há. O céu azul em italiano costuma ser "azzurro".',de:'"Es gibt" = há, sempre com acusativo: "Es gibt einen Park". Plural de Baum é Bäume (o "a" ganha trema).',ja:'"Arimasu" indica existência de coisas e plantas; "imasu" é para pessoas e animais: inu ga imasu, ki ga arimasu.'}},
+{t:'Trabalho e escola',ico:'💼',it:`trabalho|work|trabajo|travail|lavoro|Arbeit|仕事 (shigoto)
+escritório|office|oficina|bureau|ufficio|Büro|事務所 (jimusho)
+chefe|boss|jefe|chef|capo|Chef|上司 (jōshi)
+reunião|meeting|reunión|réunion|riunione|Besprechung|会議 (kaigi)
+computador|computer|computadora|ordinateur|computer|Computer|パソコン (pasokon)
+telefone|phone|teléfono|téléphone|telefono|Telefon|電話 (denwa)
+professor|teacher|profesor|professeur|insegnante|Lehrer|先生 (sensei)
+aluno|student|alumno|élève|studente|Schüler|学生 (gakusei)
+caneta|pen|bolígrafo|stylo|penna|Kuli|ペン (pen)
+aula|class|clase|cours|lezione|Unterricht|授業 (jugyō)
+prova|exam|examen|examen|esame|Prüfung|試験 (shiken)
+empresa|company|empresa|entreprise|azienda|Firma|会社 (kaisha)
+colega|colleague|colega|collègue|collega|Kollege|同僚 (dōryō)
+salário|salary|salario|salaire|stipendio|Gehalt|給料 (kyūryō)
+Eu trabalho em uma empresa grande.|I work at a big company.|Trabajo en una empresa grande.|Je travaille dans une grande entreprise.|Lavoro in una grande azienda.|Ich arbeite in einer großen Firma.|私は大きい会社で働いています (watashi wa ōkii kaisha de hataraite imasu)
+A reunião começa às nove.|The meeting starts at nine.|La reunión empieza a las nueve.|La réunion commence à neuf heures.|La riunione comincia alle nove.|Die Besprechung beginnt um neun.|会議は九時に始まります (kaigi wa kuji ni hajimarimasu)
+Eu tenho uma prova amanhã.|I have an exam tomorrow.|Tengo un examen mañana.|J'ai un examen demain.|Ho un esame domani.|Ich habe morgen eine Prüfung.|明日試験があります (ashita shiken ga arimasu)
+Meu chefe é muito simpático.|My boss is very nice.|Mi jefe es muy simpático.|Mon chef est très sympathique.|Il mio capo è molto simpatico.|Mein Chef ist sehr nett.|私の上司はとても親切です (watashi no jōshi wa totemo shinsetsu desu)
+Envie o e-mail hoje, por favor.|Please send the email today.|Envía el correo hoy, por favor.|Envoie l'e-mail aujourd'hui, s'il te plaît.|Invia l'e-mail oggi, per favore.|Schick die E-Mail bitte heute.|今日メールを送ってください (kyō mēru o okutte kudasai)
+Eu estudo à noite.|I study at night.|Estudio por la noche.|J'étudie le soir.|Studio la sera.|Ich lerne abends.|私は夜に勉強します (watashi wa yoru ni benkyō shimasu)`,
+dica:{en:'Horários usam "at": at nine, at night. Dias usam "on": on Monday. Meses e anos usam "in": in May.',es:'Na Espanha, computador é "ordenador"; na América Latina, "computadora". "Bolígrafo" (caneta) também se diz "pluma" ou "lapicera" em alguns países.',fr:'"Chef" em francês é chefe; cozinheiro-chefe é "chef de cuisine". "Élève" é aluno da escola; "étudiant" é universitário.',it:'"Alle nove" = a + le nove (às nove). "Lavoro" é trabalho e também "eu trabalho".',de:'"Kuli" é a forma comum de "Kugelschreiber" (caneta esferográfica). Em alemão, horário com "um": um neun Uhr.',ja:'"Sensei" é professor e também título de respeito para médicos e mestres. "Ni" marca o horário: kuji ni = às nove.'}},
+{t:'Viagem e transporte',ico:'✈️',it:`carro|car|coche|voiture|macchina|Auto|車 (kuruma)
+ônibus|bus|autobús|bus|autobus|Bus|バス (basu)
+trem|train|tren|train|treno|Zug|電車 (densha)
+avião|airplane|avión|avion|aereo|Flugzeug|飛行機 (hikōki)
+bicicleta|bicycle|bicicleta|vélo|bicicletta|Fahrrad|自転車 (jitensha)
+barco|boat|barco|bateau|barca|Boot|船 (fune)
+passagem|ticket|billete|billet|biglietto|Fahrkarte|切符 (kippu)
+mala|suitcase|maleta|valise|valigia|Koffer|スーツケース (sūtsukēsu)
+passaporte|passport|pasaporte|passeport|passaporto|Reisepass|パスポート (pasupōto)
+viagem|trip|viaje|voyage|viaggio|Reise|旅行 (ryokō)
+mapa|map|mapa|carte|mappa|Karte|地図 (chizu)
+aeroporto|airport|aeropuerto|aéroporte|aeroporto|Flughafen|空港 (kūkō)
+metrô|subway|metro|métro|metropolitana|U-Bahn|地下鉄 (chikatetsu)
+férias|vacation|vacaciones|vacances|vacanze|Urlaub|休暇 (kyūka)
+A que horas sai o trem?|What time does the train leave?|¿A qué hora sale el tren?|À quelle heure part le train ?|A che ora parte il treno?|Wann fährt der Zug ab?|電車は何時に出ますか (densha wa nanji ni demasu ka)
+Uma passagem de ida e volta, por favor.|A round-trip ticket, please.|Un billete de ida y vuelta, por favor.|Un aller-retour, s'il vous plaît.|Un biglietto di andata e ritorno, per favore.|Eine Hin- und Rückfahrkarte, bitte.|往復切符をお願いします (ōfuku kippu o onegaishimasu)
+Onde é o ponto de ônibus?|Where is the bus stop?|¿Dónde está la parada de autobús?|Où est l'arrêt de bus ?|Dov'è la fermata dell'autobus?|Wo ist die Bushaltestelle?|バス停はどこですか (basutei wa doko desu ka)
+Eu vou de bicicleta ao trabalho.|I go to work by bike.|Voy al trabajo en bicicleta.|Je vais au travail à vélo.|Vado al lavoro in bicicletta.|Ich fahre mit dem Fahrrad zur Arbeit.|自転車で仕事に行きます (jitensha de shigoto ni ikimasu)
+Perdi minha mala.|I lost my suitcase.|Perdí mi maleta.|J'ai perdu ma valise.|Ho perso la mia valigia.|Ich habe meinen Koffer verloren.|スーツケースをなくしました (sūtsukēsu o nakushimashita)
+Nós vamos viajar nas férias.|We are going to travel on vacation.|Vamos a viajar en vacaciones.|Nous allons voyager pendant les vacances.|Viaggeremo durante le vacanze.|Wir reisen im Urlaub.|休みに旅行します (yasumi ni ryokō shimasu)`,
+dica:{en:'Meios de transporte usam "by": by bus, by train, by bike. Mas "on foot" (a pé).',es:'Na Espanha se diz "coche"; na América Latina, "carro" ou "auto". "Ida y vuelta" = ida e volta.',fr:'Em francês, "en" para veículos fechados (en voiture, en train) e "à" para os que você monta (à vélo, à cheval).',it:'Meios de transporte com "in": in treno, in macchina, in bicicletta. Mas "a piedi" (a pé).',de:'Para transportes, o alemão usa "mit" + dativo: mit dem Zug, mit dem Fahrrad. "Fahren" é ir de veículo; "gehen" é ir a pé.',ja:'"De" marca o meio: jitensha de (de bicicleta), basu de (de ônibus). "Ni" marca o destino: shigoto ni ikimasu (vou ao trabalho).'}},
+{t:'Perguntas úteis',ico:'❓',it:`o quê|what|qué|quoi|che cosa|was|何 (nani)
+quem|who|quién|qui|chi|wer|誰 (dare)
+onde|where|dónde|où|dove|wo|どこ (doko)
+quando|when|cuándo|quand|quando|wann|いつ (itsu)
+por quê|why|por qué|pourquoi|perché|warum|なぜ (naze)
+como|how|cómo|comment|come|wie|どう (dō)
+quanto|how much|cuánto|combien|quanto|wie viel|いくら (ikura)
+qual|which|cuál|quel|quale|welcher|どれ (dore)
+O que é isso?|What is this?|¿Qué es esto?|Qu'est-ce que c'est ?|Che cos'è questo?|Was ist das?|これは何ですか (kore wa nan desu ka)
+Onde você mora?|Where do you live?|¿Dónde vives?|Où habites-tu ?|Dove abiti?|Wo wohnst du?|どこに住んでいますか (doko ni sunde imasu ka)
+Você fala inglês?|Do you speak English?|¿Hablas inglés?|Tu parles anglais ?|Parli inglese?|Sprichst du Englisch?|英語を話せますか (eigo o hanasemasu ka)
+Você pode me ajudar?|Can you help me?|¿Puedes ayudarme?|Tu peux m'aider ?|Puoi aiutarmi?|Kannst du mir helfen?|手伝ってもらえますか (tetsudatte moraemasu ka)
+Eu não entendo.|I don't understand.|No entiendo.|Je ne comprends pas.|Non capisco.|Ich verstehe nicht.|わかりません (wakarimasen)
+Pode repetir, por favor?|Can you repeat, please?|¿Puedes repetir, por favor?|Tu peux répéter, s'il te plaît ?|Puoi ripetere, per favore?|Kannst du das bitte wiederholen?|もう一度お願いします (mō ichido onegaishimasu)
+Mais devagar, por favor.|Slower, please.|Más despacio, por favor.|Plus lentement, s'il vous plaît.|Più piano, per favore.|Langsamer, bitte.|もっとゆっくりお願いします (motto yukkuri onegaishimasu)
+Como se diz isso em inglês?|How do you say this in English?|¿Cómo se dice esto en inglés?|Comment dit-on ça en anglais ?|Come si dice questo in inglese?|Wie sagt man das auf Englisch?|これは英語で何と言いますか (kore wa eigo de nan to iimasu ka)
+Por que você está triste?|Why are you sad?|¿Por qué estás triste?|Pourquoi tu es triste ?|Perché sei triste?|Warum bist du traurig?|どうして悲しいのですか (dōshite kanashii no desu ka)
+Quando você chega?|When do you arrive?|¿Cuándo llegas?|Quand est-ce que tu arrives ?|Quando arrivi?|Wann kommst du an?|いつ着きますか (itsu tsukimasu ka)
+Quem é ela?|Who is she?|¿Quién es ella?|Qui est-elle ?|Chi è lei?|Wer ist sie?|彼女は誰ですか (kanojo wa dare desu ka)
+Qual é o seu número?|What is your number?|¿Cuál es tu número?|Quel est ton numéro ?|Qual è il tuo numero?|Was ist deine Nummer?|あなたの番号は何ですか (anata no bangō wa nan desu ka)`,
+dica:{en:'Perguntas no presente usam "do/does": "Do you speak English?", "Where do you live?". Com "to be", inverta: "Are you sad?".',es:'Palavras interrogativas levam acento: qué, quién, dónde, cuándo, por qué. "Porque" (sem acento e junto) é a resposta.',fr:'"Est-ce que" transforma uma frase em pergunta: "Est-ce que tu parles anglais ?". Na fala, basta subir a entonação.',it:'"Perché" serve para "por quê" e para "porque". "Qual è" não leva apóstrofo.',de:'Em perguntas com "W" (was, wer, wo, wann, warum, wie), o verbo vem logo depois: "Wo wohnst du?".',ja:'"Ka" no fim transforma a frase em pergunta. Não é preciso ponto de interrogação em japonês.'}}
+,{t:'Sentimentos',ico:'💛',it:`feliz|happy|feliz|heureux|felice|glücklich|嬉しい (ureshii)
+triste|sad|triste|triste|triste|traurig|悲しい (kanashii)
+nervoso|nervous|nervioso|nerveux|nervoso|nervös|緊張している (kinchō shite iru)
+calmo|calm|tranquilo|calme|calmo|ruhig|落ち着いた (ochitsuita)
+com medo|scared|asustado|effrayé|spaventato|ängstlich|怖い (kowai)
+animado|excited|emocionado|enthousiaste|entusiasta|aufgeregt|わくわくする (wakuwaku suru)
+entediado|bored|aburrido|ennuyé|annoiato|gelangweilt|退屈 (taikutsu)
+preocupado|worried|preocupado|inquiet|preoccupato|besorgt|心配 (shinpai)
+orgulhoso|proud|orgulloso|fier|orgoglioso|stolz|誇らしい (hokorashii)
+Eu estou feliz hoje.|I am happy today.|Hoy estoy feliz.|Je suis heureux aujourd'hui.|Oggi sono felice.|Ich bin heute glücklich.|今日は嬉しいです (kyō wa ureshii desu)
+Eu te amo.|I love you.|Te quiero.|Je t'aime.|Ti amo.|Ich liebe dich.|愛しています (aishite imasu)
+Sinto sua falta.|I miss you.|Te echo de menos.|Tu me manques.|Mi manchi.|Ich vermisse dich.|会いたいです (aitai desu)
+Que bom!|That's great!|¡Qué bien!|C'est super !|Che bello!|Wie schön!|よかった (yokatta)
+Que pena!|What a pity!|¡Qué pena!|Quel dommage !|Che peccato!|Wie schade!|残念 (zannen)
+Não se preocupe.|Don't worry.|No te preocupes.|Ne t'inquiète pas.|Non preoccuparti.|Mach dir keine Sorgen.|心配しないで (shinpai shinaide)
+Boa sorte!|Good luck!|¡Buena suerte!|Bonne chance !|Buona fortuna!|Viel Glück!|頑張って (ganbatte)
+Parabéns!|Congratulations!|¡Felicidades!|Félicitations !|Congratulazioni!|Herzlichen Glückwunsch!|おめでとう (omedetō)
+Estou muito orgulhoso de você.|I am very proud of you.|Estoy muy orgulloso de ti.|Je suis très fier de toi.|Sono molto orgoglioso di te.|Ich bin sehr stolz auf dich.|あなたをとても誇りに思います (anata o totemo hokori ni omoimasu)
+Ele está com medo do escuro.|He is afraid of the dark.|Él tiene miedo a la oscuridad.|Il a peur du noir.|Ha paura del buio.|Er hat Angst vor der Dunkelheit.|彼は暗いところが怖いです (kare wa kurai tokoro ga kowai desu)
+Fico nervoso antes de provas.|I get nervous before exams.|Me pongo nervioso antes de los exámenes.|Je suis nerveux avant les examens.|Divento nervoso prima degli esami.|Vor Prüfungen werde ich nervös.|試験の前は緊張します (shiken no mae wa kinchō shimasu)`,
+dica:{en:'"Excited" é animado/empolgado (não "excitado"). "Bored" é entediado; "boring" é chato.',es:'Na Espanha, "te echo de menos"; na América Latina, "te extraño". "Te quiero" é o eu te amo do dia a dia; "te amo" é mais intenso.',fr:'"Tu me manques" funciona ao contrário: literalmente "você me falta". Adjetivos mudam no feminino: heureux → heureuse.',it:'"Mi manchi" = você me faz falta. "Ti amo" é para amor romântico; para amigos e família se diz "ti voglio bene".',de:'"Glücklich" = feliz; "Glück" também é sorte: "Viel Glück!". O "du" pede "dich" como objeto: Ich liebe dich.',ja:'"Ganbatte" é um incentivo muito usado: "força!", "dê o seu melhor". "Aishite imasu" é forte; no dia a dia se usa mais "suki desu".'}},
+{t:'Clima e estações',ico:'🌦️',it:`verão|summer|verano|été|estate|Sommer|夏 (natsu)
+inverno|winter|invierno|hiver|inverno|Winter|冬 (fuyu)
+primavera|spring|primavera|printemps|primavera|Frühling|春 (haru)
+outono|autumn|otoño|automne|autunno|Herbst|秋 (aki)
+vento|wind|viento|vent|vento|Wind|風 (kaze)
+neve|snow|nieve|neige|neve|Schnee|雪 (yuki)
+nuvem|cloud|nube|nuage|nuvola|Wolke|雲 (kumo)
+tempestade|storm|tormenta|tempête|tempesta|Sturm|嵐 (arashi)
+temperatura|temperature|temperatura|température|temperatura|Temperatur|気温 (kion)
+Faz calor.|It is hot.|Hace calor.|Il fait chaud.|Fa caldo.|Es ist heiß.|暑いです (atsui desu)
+Faz frio.|It is cold.|Hace frío.|Il fait froid.|Fa freddo.|Es ist kalt.|寒いです (samui desu)
+Está chovendo.|It is raining.|Está lloviendo.|Il pleut.|Sta piovendo.|Es regnet.|雨が降っています (ame ga futte imasu)
+Está nevando.|It is snowing.|Está nevando.|Il neige.|Sta nevicando.|Es schneit.|雪が降っています (yuki ga futte imasu)
+O dia está ensolarado.|It is sunny.|Hace sol.|Il y a du soleil.|C'è il sole.|Es ist sonnig.|晴れています (harete imasu)
+O céu está nublado.|It is cloudy.|Está nublado.|Le ciel est nuageux.|È nuvoloso.|Es ist bewölkt.|曇っています (kumotte imasu)
+Como está o tempo hoje?|What is the weather like today?|¿Qué tiempo hace hoy?|Quel temps fait-il aujourd'hui ?|Che tempo fa oggi?|Wie ist das Wetter heute?|今日の天気はどうですか (kyō no tenki wa dō desu ka)
+Leve um guarda-chuva.|Take an umbrella.|Lleva un paraguas.|Prends un parapluie.|Porta un ombrello.|Nimm einen Regenschirm mit.|傘を持って行ってください (kasa o motte itte kudasai)
+No inverno eu bebo chocolate quente.|In winter I drink hot chocolate.|En invierno bebo chocolate caliente.|En hiver, je bois du chocolat chaud.|D'inverno bevo cioccolata calda.|Im Winter trinke ich heiße Schokolade.|冬はホットチョコレートを飲みます (fuyu wa hotto chokorēto o nomimasu)
+Amanhã vai fazer sol.|Tomorrow it will be sunny.|Mañana va a hacer sol.|Demain, il va faire beau.|Domani ci sarà il sole.|Morgen wird es sonnig.|明日は晴れるでしょう (ashita wa hareru deshō)
+A primavera é a minha estação favorita.|Spring is my favorite season.|La primavera es mi estación favorita.|Le printemps est ma saison préférée.|La primavera è la mia stagione preferita.|Der Frühling ist meine Lieblingsjahreszeit.|春は私の一番好きな季節です (haru wa watashi no ichiban suki na kisetsu desu)`,
+dica:{en:'O clima em inglês usa "it": "It is raining", "It is cold". O verbo com "-ing" indica algo acontecendo agora.',es:'Clima com "hacer": hace calor, hace frío, hace sol. Mas "está lloviendo" para chuva agora.',fr:'Clima com "il fait": il fait chaud, il fait froid, il fait beau. "Il pleut" = chove.',it:'Clima com "fare": fa caldo, fa freddo. "Sta piovendo" indica que está chovendo agora.',de:'Em alemão, o clima usa "es": es regnet, es schneit. "Lieblings-" na frente = favorito: Lieblingsjahreszeit.',ja:'Em japonês, "atsui" (暑い) é o calor do tempo; "atsui" (熱い) é algo quente ao toque. Mesmo som, kanji diferente.'}},
+{t:'Rotina',ico:'⏰',it:`acordar|to wake up|despertarse|se réveiller|svegliarsi|aufwachen|起きる (okiru)
+tomar banho|to take a shower|ducharse|se doucher|fare la doccia|duschen|シャワーを浴びる (shawā o abiru)
+café da manhã|breakfast|desayuno|petit-déjeuner|colazione|Frühstück|朝ご飯 (asagohan)
+almoço|lunch|almuerzo|déjeuner|pranzo|Mittagessen|昼ご飯 (hirugohan)
+jantar|dinner|cena|dîner|cena|Abendessen|晩ご飯 (bangohan)
+cedo|early|temprano|tôt|presto|früh|早く (hayaku)
+tarde|late|tarde|tard|tardi|spät|遅く (osoku)
+sempre|always|siempre|toujours|sempre|immer|いつも (itsumo)
+nunca|never|nunca|jamais|mai|nie|決して (kesshite)
+às vezes|sometimes|a veces|parfois|a volte|manchmal|時々 (tokidoki)
+Eu acordo às sete.|I wake up at seven.|Me despierto a las siete.|Je me réveille à sept heures.|Mi sveglio alle sette.|Ich wache um sieben auf.|七時に起きます (shichiji ni okimasu)
+Eu tomo café da manhã em casa.|I have breakfast at home.|Desayuno en casa.|Je prends le petit-déjeuner à la maison.|Faccio colazione a casa.|Ich frühstücke zu Hause.|家で朝ご飯を食べます (ie de asagohan o tabemasu)
+Eu escovo os dentes depois de comer.|I brush my teeth after eating.|Me cepillo los dientes después de comer.|Je me brosse les dents après avoir mangé.|Mi lavo i denti dopo aver mangiato.|Ich putze mir nach dem Essen die Zähne.|食べた後で歯を磨きます (tabeta ato de ha o migakimasu)
+Eu vou ao trabalho de ônibus.|I go to work by bus.|Voy al trabajo en autobús.|Je vais au travail en bus.|Vado al lavoro in autobus.|Ich fahre mit dem Bus zur Arbeit.|バスで仕事に行きます (basu de shigoto ni ikimasu)
+Nós almoçamos ao meio-dia.|We have lunch at noon.|Almorzamos al mediodía.|Nous déjeunons à midi.|Pranziamo a mezzogiorno.|Wir essen um zwölf Uhr zu Mittag.|私たちは正午に昼ご飯を食べます (watashitachi wa shōgo ni hirugohan o tabemasu)
+À noite eu leio um pouco.|At night I read a little.|Por la noche leo un poco.|Le soir, je lis un peu.|La sera leggo un po'.|Abends lese ich ein bisschen.|夜は少し本を読みます (yoru wa sukoshi hon o yomimasu)
+Eu sempre durmo cedo.|I always sleep early.|Siempre duermo temprano.|Je dors toujours tôt.|Dormo sempre presto.|Ich schlafe immer früh.|いつも早く寝ます (itsumo hayaku nemasu)
+Às vezes eu corro no parque.|Sometimes I run in the park.|A veces corro en el parque.|Parfois, je cours dans le parc.|A volte corro nel parco.|Manchmal laufe ich im Park.|時々公園で走ります (tokidoki kōen de hashirimasu)
+Ela nunca chega atrasada.|She is never late.|Ella nunca llega tarde.|Elle n'est jamais en retard.|Lei non arriva mai in ritardo.|Sie kommt nie zu spät.|彼女は決して遅れません (kanojo wa kesshite okuremasen)
+Eu me deito às onze.|I go to bed at eleven.|Me acuesto a las once.|Je me couche à onze heures.|Vado a letto alle undici.|Ich gehe um elf ins Bett.|十一時に寝ます (jūichiji ni nemasu)`,
+dica:{en:'Advérbios de frequência (always, never, sometimes) ficam antes do verbo principal: "I always sleep early".',es:'Muitos verbos de rotina são reflexivos: me despierto, me ducho, me acuesto (como "me deito").',fr:'Verbos pronominais da rotina: je me réveille, je me couche. A negação usa "ne… jamais": je ne mange jamais.',it:'Em italiano, "mai" (nunca) costuma vir com "non": "non arriva mai".',de:'"Aufwachen" se separa: "Ich wache um sieben auf". Na frase, o verbo conjugado fica na 2ª posição: "Abends lese ich".',ja:'"Kesshite" (nunca) vem sempre com verbo negativo (-masen). Para "nunca" no dia a dia também se usa "zenzen … -masen".'}},
+{t:'O passado',ico:'⏪',it:`Ontem eu comi pizza.|Yesterday I ate pizza.|Ayer comí pizza.|Hier, j'ai mangé une pizza.|Ieri ho mangiato la pizza.|Gestern habe ich Pizza gegessen.|昨日ピザを食べました (kinō piza o tabemashita)
+Eu fui ao cinema.|I went to the cinema.|Fui al cine.|Je suis allé au cinéma.|Sono andato al cinema.|Ich bin ins Kino gegangen.|映画館に行きました (eigakan ni ikimashita)
+Ela viu um filme.|She saw a movie.|Ella vio una película.|Elle a vu un film.|Lei ha visto un film.|Sie hat einen Film gesehen.|彼女は映画を見ました (kanojo wa eiga o mimashita)
+Nós viajamos para o Chile.|We traveled to Chile.|Viajamos a Chile.|Nous avons voyagé au Chili.|Abbiamo viaggiato in Cile.|Wir sind nach Chile gereist.|私たちはチリに旅行しました (watashitachi wa Chiri ni ryokō shimashita)
+Eu comprei um livro novo.|I bought a new book.|Compré un libro nuevo.|J'ai acheté un nouveau livre.|Ho comprato un libro nuovo.|Ich habe ein neues Buch gekauft.|新しい本を買いました (atarashii hon o kaimashita)
+Ele trabalhou até tarde.|He worked until late.|Él trabajó hasta tarde.|Il a travaillé tard.|Ha lavorato fino a tardi.|Er hat bis spät gearbeitet.|彼は遅くまで働きました (kare wa osoku made hatarakimashita)
+Eu dormi muito bem.|I slept very well.|Dormí muy bien.|J'ai très bien dormi.|Ho dormito molto bene.|Ich habe sehr gut geschlafen.|とてもよく寝ました (totemo yoku nemashita)
+Você estudou para a prova?|Did you study for the exam?|¿Estudiaste para el examen?|Tu as étudié pour l'examen ?|Hai studiato per l'esame?|Hast du für die Prüfung gelernt?|試験の勉強をしましたか (shiken no benkyō o shimashita ka)
+Eu não entendi a pergunta.|I didn't understand the question.|No entendí la pregunta.|Je n'ai pas compris la question.|Non ho capito la domanda.|Ich habe die Frage nicht verstanden.|質問がわかりませんでした (shitsumon ga wakarimasen deshita)
+Eles chegaram ontem à noite.|They arrived last night.|Llegaron anoche.|Ils sont arrivés hier soir.|Sono arrivati ieri sera.|Sie sind gestern Abend angekommen.|彼らは昨夜着きました (karera wa sakuya tsukimashita)
+Eu nasci no Brasil.|I was born in Brazil.|Nací en Brasil.|Je suis né au Brésil.|Sono nato in Brasile.|Ich bin in Brasilien geboren.|私はブラジルで生まれました (watashi wa Burajiru de umaremashita)
+Foi um dia incrível.|It was an amazing day.|Fue un día increíble.|C'était une journée incroyable.|È stata una giornata incredibile.|Es war ein toller Tag.|素晴らしい一日でした (subarashii ichinichi deshita)
+Eu perdi o ônibus.|I missed the bus.|Perdí el autobús.|J'ai raté le bus.|Ho perso l'autobus.|Ich habe den Bus verpasst.|バスに乗り遅れました (basu ni noriokuremashita)
+Nós jantamos juntos.|We had dinner together.|Cenamos juntos.|Nous avons dîné ensemble.|Abbiamo cenato insieme.|Wir haben zusammen zu Abend gegessen.|一緒に晩ご飯を食べました (issho ni bangohan o tabemashita)
+Ela escreveu uma carta.|She wrote a letter.|Ella escribió una carta.|Elle a écrit une lettre.|Lei ha scritto una lettera.|Sie hat einen Brief geschrieben.|彼女は手紙を書きました (kanojo wa tegami o kakimashita)
+Eu esqueci a chave.|I forgot the key.|Olvidé la llave.|J'ai oublié la clé.|Ho dimenticato la chiave.|Ich habe den Schlüssel vergessen.|鍵を忘れました (kagi o wasuremashita)
+Quando eu era criança, eu brincava na rua.|When I was a child, I played in the street.|Cuando era niño, jugaba en la calle.|Quand j'étais enfant, je jouais dans la rue.|Quando ero bambino, giocavo per strada.|Als ich ein Kind war, habe ich auf der Straße gespielt.|子供のころ、外で遊んでいました (kodomo no koro, soto de asonde imashita)
+Ele fez o jantar.|He made dinner.|Él hizo la cena.|Il a fait le dîner.|Ha fatto la cena.|Er hat das Abendessen gemacht.|彼は晩ご飯を作りました (kare wa bangohan o tsukurimashita)
+Você já esteve em Paris?|Have you ever been to Paris?|¿Has estado alguna vez en París?|Tu es déjà allé à Paris ?|Sei mai stato a Parigi?|Warst du schon mal in Paris?|パリに行ったことがありますか (Pari ni itta koto ga arimasu ka)
+Eu morei em Lisboa por dois anos.|I lived in Lisbon for two years.|Viví en Lisboa durante dos años.|J'ai habité à Lisbonne pendant deux ans.|Ho abitato a Lisbona per due anni.|Ich habe zwei Jahre in Lissabon gewohnt.|リスボンに二年間住んでいました (Risubon ni ninenkan sunde imashita)`,
+dica:{en:'O passado regular ganha "-ed" (worked, traveled), mas muitos verbos são irregulares: go → went, eat → ate, see → saw. Em perguntas e negativas, use "did": "Did you study?", "I didn\'t understand".',es:'O pretérito indefinido conta ações concluídas: comí, fui, vi. O imperfeito ("jugaba", "era") descreve hábitos no passado, como no português.',fr:'O passado composto usa "avoir" + particípio (j\'ai mangé). Verbos de movimento usam "être" e concordam: je suis allé(e), ils sont arrivés. O imperfeito (je jouais) descreve hábitos.',it:'O passato prossimo usa "avere" (ho mangiato) ou "essere" para movimento e mudança (sono andato, sono arrivati), concordando com o sujeito.',de:'O Perfekt usa "haben" ou "sein" + particípio no fim da frase: Ich habe Pizza gegessen. Verbos de movimento usam "sein": Ich bin gegangen.',ja:'O passado educado troca "-masu" por "-mashita": tabemasu → tabemashita. Negativo passado: "-masen deshita".'}},
+{t:'Futuro e planos',ico:'🗓️',it:`Amanhã eu vou estudar.|Tomorrow I am going to study.|Mañana voy a estudiar.|Demain, je vais étudier.|Domani studierò.|Morgen werde ich lernen.|明日勉強します (ashita benkyō shimasu)
+Nós vamos viajar no ano que vem.|We are going to travel next year.|Vamos a viajar el año que viene.|Nous allons voyager l'année prochaine.|L'anno prossimo viaggeremo.|Nächstes Jahr werden wir reisen.|来年旅行します (rainen ryokō shimasu)
+Ela vai comprar uma casa.|She is going to buy a house.|Ella va a comprar una casa.|Elle va acheter une maison.|Lei comprerà una casa.|Sie wird ein Haus kaufen.|彼女は家を買うつもりです (kanojo wa ie o kau tsumori desu)
+Eu vou te ligar mais tarde.|I will call you later.|Te llamaré más tarde.|Je t'appellerai plus tard.|Ti chiamerò più tardi.|Ich rufe dich später an.|後で電話します (ato de denwa shimasu)
+Vai chover amanhã.|It will rain tomorrow.|Va a llover mañana.|Il va pleuvoir demain.|Domani pioverà.|Morgen wird es regnen.|明日は雨が降るでしょう (ashita wa ame ga furu deshō)
+O que você vai fazer no fim de semana?|What are you going to do on the weekend?|¿Qué vas a hacer el fin de semana?|Qu'est-ce que tu vas faire ce week-end ?|Cosa farai nel fine settimana?|Was machst du am Wochenende?|週末は何をしますか (shūmatsu wa nani o shimasu ka)
+Eu quero aprender a tocar violão.|I want to learn to play the guitar.|Quiero aprender a tocar la guitarra.|Je veux apprendre à jouer de la guitare.|Voglio imparare a suonare la chitarra.|Ich will Gitarre spielen lernen.|ギターを習いたいです (gitā o naraitai desu)
+Meu plano é correr uma maratona.|My plan is to run a marathon.|Mi plan es correr un maratón.|Mon projet est de courir un marathon.|Il mio piano è correre una maratona.|Mein Plan ist, einen Marathon zu laufen.|私の計画はマラソンを走ることです (watashi no keikaku wa marason o hashiru koto desu)
+Eu vou começar amanhã.|I will start tomorrow.|Empezaré mañana.|Je commencerai demain.|Comincerò domani.|Ich fange morgen an.|明日始めます (ashita hajimemasu)
+Daqui a dois anos eu vou me formar.|In two years I will graduate.|Dentro de dos años me graduaré.|Dans deux ans, je serai diplômé.|Tra due anni mi laureerò.|In zwei Jahren mache ich meinen Abschluss.|二年後に卒業します (ninen go ni sotsugyō shimasu)
+Talvez eu vá à festa.|Maybe I will go to the party.|Quizás vaya a la fiesta.|Peut-être que j'irai à la fête.|Forse andrò alla festa.|Vielleicht gehe ich zur Party.|パーティーに行くかもしれません (pātī ni iku kamoshiremasen)
+Nós vamos nos ver em breve.|We will see each other soon.|Nos veremos pronto.|On se verra bientôt.|Ci vedremo presto.|Wir sehen uns bald.|また近いうちに会いましょう (mata chikai uchi ni aimashō)
+Você vai gostar deste lugar.|You will like this place.|Te va a gustar este lugar.|Tu vas aimer cet endroit.|Ti piacerà questo posto.|Dir wird dieser Ort gefallen.|この場所が気に入りますよ (kono basho ga ki ni irimasu yo)
+Eu prometo que vou ajudar.|I promise I will help.|Prometo que ayudaré.|Je promets que j'aiderai.|Prometto che aiuterò.|Ich verspreche, dass ich helfe.|手伝うと約束します (tetsudau to yakusoku shimasu)
+O próximo trem sai às dez.|The next train leaves at ten.|El próximo tren sale a las diez.|Le prochain train part à dix heures.|Il prossimo treno parte alle dieci.|Der nächste Zug fährt um zehn.|次の電車は十時に出ます (tsugi no densha wa jūji ni demasu)
+Este ano eu vou ler doze livros.|This year I will read twelve books.|Este año voy a leer doce libros.|Cette année, je vais lire douze livres.|Quest'anno leggerò dodici libri.|Dieses Jahr werde ich zwölf Bücher lesen.|今年は本を十二冊読みます (kotoshi wa hon o jūnisatsu yomimasu)
+Quando eu tiver tempo, vou visitar você.|When I have time, I will visit you.|Cuando tenga tiempo, te visitaré.|Quand j'aurai le temps, je te rendrai visite.|Quando avrò tempo, verrò a trovarti.|Wenn ich Zeit habe, besuche ich dich.|時間があったら、会いに行きます (jikan ga attara, ai ni ikimasu)
+Eu nunca vou desistir.|I will never give up.|Nunca me rendiré.|Je n'abandonnerai jamais.|Non mi arrenderò mai.|Ich werde nie aufgeben.|決してあきらめません (kesshite akiramemasen)
+Até a próxima semana!|See you next week!|¡Hasta la próxima semana!|À la semaine prochaine !|Alla prossima settimana!|Bis nächste Woche!|また来週 (mata raishū)
+Amanhã será um ótimo dia.|Tomorrow will be a great day.|Mañana será un gran día.|Demain sera une belle journée.|Domani sarà una bella giornata.|Morgen wird ein toller Tag.|明日は素晴らしい日になるでしょう (ashita wa subarashii hi ni naru deshō)`,
+dica:{en:'"Going to" indica planos já decididos ("I am going to travel"). "Will" é para decisões na hora, promessas e previsões ("I will call you").',es:'O futuro próximo usa "ir a" + infinitivo: "voy a estudiar". O futuro simples tem terminações próprias: estudiaré, viajaremos.',fr:'O futuro próximo é "aller" + infinitivo: "je vais étudier". O futuro simples: j\'étudierai, nous voyagerons.',it:'Em italiano é comum usar o futuro simples: studierò, viaggeremo. No dia a dia, o presente também indica futuro: "domani parto".',de:'O alemão usa muito o presente com sentido de futuro: "Ich rufe dich später an". O futuro formal é "werden" + infinitivo no fim.',ja:'O japonês não tem um tempo futuro próprio: "-masu" serve para presente e futuro. "Tsumori desu" = pretendo; "deshō" = provavelmente.'}}
+,{t:'No restaurante',ico:'🍽️',it:`cardápio|menu|menú|carte|menù|Speisekarte|メニュー (menyū)
+conta|bill|cuenta|addition|conto|Rechnung|お会計 (okaikei)
+garçom|waiter|camarero|serveur|cameriere|Kellner|ウェイター (weitā)
+prato|dish|plato|plat|piatto|Gericht|料理 (ryōri)
+sobremesa|dessert|postre|dessert|dolce|Nachtisch|デザート (dezāto)
+garfo|fork|tenedor|fourchette|forchetta|Gabel|フォーク (fōku)
+faca|knife|cuchillo|couteau|coltello|Messer|ナイフ (naifu)
+colher|spoon|cuchara|cuillère|cucchiaio|Löffel|スプーン (supūn)
+copo|glass|vaso|verre|bicchiere|Glas|コップ (koppu)
+Uma mesa para dois, por favor.|A table for two, please.|Una mesa para dos, por favor.|Une table pour deux, s'il vous plaît.|Un tavolo per due, per favore.|Einen Tisch für zwei, bitte.|二人です (futari desu)
+O cardápio, por favor.|The menu, please.|La carta, por favor.|La carte, s'il vous plaît.|Il menù, per favore.|Die Speisekarte, bitte.|メニューをお願いします (menyū o onegaishimasu)
+Eu gostaria de um suco de laranja.|I would like an orange juice.|Quisiera un jugo de naranja.|Je voudrais un jus d'orange.|Vorrei un succo d'arancia.|Ich hätte gern einen Orangensaft.|オレンジジュースをお願いします (orenji jūsu o onegaishimasu)
+A conta, por favor.|The bill, please.|La cuenta, por favor.|L'addition, s'il vous plaît.|Il conto, per favore.|Die Rechnung, bitte.|お会計をお願いします (okaikei o onegaishimasu)
+Estava delicioso!|It was delicious!|¡Estaba delicioso!|C'était délicieux !|Era delizioso!|Es war köstlich!|とても美味しかったです (totemo oishikatta desu)
+Eu sou vegetariano.|I am vegetarian.|Soy vegetariano.|Je suis végétarien.|Sono vegetariano.|Ich bin Vegetarier.|私はベジタリアンです (watashi wa bejitarian desu)
+Sem açúcar, por favor.|No sugar, please.|Sin azúcar, por favor.|Sans sucre, s'il vous plaît.|Senza zucchero, per favore.|Ohne Zucker, bitte.|砂糖なしでお願いします (satō nashi de onegaishimasu)
+O que você recomenda?|What do you recommend?|¿Qué me recomienda?|Qu'est-ce que vous recommandez ?|Cosa mi consiglia?|Was empfehlen Sie?|おすすめは何ですか (osusume wa nan desu ka)
+Eu tenho alergia a amendoim.|I am allergic to peanuts.|Soy alérgico al cacahuete.|Je suis allergique aux cacahuètes.|Sono allergico alle arachidi.|Ich bin allergisch gegen Erdnüsse.|ピーナッツアレルギーがあります (pīnattsu arerugī ga arimasu)
+Pode trazer mais água?|Can you bring more water?|¿Puede traer más agua?|Vous pouvez apporter plus d'eau ?|Può portare altra acqua?|Können Sie mehr Wasser bringen?|お水をもう少しください (omizu o mō sukoshi kudasai)
+A comida está fria.|The food is cold.|La comida está fría.|La nourriture est froide.|Il cibo è freddo.|Das Essen ist kalt.|料理が冷たいです (ryōri ga tsumetai desu)`,
+dica:{en:'"I would like" (I\'d like) é a forma educada de pedir; soa melhor que "I want".',es:'"Quisiera" e "me gustaría" são formas educadas de pedir. Em muitos países, amendoim é "maní" em vez de "cacahuete".',fr:'"Je voudrais" é o jeito educado de pedir. A conta no restaurante é "l\'addition".',it:'"Vorrei" = eu gostaria. Em italiano, sobremesa costuma ser "il dolce".',de:'"Ich hätte gern…" é o pedido educado mais comum. Com garçons, use "Sie".',ja:'"Onegaishimasu" serve para pedir quase tudo com educação. No Japão, normalmente não se dá gorjeta.'}},
+{t:'Emergências',ico:'🚨',it:`Socorro!|Help!|¡Socorro!|Au secours !|Aiuto!|Hilfe!|助けて (tasukete)
+polícia|police|policía|police|polizia|Polizei|警察 (keisatsu)
+ambulância|ambulance|ambulancia|ambulance|ambulanza|Krankenwagen|救急車 (kyūkyūsha)
+farmácia|pharmacy|farmacia|pharmacie|farmacia|Apotheke|薬局 (yakkyoku)
+fogo|fire|fuego|feu|fuoco|Feuer|火事 (kaji)
+perigo|danger|peligro|danger|pericolo|Gefahr|危険 (kiken)
+Chame uma ambulância!|Call an ambulance!|¡Llame a una ambulancia!|Appelez une ambulance !|Chiami un'ambulanza!|Rufen Sie einen Krankenwagen!|救急車を呼んでください (kyūkyūsha o yonde kudasai)
+Onde fica o hospital mais próximo?|Where is the nearest hospital?|¿Dónde está el hospital más cercano?|Où est l'hôpital le plus proche ?|Dov'è l'ospedale più vicino?|Wo ist das nächste Krankenhaus?|一番近い病院はどこですか (ichiban chikai byōin wa doko desu ka)
+Perdi meu passaporte.|I lost my passport.|Perdí mi pasaporte.|J'ai perdu mon passeport.|Ho perso il passaporto.|Ich habe meinen Reisepass verloren.|パスポートをなくしました (pasupōto o nakushimashita)
+Roubaram minha carteira.|My wallet was stolen.|Me robaron la cartera.|On m'a volé mon portefeuille.|Mi hanno rubato il portafoglio.|Meine Geldbörse wurde gestohlen.|財布を盗まれました (saifu o nusumaremashita)
+Eu estou perdido.|I am lost.|Estoy perdido.|Je suis perdu.|Mi sono perso.|Ich habe mich verlaufen.|道に迷いました (michi ni mayoimashita)
+Você pode chamar a polícia?|Can you call the police?|¿Puede llamar a la policía?|Vous pouvez appeler la police ?|Può chiamare la polizia?|Können Sie die Polizei rufen?|警察を呼んでもらえますか (keisatsu o yonde moraemasu ka)
+Eu preciso de ajuda.|I need help.|Necesito ayuda.|J'ai besoin d'aide.|Ho bisogno di aiuto.|Ich brauche Hilfe.|助けが必要です (tasuke ga hitsuyō desu)
+É uma emergência.|It is an emergency.|Es una emergencia.|C'est une urgence.|È un'emergenza.|Es ist ein Notfall.|緊急です (kinkyū desu)
+Ele está machucado.|He is hurt.|Está herido.|Il est blessé.|È ferito.|Er ist verletzt.|彼はけがをしています (kare wa kega o shite imasu)
+Eu me sinto mal.|I feel sick.|Me siento mal.|Je me sens mal.|Mi sento male.|Mir ist schlecht.|気分が悪いです (kibun ga warui desu)
+Cuidado!|Watch out!|¡Cuidado!|Attention !|Attenzione!|Vorsicht!|気をつけて (ki o tsukete)
+Onde fica a embaixada do Brasil?|Where is the Brazilian embassy?|¿Dónde está la embajada de Brasil?|Où est l'ambassade du Brésil ?|Dov'è l'ambasciata del Brasile?|Wo ist die brasilianische Botschaft?|ブラジル大使館はどこですか (Burajiru taishikan wa doko desu ka)
+Tenho seguro de viagem.|I have travel insurance.|Tengo seguro de viaje.|J'ai une assurance voyage.|Ho un'assicurazione di viaggio.|Ich habe eine Reiseversicherung.|旅行保険に入っています (ryokō hoken ni haitte imasu)
+Fique calmo.|Stay calm.|Mantén la calma.|Reste calme.|Stai calmo.|Bleib ruhig.|落ち着いて (ochitsuite)`,
+dica:{en:'Nos EUA, o número de emergência é 911; na União Europeia, 112.',es:'Na Espanha e em boa parte da Europa, a emergência é 112. "Cartera" pode ser carteira de dinheiro ou bolsa, dependendo do país.',fr:'Na França, a emergência geral é 112 (o SAMU é 15). "Au secours !" é o pedido de socorro.',it:'Na Itália, a emergência geral é 112. "Mi sono perso" = me perdi (para mulheres: "mi sono persa").',de:'Na Alemanha, 112 chama bombeiros e ambulância; 110 é a polícia. "Mir ist schlecht" = estou passando mal.',ja:'No Japão, 110 é a polícia e 119 é bombeiros e ambulância. "Tasukete!" é o grito de socorro.'}},
+{t:'Hobbies e esportes',ico:'⚽',it:`futebol|soccer|fútbol|football|calcio|Fußball|サッカー (sakkā)
+música|music|música|musique|musica|Musik|音楽 (ongaku)
+filme|movie|película|film|film|Film|映画 (eiga)
+cantar|to sing|cantar|chanter|cantare|singen|歌う (utau)
+dançar|to dance|bailar|danser|ballare|tanzen|踊る (odoru)
+nadar|to swim|nadar|nager|nuotare|schwimmen|泳ぐ (oyogu)
+cozinhar|to cook|cocinar|cuisiner|cucinare|kochen|料理する (ryōri suru)
+jogar|to play|jugar|jouer|giocare|spielen|遊ぶ (asobu)
+academia|gym|gimnasio|salle de sport|palestra|Fitnessstudio|ジム (jimu)
+jogo|game|juego|jeu|gioco|Spiel|ゲーム (gēmu)
+Eu gosto de ler.|I like to read.|Me gusta leer.|J'aime lire.|Mi piace leggere.|Ich lese gern.|読書が好きです (dokusho ga suki desu)
+Você gosta de dançar?|Do you like to dance?|¿Te gusta bailar?|Tu aimes danser ?|Ti piace ballare?|Tanzt du gern?|踊るのが好きですか (odoru no ga suki desu ka)
+Meu hobby é fotografia.|My hobby is photography.|Mi pasatiempo es la fotografía.|Mon passe-temps est la photographie.|Il mio hobby è la fotografia.|Mein Hobby ist Fotografie.|私の趣味は写真です (watashi no shumi wa shashin desu)
+Eu jogo futebol aos sábados.|I play soccer on Saturdays.|Juego al fútbol los sábados.|Je joue au football le samedi.|Gioco a calcio il sabato.|Ich spiele samstags Fußball.|土曜日にサッカーをします (doyōbi ni sakkā o shimasu)
+Ela toca piano muito bem.|She plays the piano very well.|Ella toca el piano muy bien.|Elle joue très bien du piano.|Lei suona il pianoforte molto bene.|Sie spielt sehr gut Klavier.|彼女はピアノがとても上手です (kanojo wa piano ga totemo jōzu desu)
+Vamos ao cinema hoje à noite?|Shall we go to the movies tonight?|¿Vamos al cine esta noche?|On va au cinéma ce soir ?|Andiamo al cinema stasera?|Gehen wir heute Abend ins Kino?|今晩映画を見に行きませんか (konban eiga o mi ni ikimasen ka)
+Eu vou à academia três vezes por semana.|I go to the gym three times a week.|Voy al gimnasio tres veces por semana.|Je vais à la salle de sport trois fois par semaine.|Vado in palestra tre volte a settimana.|Ich gehe dreimal pro Woche ins Fitnessstudio.|週に三回ジムに行きます (shū ni sankai jimu ni ikimasu)
+Qual é o seu filme favorito?|What is your favorite movie?|¿Cuál es tu película favorita?|Quel est ton film préféré ?|Qual è il tuo film preferito?|Was ist dein Lieblingsfilm?|一番好きな映画は何ですか (ichiban suki na eiga wa nan desu ka)
+Nós cozinhamos juntos no domingo.|We cook together on Sunday.|Cocinamos juntos el domingo.|Nous cuisinons ensemble le dimanche.|Cuciniamo insieme la domenica.|Wir kochen sonntags zusammen.|日曜日に一緒に料理します (nichiyōbi ni issho ni ryōri shimasu)
+Eu adoro ouvir música.|I love listening to music.|Me encanta escuchar música.|J'adore écouter de la musique.|Adoro ascoltare la musica.|Ich höre sehr gern Musik.|音楽を聴くのが大好きです (ongaku o kiku no ga daisuki desu)`,
+dica:{en:'"Play" serve para esportes (play soccer) e instrumentos (play the piano). Nos EUA, futebol é "soccer"; no Reino Unido, "football".',es:'"Jugar" é para jogos e esportes; "tocar" é para instrumentos. "Me encanta" = adoro.',fr:'"Jouer au" + esporte (jouer au football) e "jouer du" + instrumento (jouer du piano).',it:'"Giocare" é para jogos e esportes; "suonare" é para instrumentos. "Il sabato" = aos sábados.',de:'"Gern" depois do verbo = gostar de fazer: "Ich lese gern" (eu gosto de ler). Esportes e instrumentos usam "spielen".',ja:'"Jōzu" = ser bom em algo: piano ga jōzu desu. Ao falar de si mesmo, por modéstia, prefira "tokui desu" ou diga que ainda está aprendendo.'}},
+{t:'Opiniões e conversa',ico:'💬',it:`Eu acho que sim.|I think so.|Creo que sí.|Je pense que oui.|Penso di sì.|Ich glaube schon.|そう思います (sō omoimasu)
+Eu acho que não.|I don't think so.|Creo que no.|Je ne pense pas.|Penso di no.|Ich glaube nicht.|そうは思いません (sō wa omoimasen)
+Concordo.|I agree.|Estoy de acuerdo.|Je suis d'accord.|Sono d'accordo.|Ich stimme zu.|賛成です (sansei desu)
+Discordo.|I disagree.|No estoy de acuerdo.|Je ne suis pas d'accord.|Non sono d'accordo.|Ich bin anderer Meinung.|反対です (hantai desu)
+talvez|maybe|quizás|peut-être|forse|vielleicht|たぶん (tabun)
+com certeza|of course|por supuesto|bien sûr|certo|natürlich|もちろん (mochiron)
+Na minha opinião, é uma boa ideia.|In my opinion, it is a good idea.|En mi opinión, es una buena idea.|À mon avis, c'est une bonne idée.|Secondo me, è una buona idea.|Meiner Meinung nach ist das eine gute Idee.|私の意見では、いい考えです (watashi no iken de wa, ii kangae desu)
+É verdade.|That's true.|Es verdad.|C'est vrai.|È vero.|Das stimmt.|本当です (hontō desu)
+Depende.|It depends.|Depende.|Ça dépend.|Dipende.|Es kommt darauf an.|場合によります (baai ni yorimasu)
+Que interessante!|How interesting!|¡Qué interesante!|C'est intéressant !|Che interessante!|Wie interessant!|面白いですね (omoshiroi desu ne)
+Você tem razão.|You are right.|Tienes razón.|Tu as raison.|Hai ragione.|Du hast recht.|その通りです (sono tōri desu)
+Eu não tenho certeza.|I'm not sure.|No estoy seguro.|Je ne suis pas sûr.|Non sono sicuro.|Ich bin mir nicht sicher.|よくわかりません (yoku wakarimasen)
+O que você acha?|What do you think?|¿Qué piensas?|Qu'en penses-tu ?|Cosa ne pensi?|Was meinst du?|どう思いますか (dō omoimasu ka)
+Eu prefiro chá a café.|I prefer tea to coffee.|Prefiero el té al café.|Je préfère le thé au café.|Preferisco il tè al caffè.|Ich trinke lieber Tee als Kaffee.|コーヒーよりお茶が好きです (kōhī yori ocha ga suki desu)
+Por um lado é caro, por outro é bom.|On one hand it is expensive, on the other it is good.|Por un lado es caro, por otro es bueno.|D'un côté c'est cher, de l'autre c'est bon.|Da un lato è caro, dall'altro è buono.|Einerseits ist es teuer, andererseits ist es gut.|高いけれど、良いです (takai keredo, yoi desu)
+Não é tão ruim assim.|It's not that bad.|No es tan malo.|Ce n'est pas si mal.|Non è così male.|Es ist nicht so schlimm.|そんなに悪くないです (sonna ni warukunai desu)
+Faz sentido.|It makes sense.|Tiene sentido.|Ça a du sens.|Ha senso.|Das ergibt Sinn.|なるほど (naruhodo)
+Eu mudei de ideia.|I changed my mind.|Cambié de opinión.|J'ai changé d'avis.|Ho cambiato idea.|Ich habe meine Meinung geändert.|気が変わりました (ki ga kawarimashita)
+Vamos combinar assim.|Let's agree on that.|Quedamos así.|On fait comme ça.|Facciamo così.|Machen wir es so.|そうしましょう (sō shimashō)
+Obrigado pela conversa.|Thanks for the chat.|Gracias por la charla.|Merci pour la conversation.|Grazie per la chiacchierata.|Danke für das Gespräch.|お話しできてよかったです (ohanashi dekite yokatta desu)`,
+dica:{en:'"I think so / I don\'t think so" é a forma natural de concordar ou discordar de leve. "Agree" não usa "to be": diga "I agree", nunca "I am agree".',es:'"Tener razón" = ter razão: "tienes razón". "Estar de acuerdo" = concordar.',fr:'"À mon avis" = na minha opinião. "Avoir raison" = ter razão: "tu as raison".',it:'"Secondo me" = na minha opinião. "Avere ragione" = ter razão: "hai ragione".',de:'"Meiner Meinung nach" muda a ordem: o verbo vem logo depois ("…nach ist das…"). "Lieber" = preferir: "Ich trinke lieber Tee".',ja:'"Naruhodo" mostra que você entendeu ("ah, faz sentido"). "Ne" no fim da frase busca concordância, como "né?".'}},
+{t:'Frases avançadas',ico:'🎓',it:`Se eu tivesse tempo, eu viajaria mais.|If I had time, I would travel more.|Si tuviera tiempo, viajaría más.|Si j'avais le temps, je voyagerais plus.|Se avessi tempo, viaggerei di più.|Wenn ich Zeit hätte, würde ich mehr reisen.|時間があれば、もっと旅行するのに (jikan ga areba, motto ryokō suru noni)
+Eu estudo inglês há três anos.|I have been studying English for three years.|Estudio inglés desde hace tres años.|J'étudie l'anglais depuis trois ans.|Studio inglese da tre anni.|Ich lerne seit drei Jahren Englisch.|三年間英語を勉強しています (sannenkan eigo o benkyō shite imasu)
+Embora esteja chovendo, vamos sair.|Although it is raining, we will go out.|Aunque está lloviendo, vamos a salir.|Bien qu'il pleuve, nous allons sortir.|Anche se piove, usciamo.|Obwohl es regnet, gehen wir raus.|雨が降っていますが、出かけます (ame ga futte imasu ga, dekakemasu)
+O livro que eu li era ótimo.|The book that I read was great.|El libro que leí era excelente.|Le livre que j'ai lu était excellent.|Il libro che ho letto era ottimo.|Das Buch, das ich gelesen habe, war toll.|私が読んだ本は素晴らしかったです (watashi ga yonda hon wa subarashikatta desu)
+Eu teria ido, se soubesse.|I would have gone if I had known.|Habría ido si lo hubiera sabido.|Je serais allé si j'avais su.|Sarei andato se lo avessi saputo.|Ich wäre gegangen, wenn ich es gewusst hätte.|知っていたら、行ったのに (shitte itara, itta noni)
+Espero que você melhore logo.|I hope you get better soon.|Espero que te mejores pronto.|J'espère que tu iras vite mieux.|Spero che tu guarisca presto.|Ich hoffe, dass es dir bald besser geht.|早く良くなるといいですね (hayaku yoku naru to ii desu ne)
+É importante que você descanse.|It is important that you rest.|Es importante que descanses.|Il est important que tu te reposes.|È importante che tu ti riposi.|Es ist wichtig, dass du dich ausruhst.|休むことが大切です (yasumu koto ga taisetsu desu)
+Ele disse que viria amanhã.|He said he would come tomorrow.|Dijo que vendría mañana.|Il a dit qu'il viendrait demain.|Ha detto che sarebbe venuto domani.|Er hat gesagt, dass er morgen kommt.|彼は明日来ると言いました (kare wa ashita kuru to iimashita)
+Quanto mais eu estudo, mais eu aprendo.|The more I study, the more I learn.|Cuanto más estudio, más aprendo.|Plus j'étudie, plus j'apprends.|Più studio, più imparo.|Je mehr ich lerne, desto mehr weiß ich.|勉強すればするほど、たくさん学べます (benkyō sureba suru hodo, takusan manabemasu)
+Eu me acostumei a acordar cedo.|I got used to waking up early.|Me acostumbré a despertarme temprano.|Je me suis habitué à me lever tôt.|Mi sono abituato ad alzarmi presto.|Ich habe mich daran gewöhnt, früh aufzustehen.|早起きに慣れました (hayaoki ni naremashita)
+A casa foi construída em 1950.|The house was built in 1950.|La casa fue construida en 1950.|La maison a été construite en 1950.|La casa è stata costruita nel 1950.|Das Haus wurde 1950 gebaut.|その家は1950年に建てられました (sono ie wa sen kyūhyaku gojū nen ni tateraremashita)
+Eu deveria dormir mais.|I should sleep more.|Debería dormir más.|Je devrais dormir plus.|Dovrei dormire di più.|Ich sollte mehr schlafen.|もっと寝たほうがいいです (motto neta hō ga ii desu)
+Você poderia me fazer um favor?|Could you do me a favor?|¿Podrías hacerme un favor?|Tu pourrais me rendre un service ?|Potresti farmi un favore?|Könntest du mir einen Gefallen tun?|お願いがあるのですが (onegai ga aru no desu ga)
+Ainda não terminei o trabalho.|I haven't finished the work yet.|Todavía no he terminado el trabajo.|Je n'ai pas encore fini le travail.|Non ho ancora finito il lavoro.|Ich habe die Arbeit noch nicht beendet.|まだ仕事が終わっていません (mada shigoto ga owatte imasen)
+Assim que chegar, me avise.|As soon as you arrive, let me know.|En cuanto llegues, avísame.|Dès que tu arrives, préviens-moi.|Appena arrivi, avvisami.|Sobald du ankommst, sag mir Bescheid.|着いたらすぐ知らせてください (tsuitara sugu shirasete kudasai)
+Não importa o que aconteça, estarei aqui.|No matter what happens, I will be here.|Pase lo que pase, estaré aquí.|Quoi qu'il arrive, je serai là.|Qualunque cosa succeda, sarò qui.|Egal was passiert, ich bin hier.|何があっても、ここにいます (nani ga atte mo, koko ni imasu)
+Eu gostaria que você viesse.|I wish you would come.|Me gustaría que vinieras.|J'aimerais que tu viennes.|Vorrei che tu venissi.|Ich wünschte, du würdest kommen.|来てほしいです (kite hoshii desu)
+Fazia muito tempo que eu não te via.|I hadn't seen you for a long time.|Hacía mucho tiempo que no te veía.|Ça faisait longtemps que je ne t'avais pas vu.|Era da tanto che non ti vedevo.|Ich hatte dich lange nicht gesehen.|久しぶりに会いました (hisashiburi ni aimashita)
+Aprender um idioma exige paciência.|Learning a language requires patience.|Aprender un idioma requiere paciencia.|Apprendre une langue demande de la patience.|Imparare una lingua richiede pazienza.|Eine Sprache zu lernen erfordert Geduld.|言語を学ぶには忍耐が必要です (gengo o manabu ni wa nintai ga hitsuyō desu)
+Cada dia é uma nova chance.|Every day is a new chance.|Cada día es una nueva oportunidad.|Chaque jour est une nouvelle chance.|Ogni giorno è una nuova occasione.|Jeder Tag ist eine neue Chance.|毎日が新しいチャンスです (mainichi ga atarashii chansu desu)`,
+dica:{en:'Condicional: "If I had…, I would…". "For" + duração e "since" + ponto de início: "for three years", "since 2020". O "present perfect continuous" (I have been studying) mostra algo que começou no passado e continua.',es:'O subjuntivo aparece depois de "espero que", "es importante que": "espero que te mejores". O condicional termina em -ía: viajaría.',fr:'O subjuntivo aparece depois de "il faut que", "bien que", "il est important que". Condicional: je voyagerais. "Depuis" = há/desde.',it:'O congiuntivo aparece depois de "spero che", "è importante che": "spero che tu guarisca". "Da tre anni" = há três anos.',de:'Em orações subordinadas (com "dass", "wenn", "weil", "obwohl"), o verbo conjugado vai para o FIM: "…, dass es dir bald besser geht". O Konjunktiv II (hätte, würde, wäre) expressa hipóteses.',ja:'"-ba" e "-tara" formam condições ("se…"). "Hō ga ii" = é melhor (conselho). "Hisashiburi" = quanto tempo! (depois de muito tempo sem ver alguém).'}}
+];
+
+DUO_UNI.forEach(u=>{u.rows=u.it.trim().split('\n').map(l=>l.split('|'))});
+const DUO_CORES=['#58cc02','#ce82ff','#00cd9c','#1cb0f6','#ff9600','#ff4b4b','#2b70c9','#a5ed6e'];
+const DUO_ELOGIO=['Excelente!','Muito bem!','Perfeito!','Incrível!','Mandou bem!','Isso aí!','Arrasou!'];
+function duoTr(l){const I=idiomas();I.tr=I.tr||{};if(!I.tr[l]){const a=I.ac[l]||0;I.tr[l]={u:Math.min(3,Math.floor(a/40)),n:0,lic:0}}return I.tr[l]}
+const duoTxt=(r,l)=>r[IDIOMAS[l].col];
+const duoPal=t=>String(t).replace(/\s*\(.*\)\s*$/,'').split(' ').length;
+function duoEl(){let d=document.getElementById('duo');if(!d){d=document.createElement('div');d.id='duo';document.body.appendChild(d)}d.className='duo'+(document.body.classList.contains('zen')?' claro':'');d.style.display='flex';try{document.body.classList.add('duo-on')}catch(e){}return d}
+function duoFechar(){const d=document.getElementById('duo');if(d){d.style.display='none';d.innerHTML=''}try{speechSynthesis.cancel()}catch(e){}document.body.classList.remove('duo-on')}
+/* distratores: textos diferentes, de preferência do mesmo tipo (palavra x frase) */
+function duoOps(l,certo,pool,campo){const alvo=campo(certo),nw=duoPal(alvo),viz=pool.filter(r=>r!==certo&&campo(r)!==alvo&&r[0]!==certo[0]);
+  const parecidos=embaralhar(viz.filter(r=>Math.abs(duoPal(campo(r))-nw)<=Math.max(1,nw/3))),resto=embaralhar(viz);const out=[],vis=new Set([alvo]);
+  for(const r of parecidos.concat(resto)){const t=campo(r);if(vis.has(t))continue;vis.add(t);out.push(r);if(out.length===3)break}
+  return embaralhar([certo].concat(out))}
+function duoMontavel(l,r){const t=duoTxt(r,l);return !IDIOMAS[l].semMontar&&t.split(' ').length>=3}
+function duoTipo(l,r,voz){const ts=['pl','lp'];if(voz)ts.push('escuta');if(duoMontavel(l,r)){ts.push('montar','montar');if(voz)ts.push('ditado')}return pick(ts)}
+/* monta a fila de telas de uma lição */
+function duoFila(l,u,n){
+  const U=DUO_UNI[u],voz=temVoz(l),todos=DUO_UNI.slice(0,u+1).flatMap(x=>x.rows),pool=U.rows.concat(DUO_UNI.slice(Math.max(0,u-2),u).flatMap(x=>x.rows));
+  const F=[];
+  if(n<4){const novos=U.rows.slice(n*5,n*5+5);
+    if(n===0&&U.dica&&U.dica[l])F.push({k:'dica',u});
+    novos.forEach(r=>{F.push({k:'nova',r});F.push({k:duoTipo(l,r,voz),r})});
+    F.push({k:'pares',rs:novos.slice()});
+    embaralhar(novos).slice(0,3).forEach(r=>F.push({k:duoTipo(l,r,voz),r}));
+    const ant=U.rows.slice(0,n*5).concat(u>0?DUO_UNI[u-1].rows:[]);if(ant.length)embaralhar(ant).slice(0,2).forEach(r=>F.push({k:duoTipo(l,r,voz),r}));
+  }else{const rs=embaralhar(U.rows).slice(0,9).concat(embaralhar(todos.filter(r=>!U.rows.includes(r))).slice(0,3));
+    rs.forEach(r=>F.push({k:duoTipo(l,r,voz),r}));F.splice(6,0,{k:'pares',rs:embaralhar(U.rows).slice(0,5)})}
+  F.forEach(x=>x.pool=pool);return F;
+}
+/* ---------- trilha ---------- */
+function duoTrilha(l){
+  const I=idiomas();if(!I.sel.length){idiModal();return}l=l&&I.sel.includes(l)?l:(I.duoL&&I.sel.includes(I.duoL)?I.duoL:I.sel[0]);I.duoL=l;
+  const T=duoTr(l),L=IDIOMAS[l],d=duoEl();
+  const off=[0,52,72,52,0];
+  d.innerHTML='<div class="duo-top"><button class="duo-x" data-x>✕</button><div class="duo-langs">'+I.sel.map(k=>'<button class="duo-flag'+(k===l?' on':'')+'" data-lang="'+k+'">'+IDIOMAS[k].flag+'</button>').join('')+'</div><div class="duo-stat">⭐ '+(T.lic||0)+'</div></div>'+
+    '<div class="duo-scroll" id="duoSc">'+DUO_UNI.map((U,ui)=>{const cor=DUO_CORES[ui%DUO_CORES.length],bloq=ui>T.u;
+      return'<div class="duo-uni" data-ui="'+ui+'"><div class="duo-ban" style="background:'+(bloq?'var(--dl)':cor)+'"><div><small>UNIDADE '+(ui+1)+'</small><b>'+U.ico+' '+U.t+'</b></div><button class="duo-guia" data-guia="'+ui+'">📖 GUIA</button></div>'+
+        '<div class="duo-path">'+[0,1,2,3,4].map(n=>{const st=ui<T.u||(ui===T.u&&n<T.n)?'ok':ui===T.u&&n===T.n?'at':'lk';
+          return'<div class="duo-nwrap" style="transform:translateX('+(ui%2?-off[n]:off[n])+'px)">'+(st==='at'?'<div class="duo-bal">COMEÇAR</div>':'')+'<button class="duo-node '+st+'" data-node="'+ui+'-'+n+'" style="--c:'+cor+'">'+(st==='ok'?'✓':n===4?'🏆':st==='lk'?'🔒':'★')+'</button></div>'}).join('')+'</div></div>'}).join('')+
+    '<p class="duo-fim">'+L.flag+' '+DUO_UNI.length+' unidades · '+DUO_UNI.length*20+' palavras e frases</p></div>';
+  d.querySelector('[data-x]').onclick=duoFechar;
+  d.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{I.duoL=b.dataset.lang;salvar();duoTrilha(b.dataset.lang)});
+  d.querySelectorAll('[data-guia]').forEach(b=>b.onclick=()=>duoGuia(l,+b.dataset.guia));
+  d.querySelectorAll('[data-node]').forEach(b=>b.onclick=()=>{const [ui,n]=b.dataset.node.split('-').map(Number);
+    if(b.classList.contains('lk')){toast('Complete as lições anteriores primeiro');return}
+    duoLicao(l,ui,n,{onEnd:(ac,tot)=>{const q=arenaGanhar(xpA(Math.round(15*ac/tot)),1,'Lição de '+L.nome);duoTrilha(l);return q}})});
+  setTimeout(()=>{const at=d.querySelector('.duo-node.at');if(at)at.scrollIntoView({block:'center'})},60);
+}
+function duoGuia(l,ui){const U=DUO_UNI[ui],L=IDIOMAS[l];
+  abrir('<h3 class="cy">📖 GUIA · '+U.ico+' '+U.t.toUpperCase()+'</h3>'+(U.dica&&U.dica[l]?'<div class="card" style="font-size:15px;line-height:1.55;margin:8px 0 12px">💡 '+U.dica[l]+'</div>':'')+
+    '<div class="h cy" style="font-size:11px;margin-bottom:6px">'+L.flag+' PALAVRAS E FRASES DA UNIDADE</div>'+U.rows.map((r,i)=>'<div class="duo-gl"><button data-gf="'+i+'">🔊</button><div><b>'+duoTxt(r,l)+'</b><small>'+r[0]+'</small></div></div>').join('')+
+    '<button class="btn" id="dgX" style="margin-top:12px">FECHAR</button>');
+  $('#dgX').onclick=fechar;$('#sheet').querySelectorAll('[data-gf]').forEach(b=>b.onclick=()=>falar(l,duoTxt(U.rows[+b.dataset.gf],l)));
+}
+/* ---------- lição ---------- */
+function duoLicao(l,u,n,opt){
+  const L=IDIOMAS[l],I=idiomas(),T=duoTr(l),d=duoEl(),F=duoFila(l,u,n),t0=Date.now();
+  const total=F.filter(x=>x.k!=='nova'&&x.k!=='dica').length;let feitos=0,acertos=0,erros=0,i=0;const repet=new Set();
+  const fala=t=>falar(l,t);
+  const shell=(corpo,rodape)=>{d.innerHTML='<div class="duo-top"><button class="duo-x" data-x>✕</button><div class="duo-prog"><i style="width:'+Math.round(feitos/Math.max(1,total)*100)+'%"></i></div><div class="duo-stat">'+L.flag+'</div></div><div class="duo-body">'+corpo+'</div><div class="duo-foot" id="dF">'+rodape+'</div>';
+    d.querySelector('[data-x]').onclick=()=>{const x=d.querySelector('[data-x]');if(!x.dataset.c){x.dataset.c=1;x.textContent='SAIR?';setTimeout(()=>{if(x.isConnected){x.dataset.c='';x.textContent='✕'}},2500);return}duoFechar();if(opt&&opt.onSair)opt.onSair()}};
+  const som=(t,g)=>'<button class="duo-som'+(g?' g':'')+'" data-som="'+encodeURIComponent(t)+'">🔊</button>';
+  const ligSom=()=>d.querySelectorAll('[data-som]').forEach(b=>b.onclick=e=>{e.stopPropagation();const lento=b.dataset.l==='1';falar(l,decodeURIComponent(b.dataset.som),lento);b.dataset.l=lento?'0':'1'});
+  const btn=(txt,id,cls)=>'<button class="duo-btn '+(cls||'')+'" id="'+id+'">'+txt+'</button>';
+  /* resultado (faixa de baixo) */
+  const resultado=(ok,certo,extra,item)=>{feitos++;if(ok){acertos++;I.ac[l]=(I.ac[l]||0)+1;try{SFX.certo()}catch(e){}}else{erros++;try{SFX.erro()}catch(e){}if(item&&!item.rep&&!repet.has(item)&&repet.size<6){repet.add(item);F.push(Object.assign({},item,{rep:1}))}}
+    salvar();const pr=d.querySelector('.duo-prog i');if(pr)pr.style.width=Math.round(feitos/Math.max(1,total+repet.size)*100)+'%';
+    const f=d.querySelector('#dF');f.className='duo-foot '+(ok?'ok':'no');
+    f.innerHTML='<div class="duo-res"><b>'+(ok?'✓ '+pick(DUO_ELOGIO):'✕ Resposta correta:')+'</b>'+(ok?'':'<div>'+certo+'</div>')+(extra?'<small>'+extra+'</small>':'')+'</div>'+btn(ok?'CONTINUAR':'ENTENDI','dNx',ok?'':'red');
+    f.querySelector('#dNx').onclick=prox};
+  const fim=()=>{const seg=Math.round((Date.now()-t0)/1000),prec=Math.round(acertos/Math.max(1,acertos+erros)*100);
+    if(u===T.u&&n===T.n){T.n++;if(T.n>4){T.n=0;T.u=Math.min(DUO_UNI.length,T.u+1)}}T.lic=(T.lic||0)+1;salvar();try{renderSaber()}catch(e){}
+    let ganho=0;if(opt&&opt.onEnd)ganho=opt.onEnd(acertos,acertos+erros)||0;
+    const dd=document.getElementById('duo');if(!dd||dd.style.display==='none'){if(!opt||!opt.semTela)return}
+    duoEl().innerHTML='<div class="duo-body duo-end"><div class="duo-troph">'+(prec>=90?'🏆':prec>=70?'🎉':'💪')+'</div><h2>Lição concluída!</h2><p>'+(prec>=90?'Que precisão! Você está mandando muito bem.':prec>=70?'Bom trabalho! Cada lição te deixa mais fluente.':'Continue praticando: errar faz parte de aprender.')+'</p>'+
+      '<div class="duo-cards"><div class="c1"><small>XP</small><b>'+(ganho?'+'+ganho:'—')+'</b></div><div class="c2"><small>PRECISÃO</small><b>'+prec+'%</b></div><div class="c3"><small>TEMPO</small><b>'+Math.floor(seg/60)+':'+String(seg%60).padStart(2,'0')+'</b></div></div>'+
+      (n===4&&T.u>u?'<p class="duo-up">🎓 Unidade '+(u+1)+' concluída!'+(DUO_UNI[u+1]?' Próxima: '+DUO_UNI[u+1].ico+' '+DUO_UNI[u+1].t:'')+'</p>':'')+'</div><div class="duo-foot">'+btn('CONTINUAR','dEnd')+'</div>';
+    document.getElementById('dEnd').onclick=()=>{if(opt&&opt.depois)opt.depois();else duoFechar()};
+    try{SFX.sucesso()}catch(e){}};
+  const prox=()=>{if(i>=F.length){fim();return}const x=F[i++],r=x.r;
+    if(x.k==='dica'){const U=DUO_UNI[x.u];shell('<div class="duo-tag" style="background:#1cb0f6">💡 DICA DA UNIDADE</div><h2 class="duo-h">'+U.ico+' '+U.t+'</h2><div class="duo-dica">'+U.dica[l]+'</div>',btn('CONTINUAR','dC'));d.querySelector('#dC').onclick=prox;return}
+    if(x.k==='nova'){const t=duoTxt(r,l);shell('<div class="duo-tag">✨ NOVA '+(duoPal(t)>2?'FRASE':'PALAVRA')+'</div><div class="duo-nova">'+som(t,1)+'<b>'+t+'</b><span>'+r[0]+'</span></div><p class="duo-mut">Toque no 🔊 para ouvir de novo (duas vezes = devagar).</p>',btn('CONTINUAR','dC'));ligSom();d.querySelector('#dC').onclick=prox;setTimeout(()=>fala(t),250);return}
+    if(x.k==='pares'){const rs=x.rs,esq=embaralhar(rs.map((r,k)=>({k,t:duoTxt(r,l)}))),dir=embaralhar(rs.map((r,k)=>({k,t:r[0]})));let sel=null,certos=0,err=0;
+      shell('<h2 class="duo-h">Toque nos pares</h2><div class="duo-pares"><div>'+esq.map(o=>'<button class="duo-op" data-a="'+o.k+'">'+o.t+'</button>').join('')+'</div><div>'+dir.map(o=>'<button class="duo-op" data-b="'+o.k+'">'+o.t+'</button>').join('')+'</div></div>','<p class="duo-mut" style="margin:0">Toque em uma palavra e depois na tradução dela.</p>');
+      const bs=[...d.querySelectorAll('[data-a],[data-b]')];
+      bs.forEach(b=>b.onclick=()=>{if(b.classList.contains('feito'))return;const lado=b.dataset.a!=null?'a':'b',k=b.dataset.a!=null?b.dataset.a:b.dataset.b;if(lado==='a')fala(b.textContent);
+        if(!sel||sel.lado===lado){bs.forEach(x=>x.classList.remove('sel'));sel={lado,k,b};b.classList.add('sel');return}
+        if(sel.k===k){[sel.b,b].forEach(x=>{x.classList.remove('sel');x.classList.add('feito')});certos++;try{SFX.certo()}catch(e){}if(certos===rs.length){resultado(err<=1,'',err?err+' erro(s) nos pares':'')}}
+        else{err++;try{SFX.erro()}catch(e){}[sel.b,b].forEach(x=>{x.classList.remove('sel');x.classList.add('errou');setTimeout(()=>x.classList.remove('errou'),450)})}sel=null});
+      return}
+    const t=duoTxt(r,l);
+    if(x.k==='montar'||x.k==='ditado'){const extras=embaralhar(x.pool.filter(o=>o!==r&&!IDIOMAS[l].semMontar).flatMap(o=>duoTxt(o,l).split(' '))).filter(w=>!t.split(' ').includes(w)).slice(0,Math.min(3,1+Math.floor(t.split(' ').length/3)));
+      const pecas=embaralhar(t.split(' ').concat(extras).map((w,k)=>({w,k})));let esc=[],travado=false,primeira=true;
+      const draw=()=>{const corpo=(x.k==='montar'?'<h2 class="duo-h">Escreva em '+L.nome.toLowerCase()+'</h2><div class="duo-bub"><span class="duo-av">'+L.flag+'</span><div>'+r[0]+'</div></div>':'<h2 class="duo-h">Toque no que você ouvir</h2><div style="text-align:center;margin:6px 0 14px">'+som(t,1)+'</div>')+
+          '<div class="duo-linha">'+esc.map(p=>'<button class="duo-ch" data-e="'+p.k+'">'+p.w+'</button>').join('')+'</div><div class="duo-banco">'+pecas.map(p=>'<button class="duo-ch'+(esc.includes(p)?' vazio':'')+'" data-p="'+p.k+'">'+p.w+'</button>').join('')+'</div>';
+        if(primeira){primeira=false;shell(corpo,btn('VERIFICAR','dV','off'))}else{d.querySelector('.duo-body').innerHTML=corpo;const v=d.querySelector('#dV');if(v)v.classList.toggle('off',!esc.length)}
+        ligSom();
+        d.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(travado)return;const p=pecas.find(q=>q.k===+b.dataset.p);if(esc.includes(p))return;esc.push(p);falar(l,limpaPal(p.w));draw()});
+        d.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{if(travado)return;esc=esc.filter(q=>q.k!==+b.dataset.e);draw()});
+        const v=d.querySelector('#dV');if(v)v.onclick=()=>{if(travado||!esc.length)return;travado=true;const resp=esc.map(p=>p.w).join(' ');const norm=s=>s.toLowerCase().replace(/[.,!?¿¡;:]/g,'').replace(/\s+/g,' ').trim();
+          const ok=norm(resp)===norm(t);fala(t);resultado(ok,t,x.k==='ditado'?'= '+r[0]:'',x)}};
+      draw();if(x.k==='ditado')setTimeout(()=>fala(t),300);return}
+    /* múltipla escolha */
+    const campo=x.k==='lp'?(o=>o[0]):(o=>duoTxt(o,l)),ops=duoOps(l,r,x.pool,campo),c=ops.indexOf(r);let sel=-1;
+    const enun=x.k==='lp'?'<h2 class="duo-h">O que significa?</h2><div class="duo-bub"><span class="duo-av">'+L.flag+'</span><div>'+som(t)+' '+t+'</div></div>'
+      :x.k==='pl'?'<h2 class="duo-h">Como se diz em '+L.nome.toLowerCase()+'?</h2><div class="duo-bub"><span class="duo-av">🇧🇷</span><div>'+r[0]+'</div></div>'
+      :'<h2 class="duo-h">O que você ouviu?</h2><div style="text-align:center;margin:6px 0 14px">'+som(t,1)+'</div>';
+    shell(enun+'<div class="duo-ops">'+ops.map((o,k)=>'<button class="duo-op" data-k="'+k+'"><span>'+(k+1)+'</span>'+campo(o)+'</button>').join('')+'</div>',btn('VERIFICAR','dV','off'));ligSom();
+    let travado=false;
+    d.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(travado)return;sel=+b.dataset.k;d.querySelectorAll('[data-k]').forEach(q=>q.classList.toggle('sel',q===b));if(x.k!=='lp')fala(campo(ops[sel]));d.querySelector('#dV').classList.remove('off')});
+    d.querySelector('#dV').onclick=()=>{if(travado||sel<0)return;travado=true;const ok=sel===c;
+      d.querySelectorAll('[data-k]').forEach(q=>{const k=+q.dataset.k;if(k===c)q.classList.add('certa');else if(k===sel)q.classList.add('errada')});
+      if(x.k==='lp'||!ok)fala(t);resultado(ok,campo(r),x.k==='escuta'?'= '+r[0]:x.k==='lp'?t+' = '+r[0]:'',x)};
+    if(x.k!=='pl')setTimeout(()=>fala(t),300);
+  };
+  prox();
+}
+/* ---------- card da Arena: abre a lição da trilha ---------- */
+function cardIdioma(el,fim){
+  const I=idiomas(),J=el.querySelector('.jogo');
+  if(!I.sel.length){
+    cabecalho(el,'🌍','Idiomas','ESCOLHA','gd','escolha quantos quiser');
+    J.innerHTML='<p class="ar-inst">Quais idiomas você quer aprender? Escolha quantos quiser (dá para mudar depois em Perfil → Saber).</p>'+idiEscolherHtml()+'<button class="btn" id="idOk" style="margin-top:14px">COMEÇAR</button>';
+    idiLigar(J);J.querySelector('#idOk').onclick=()=>{if(!idiomas().sel.length){toast('Escolha pelo menos um idioma');return}cardIdioma(el,fim)};return;
+  }
+  I.vez=(I.vez||0)+1;const lsel=I.sel.filter(x=>FOCO.idi.has(x)),l=lsel.length&&Math.random()<.85?pick(lsel):I.sel[I.vez%I.sel.length],L=IDIOMAS[l],T=duoTr(l);
+  const fimTrilha=T.u>=DUO_UNI.length,u=fimTrilha?rr(0,DUO_UNI.length-1):T.u,n=fimTrilha?4:T.n,U=DUO_UNI[u],cor=DUO_CORES[u%DUO_CORES.length];
+  cabecalho(el,L.flag,'Lição de '+L.nome,'UNIDADE '+(u+1),'cy','até +'+xpA(15)+' XP · MENTE');
+  J.innerHTML='<div class="duo-mini" style="--c:'+cor+'"><div class="duo-mini-t"><small>UNIDADE '+(u+1)+' DE '+DUO_UNI.length+'</small><b>'+U.ico+' '+U.t+'</b></div>'+
+    '<div class="duo-mini-n">'+[0,1,2,3,4].map(k=>'<i class="'+(k<n?'ok':k===n?'at':'')+'">'+(k<n?'✓':k===4?'🏆':'★')+'</i>').join('')+'</div>'+
+    '<p>'+(n===4?'Revisão da unidade: misture tudo que aprendeu.':'Lição '+(n+1)+' de 4: 5 '+(U.rows.slice(n*5,n*5+5).some(r=>duoPal(duoTxt(r,l))>2)?'novas palavras e frases':'novas palavras')+'.')+'</p>'+
+    '<button class="duo-btn" data-go>▶ COMEÇAR LIÇÃO</button><button class="duo-btn sec" data-tr>🗺️ VER TRILHA</button></div><p class="ar-msg"></p>';
+  let feito=false;
+  J.querySelector('[data-tr]').onclick=()=>duoTrilha(l);
+  J.querySelector('[data-go]').onclick=()=>{if(feito){duoTrilha(l);return}
+    duoLicao(l,u,n,{onEnd:(ac,tot)=>{const antes=arenaDia().xp;feito=true;fim(ac/tot>=.6,Math.max(.3,ac/tot));const g=arenaDia().xp-antes;
+      J.querySelector('[data-go]').textContent='🗺️ CONTINUAR NA TRILHA';J.querySelector('.ar-msg').innerHTML='<b class="cy">Lição concluída:</b> '+ac+'/'+tot+' acertos.';return g}});
+  };
+}
 
 /* ============ NOVOS CARDS DA ARENA ============ */
 /* ============ BANCO DE PERGUNTAS FIXAS (500 por matéria) ============
@@ -4251,66 +5021,6 @@ function idiExercicio(l){
   if(tipo==='lp')return{tipo,item,t,perg:alvo,ops:ops.map(x=>x[0]),c:ops.indexOf(item),fala:alvo};
   return{tipo,item,t,perg:item[0],ops:ops.map(x=>x[L.col]),c:ops.indexOf(item),fala:alvo};
 }
-function cardIdioma(el,fim){
-  const I=idiomas(),J=el.querySelector('.jogo');
-  if(!I.sel.length){
-    cabecalho(el,'🌍','Idiomas','ESCOLHA','gd','escolha quantos quiser');
-    J.innerHTML='<p class="ar-inst">Quais idiomas você quer aprender? Escolha quantos quiser (dá para mudar depois em Perfil → Saber).</p>'+idiEscolherHtml()+'<button class="btn" id="idOk" style="margin-top:14px">COMEÇAR</button>';
-    idiLigar(J);J.querySelector('#idOk').onclick=()=>{if(!idiomas().sel.length){toast('Escolha pelo menos um idioma');return}cardIdioma(el,fim)};return;
-  }
-  I.vez=(I.vez||0)+1;const lsel=I.sel.filter(x=>FOCO.idi.has(x)),l=lsel.length&&Math.random()<.85?pick(lsel):I.sel[I.vez%I.sel.length],L=IDIOMAS[l],nv=idiNivel(l);
-  cabecalho(el,L.flag,'Lição de '+L.nome+' · Nível '+nv,'NÍVEL '+nv,nv<4?'cy':nv<7?'gd':'rd','até +'+xpA(15)+' XP · MENTE');
-  let n=0,ac=0,nvAt=nv;const TOT=6;
-  const prox=()=>{if(n>=TOT){
-      const nvD=idiNivel(l);J.innerHTML='<div class="card" style="text-align:center"><div class="h cy" style="font-size:14px">Lição concluída</div><div style="font-family:Orbitron;font-size:40px;margin:10px 0">'+ac+'/'+TOT+'</div><div class="mut" style="font-size:14px">'+L.flag+' '+L.nome+' · Nível '+nvD+' · '+(I.ac[l]||0)+' acertos</div><p style="font-size:14px;margin-top:10px">💡 '+IDI_DICAS[l]+'</p></div>';
-      fim(ac>=4,ac/TOT);return}
-    const ex=idiExercicio(l);n++;
-    const resp=ok=>{if(ok){ac++;I.ac[l]=(I.ac[l]||0)+1;try{SFX.certo()}catch(e){}}else{try{SFX.erro()}catch(e){}}
-      const nvA=nvAt,nvD=idiNivel(l);nvAt=nvD;salvar();renderSaber();
-      if(nvD>nvA&&ok)setTimeout(()=>sistema(L.nome.toUpperCase()+' · NÍVEL '+nvD,'<span style="font-size:44px">'+L.flag+'</span><br>Você chegou ao <b class="gd">Nível '+nvD+'</b> em '+L.nome+'.'+(nvD===3?'<br><br>Frases completas foram liberadas!':'')),600)};
-    const topo='<p class="ar-inst">'+n+'/'+TOT+' · ';
-    const alto=(t,grande)=>'<button class="idi-som'+(grande?' g':'')+'" data-fala="'+encodeURIComponent(t)+'">🔊</button>';
-    const ligarSom=()=>J.querySelectorAll('[data-fala]').forEach(b=>b.onclick=()=>{falar(l,decodeURIComponent(b.dataset.fala),b.dataset.lento==='1');b.dataset.lento=b.dataset.lento==='1'?'0':'1'});
-    if(ex.tipo==='montar'||ex.tipo==='ditado'){
-      const pecas=embaralhar(ex.alvo.split(' ').map((w,i)=>({w,i})));let esc=[],feito=false;
-      const enun=ex.tipo==='montar'?'Monte a frase em '+L.nome.toLowerCase()+':</p><div class="card" style="font-size:18px;font-weight:700;margin-bottom:10px">'+ex.pt+'</div>'
-        :'Ouça e monte o que foi dito:</p><div style="text-align:center;margin-bottom:10px">'+alto(ex.alvo,1)+'<div class="mut" style="font-size:12px;margin-top:4px">toque de novo para ouvir devagar</div></div>';
-      const draw=msg=>{J.innerHTML=topo+enun+
-        '<div class="card idi-resp">'+(esc.map(p=>'<span class="idi-p">'+p.w+'</span>').join(' ')||'<span class="mut">toque nas palavras abaixo</span>')+'</div>'+
-        '<div class="idi-pecas">'+pecas.map((p,k)=>'<button class="chip'+(esc.includes(p)?' usado':'')+'" data-p="'+k+'" '+(esc.includes(p)?'disabled':'')+'>'+p.w+'</button>').join('')+'</div>'+
-        '<div class="row" style="margin-top:10px"><button class="btn ghost" id="idDel">⌫ APAGAR</button><button class="btn" id="idVer">VERIFICAR</button></div><p class="ar-msg">'+(msg||'')+'</p>';
-        ligarSom();
-        J.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(feito)return;const p=pecas[+b.dataset.p];esc.push(p);falar(l,limpaPal(p.w));draw()});
-        J.querySelector('#idDel').onclick=()=>{if(feito)return;esc.pop();draw()};
-        J.querySelector('#idVer').onclick=()=>{if(feito)return;if(esc.length<pecas.length){toast('Use todas as palavras');return}feito=true;
-          const ok=esc.map(p=>p.w).join(' ')===ex.alvo;resp(ok);falar(l,ex.alvo);
-          J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Perfeito!</b>':'<b class="rd">Correto:</b> '+ex.alvo)+(ex.tipo==='ditado'?'<br><span class="mut">= '+ex.pt+'</span>':'');
-          J.querySelector('#idVer').textContent='CONTINUAR →';J.querySelector('#idVer').onclick=prox;J.querySelector('#idDel').style.visibility='hidden'};
-      };draw();if(ex.tipo==='ditado')aoVer(el,()=>falar(l,ex.alvo));
-      return;
-    }
-    // múltipla escolha (lp, pl, escuta). Opções no idioma estrangeiro: toque ouve e seleciona; confirme em VERIFICAR.
-    const estrangeiro=ex.tipo!=='lp',falaOps=ex.tipo==='pl';
-    let enun;
-    if(ex.tipo==='lp')enun='O que significa:</p><div class="card idi-perg">'+ex.perg+' '+alto(ex.fala)+'</div>';
-    else if(ex.tipo==='pl')enun='Como se diz em '+L.nome.toLowerCase()+':</p><div class="card idi-perg">'+ex.perg+'</div>';
-    else enun='O que você ouviu?</p><div style="text-align:center;margin-bottom:14px">'+alto(ex.fala,1)+'<div class="mut" style="font-size:12px;margin-top:4px">toque de novo para ouvir devagar</div></div>';
-    J.innerHTML=topo+enun+ex.ops.map((t,k)=>'<button class="btn qbtn" data-k="'+k+'">'+t+'</button>').join('')+(estrangeiro?'<button class="btn" id="idVer" style="margin-top:6px" disabled>VERIFICAR</button>':'')+'<p class="ar-msg"></p>';
-    ligarSom();let feito=false,sel=-1;
-    const corrigir=k=>{feito=true;const ok=k===ex.c;
-      J.querySelectorAll('[data-k]').forEach(x=>{x.classList.remove('esc');if(+x.dataset.k===ex.c)x.classList.add('sel')});if(!ok)J.querySelector('[data-k="'+k+'"]').classList.add('red');
-      resp(ok);if(ex.tipo!=='escuta'||!ok)falar(l,ex.fala);
-      const v=J.querySelector('#idVer');if(v)v.remove();
-      J.querySelector('.ar-msg').innerHTML=(ok?'<b class="cy">Isso!</b> ':'<b class="rd">Era:</b> '+ex.ops[ex.c]+' ')+(ex.tipo==='escuta'?'<span class="mut">= '+ex.item[0]+'</span>':'')+'<button class="btn" style="margin-top:10px" id="idProx">CONTINUAR →</button>';
-      J.querySelector('#idProx').onclick=prox};
-    J.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(feito)return;const k=+b.dataset.k;
-      if(!estrangeiro){corrigir(k);return}
-      sel=k;J.querySelectorAll('[data-k]').forEach(x=>x.classList.toggle('esc',+x.dataset.k===k));if(falaOps)falar(l,ex.ops[k]);J.querySelector('#idVer').disabled=false});
-    if(estrangeiro)J.querySelector('#idVer').onclick=()=>{if(!feito&&sel>=0)corrigir(sel)};
-    if(ex.tipo==='escuta'||ex.tipo==='lp')aoVer(el,()=>falar(l,ex.fala));
-  };prox();
-}
-
 /* ---------- Reflexo e agilidade (FÍSICO) ---------- */
 function cardSimon(el,fim){
   S.simon=S.simon||{alvo:5,rec:0};const alvo=S.simon.alvo;
@@ -4381,7 +5091,8 @@ function saberExtraHtml(){
   h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div class="h cy" style="font-size:12px">🌍 Idiomas</div><button class="h gd" data-idesc style="font-size:11px;letter-spacing:.08em">ESCOLHER</button></div>';
   if(!I.sel.length)h+='<p class="mut" style="font-size:13px;margin:6px 0">Nenhum idioma escolhido ainda.</p>';
   I.sel.forEach(l=>{const D=IDIOMAS[l],n=idiNivel(l),a=I.ac[l]||0,i0=IDI_NIVEIS[n-1],p=IDI_NIVEIS[n],pc2=n>=10?100:Math.round((a-i0)/(p-i0)*100);
-    h+='<div class="stat"><div class="nm">'+D.flag+' '+D.nome+'</div><div><div class="bar"><i style="width:'+pc2+'%"></i></div><small>Nível '+n+' · '+a+' acertos'+(n<10?' · próximo em '+(p-a):'')+'</small></div><div class="vl cy">N'+n+'</div></div>'});
+    const Tr=duoTr(l),uu=Math.min(Tr.u,DUO_UNI.length),pcT=Math.round((uu*5+(Tr.u<DUO_UNI.length?Tr.n:0))/(DUO_UNI.length*5)*100);
+    h+='<div class="stat" data-trilha="'+l+'" style="cursor:pointer"><div class="nm">'+D.flag+' '+D.nome+' <span class="gd" style="font-size:11px">🗺️ TRILHA</span></div><div><div class="bar"><i style="width:'+pcT+'%"></i></div><small>'+(Tr.u>=DUO_UNI.length?'Trilha completa!':'Unidade '+(uu+1)+'/'+DUO_UNI.length+' · '+DUO_UNI[uu].t)+' · '+a+' acertos</small></div><div class="vl cy">'+pcT+'%</div></div>'});
   return h;
 }
 function idiModal(){abrir('<h3 class="cy">🌍 IDIOMAS</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Escolha quantos idiomas quiser. As lições na Arena alternam entre eles, e cada um sobe de nível separado.</p><div id="idM">'+idiEscolherHtml()+'</div><button class="btn" style="margin-top:14px" onclick="this.closest(\'.modal\').classList.remove(\'on\')">PRONTO</button>');idiLigar(document.getElementById('idM'))}
