@@ -193,7 +193,7 @@ body.penal .fab{border-color:var(--red);color:var(--red);box-shadow:0 0 22px rgb
 .dia-e{margin-bottom:10px}
 .vic .row .vic-sos{flex:0 0 auto;width:auto;padding-left:14px;padding-right:14px;border-color:rgba(255,120,120,.5);color:#ff9a9a}
 .vaj{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.vaj>span{font-size:22px;line-height:1.2}.vaj b{font-size:15px}.vaj p{font-size:14px;line-height:1.45;margin-top:3px;color:var(--mut)}
-.resp{display:flex;justify-content:center;align-items:center;height:200px}.resp-c{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(76,201,240,.55),rgba(76,201,240,.08));transform:scale(.45);transition:transform 4s ease-in-out}
+.resp{display:flex;justify-content:center;align-items:center;height:190px;position:relative}.resp-t{position:absolute;text-align:center}.resp-t b{display:block;font-size:20px;color:var(--txt)}.resp-t small{font-size:14px;color:var(--mut)}.resp-c{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(76,201,240,.55),rgba(76,201,240,.08));transform:scale(.45);transition:transform 4s ease-in-out}
 .idi-resp{min-height:56px;font-size:17px;line-height:1.6}
 .idi-p{display:inline-block;color:var(--cyan);font-weight:700}
 .idi-pecas{display:flex;flex-wrap:wrap;margin-top:10px}
@@ -1310,7 +1310,7 @@ const VIC_FRASES=['A vontade é como uma onda: sobe, chega no pico e passa. Voc�
 const VIC_AGORA=[
  ['⏳','Espere 10 minutos','Diga para si: "se ainda quiser daqui a 10 minutos, eu penso de novo". Na maioria das vezes, a vontade diminui bastante nesse tempo.'],
  ['🌊','Surfe a onda','Observe a vontade sem lutar e sem obedecer: onde ela aparece no corpo, como muda. Ela sobe, atinge um pico e vai embora.'],
- ['🫁','Respire devagar','Inspire em 4 segundos, segure 4, solte em 4, espere 4. Repita algumas vezes. Use o botão de respiração guiada acima.'],
+ ['🫁','Respire devagar','Inspire em 4 segundos, segure 4, solte em 4, espere 4. Repita algumas vezes, acompanhando o círculo.'],
  ['🚶','Mude de lugar','Saia do ambiente onde a vontade apareceu. Uma caminhada curta, mesmo dentro de casa, já quebra o ciclo.'],
  ['📞','Fale com alguém','Mande mensagem ou ligue para uma pessoa de confiança. Não precisa explicar tudo, só não fique sozinho com a vontade.'],
  ['💧','Beba água e coma algo','Fome, sede e cansaço deixam a vontade mais forte. Cuide do corpo primeiro.'],
@@ -1341,23 +1341,31 @@ const VIC_DICAS={
  compras:{d:['Regra das 48 horas: espere dois dias antes de qualquer compra que não seja essencial.','Remova cartões salvos em sites e apps.','Cancele e-mails e notificações de promoções.','Antes de comprar, pergunte: eu preciso disso ou é o que estou sentindo?'],a:''},
  outro:{d:['Descubra seus gatilhos: horários, lugares, pessoas e sentimentos.','Prepare uma atividade substituta para a hora da vontade.','Conte para alguém de confiança sobre o seu objetivo.','Comemore cada dia, mesmo os pequenos.'],a:''}
 };
-function vicAjuda(id,aba){const v=vicS().lista.find(x=>x.id===id);if(!v)return;const T=vicTipo(v.tipo),D=VIC_DICAS[v.tipo]||VIC_DICAS.outro;aba=aba||'agora';
+function vicAjuda(id,aba){const v=vicS().lista.find(x=>x.id===id);if(!v)return;const T=vicTipo(v.tipo),D=VIC_DICAS[v.tipo]||VIC_DICAS.outro;
+  abrir('<h3 class="cy">🆘 AJUDA · '+esc(v.nome).toUpperCase()+'</h3>'+
+    '<div class="resp"><div class="resp-c" id="rsC"></div><div class="resp-t"><b id="rsT">Inspire</b><small id="rsN">4</small></div></div>'+
+    '<p class="mut" style="text-align:center;font-size:13px;margin:-4px 0 10px">Acompanhe o círculo com a respiração.</p>'+
+    '<div class="subtabs" style="margin:0 0 10px">'+[['agora','🔥','VONTADE'],['dicas','💡','DICAS'],['depois','💚','RECAÍ']].map(a=>'<button data-va="'+a[0]+'"><span class="ic">'+a[1]+'</span>'+a[2]+'</button>').join('')+'</div>'+
+    '<div id="vaBox"></div>'+
+    '<p class="mut" style="font-size:12px;line-height:1.45;margin:12px 0">Estas dicas não substituem acompanhamento profissional. Se estiver em sofrimento intenso, ligue 188 (CVV, gratuito, 24h).</p><button class="btn ghost" id="vaX">FECHAR</button>');
+  /* respiração em ciclo contínuo enquanto a ajuda estiver aberta */
+  const fases=[['Inspire',4,1],['Segure',4,1],['Solte',4,.45],['Espere',4,.45]];let f=0,seg=4;const c=$('#rsC');
+  const set=()=>{$('#rsT').textContent=fases[f][0];c.style.transform='scale('+fases[f][2]+')'};requestAnimationFrame(()=>requestAnimationFrame(set));
+  const iv=setInterval(()=>{if(!document.body.contains(c)||!$('#modal').classList.contains('on')){clearInterval(iv);return}seg--;if(seg<=0){f=(f+1)%4;seg=fases[f][1];set()}$('#rsN').textContent=seg},1000);
+  $('#vaX').onclick=()=>{clearInterval(iv);fechar()};
+  /* 2 itens por vez, sem repetir até esgotar */
+  const filas={};const fila=(k,lista)=>{if(!filas[k]||!filas[k].length)filas[k]=embaralhar(lista.slice());return filas[k].splice(0,2)};
   const item=x=>'<div class="vaj"><span>'+x[0]+'</span><div><b>'+x[1]+'</b><p>'+x[2]+'</p></div></div>';
-  const corpo=aba==='agora'?'<div class="card" style="text-align:center;font-size:15.5px;line-height:1.5;margin-bottom:10px">💬 '+pick(VIC_FRASES)+'</div><button class="btn" id="vaResp" style="margin-bottom:12px">🫁 RESPIRAÇÃO GUIADA (1 MIN)</button>'+VIC_AGORA.map(item).join('')
-    :aba==='dicas'?'<div class="h cy" style="font-size:11px;margin-bottom:8px">'+T[2]+' DICAS PARA '+esc(v.nome).toUpperCase()+'</div>'+D.d.map(t=>'<div class="vaj"><span>✅</span><div><p style="margin:0">'+t+'</p></div></div>').join('')+(D.a?'<div class="card" style="font-size:14px;line-height:1.5;margin-top:10px;border-color:rgba(255,201,74,.4)">'+D.a+'</div>':'')
-    :VIC_DEPOIS.map(item).join('');
-  abrir('<h3 class="cy">🆘 AJUDA · '+esc(v.nome).toUpperCase()+'</h3><div class="subtabs" style="margin:10px 0 12px">'+[['agora','🔥','VONTADE'],['dicas','💡','DICAS'],['depois','💚','RECAÍ']].map(a=>'<button data-va="'+a[0]+'" class="'+(a[0]===aba?'on':'')+'"><span class="ic">'+a[1]+'</span>'+a[2]+'</button>').join('')+'</div>'+corpo+
-    '<p class="mut" style="font-size:12.5px;line-height:1.45;margin:12px 0">Estas dicas não substituem acompanhamento profissional. Se estiver em sofrimento intenso, ligue 188 (CVV, gratuito, 24h).</p><button class="btn ghost" id="vaX">FECHAR</button>');
-  $('#sheet').querySelectorAll('[data-va]').forEach(b=>b.onclick=()=>vicAjuda(id,b.dataset.va));$('#vaX').onclick=fechar;
-  const r=$('#vaResp');if(r)r.onclick=vicRespirar;
+  const mostrar=k=>{$('#sheet').querySelectorAll('[data-va]').forEach(b=>b.classList.toggle('on',b.dataset.va===k));
+    let h;
+    if(k==='agora')h='<div class="card" style="text-align:center;font-size:15px;line-height:1.5;margin-bottom:6px">💬 '+fila('fr',VIC_FRASES)[0]+'</div>'+fila('ag',VIC_AGORA).map(item).join('');
+    else if(k==='dicas')h=fila('di',D.d).map(t=>'<div class="vaj"><span>✅</span><div><p style="margin:0;color:var(--txt)">'+t+'</p></div></div>').join('')+(D.a?'<div class="card" style="font-size:13.5px;line-height:1.5;margin-top:10px;border-color:rgba(255,201,74,.4)">'+D.a+'</div>':'');
+    else h=fila('dp',VIC_DEPOIS).map(item).join('');
+    $('#vaBox').innerHTML=h+'<button class="h cy" id="vaMais" style="font-size:12px;letter-spacing:.08em;margin-top:10px;width:100%;text-align:center">↻ OUTRAS DICAS</button>';
+    $('#vaMais').onclick=()=>mostrar(k)};
+  $('#sheet').querySelectorAll('[data-va]').forEach(b=>b.onclick=()=>mostrar(b.dataset.va));
+  mostrar(aba||'agora');
 }
-function vicRespirar(){const fases=[['Inspire',4],['Segure',4],['Solte',4],['Espere',4]];let t=0,f=0,seg=fases[0][1],ciclos=0;
-  abrir('<h3 class="cy">🫁 RESPIRAÇÃO</h3><div class="resp"><div class="resp-c" id="rsC"></div></div><p class="h cy" id="rsT" style="text-align:center;font-size:20px;margin:6px 0">Inspire</p><p class="mut" id="rsN" style="text-align:center;font-size:14px">4</p><button class="btn ghost" id="rsX" style="margin-top:12px">PARAR</button>');
-  const c=$('#rsC');const set=()=>{const n=fases[f][0];$('#rsT').textContent=n;c.style.transform=n==='Inspire'||n==='Segure'?'scale(1)':'scale(.45)'};set();
-  const iv=setInterval(()=>{if(!$('#rsC')){clearInterval(iv);return}seg--;if(seg<=0){f=(f+1)%4;if(f===0)ciclos++;if(ciclos>=4){clearInterval(iv);$('#rsT').textContent='Muito bem 💚';$('#rsN').textContent='Como está a vontade agora?';$('#rsX').textContent='FECHAR';return}seg=fases[f][1];set()}$('#rsN').textContent=seg},1000);
-  $('#rsX').onclick=()=>{clearInterval(iv);fechar()};
-}
-
 /* ---------- diário ---------- */
 const HUMOR=[['😞','Muito mal'],['😕','Mal'],['😐','Mais ou menos'],['🙂','Bem'],['😄','Muito bem']];
 const DIA_RESP={
