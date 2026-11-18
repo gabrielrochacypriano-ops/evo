@@ -839,12 +839,13 @@ const MOTIVOS=[['lesao','🩹 Lesão ou limitação física','Bloqueia esse tipo
   ['facil','💪 Muito fácil para mim','O Sistema passa a te dar versões mais difíceis'],['hoje','⏳ Só hoje não dá (tempo/lugar)','Troca só hoje, sem mudar o futuro']];
 const REGIOES=[['bracos','Braços / ombros / punhos'],['pernas','Pernas / joelhos'],['costas','Costas / coluna'],['impacto','Evitar impacto (pulos, corrida)']];
 const PENAL={
- 0:'ZONA DE PENALIDADE: 50 agachamentos + 10 min de caminhada',
- 1:'ZONA DE PENALIDADE: 45 min de estudo focado, sem celular',
- 2:'ZONA DE PENALIDADE: 15 min de meditação + diário escrito',
- 3:'ZONA DE PENALIDADE: 48h sem nenhum gasto supérfluo (comece hoje)',
- 4:'ZONA DE PENALIDADE: ligar para 2 pessoas que você não fala há tempos'
+ 0:['50 agachamentos + 20 flexões','3 pranchas de 1 minuto','20 min de caminhada rápida','100 polichinelos'],
+ 1:['Ler 3 capítulos daquele livro que você largou','Assistir 2 aulas online de uma matéria que você acha chata','1 dia sem Instagram, TikTok e afins','30 min de estudo sem celular'],
+ 2:['15 min de meditação + escrever no Diário','1 dia com um elástico no pulso: a cada palavrão, troque de pulso','Escrever 10 gratidões','1 dia sem reclamar em voz alta'],
+ 3:['Anunciar 1 item parado para vender','Doar 1 peça de roupa','Anotar todos os gastos da semana','1 dia sem nenhum gasto supérfluo'],
+ 4:['Ligar para alguém com quem você não fala há tempo','Mandar mensagem de reconhecimento para 2 pessoas','Fazer um favor sem pedir nada em troca','Ajudar alguém em casa com uma tarefa que não é sua']
 };
+const PEN_MISSAO=2,PEN_IGNORAR=15,PEN_SEQ=5;   // perdas baixas
 const RANKS=[[1,'E'],[8,'D'],[16,'C'],[26,'B'],[38,'A'],[52,'S'],[70,'SS']];
 const NV_CLASSE=8;   // classes liberadas ao chegar no Rank D (nível 8)
 const XP_MISSAO=20, XP_PENAL=40, XP_NIVEL=150;
@@ -1264,21 +1265,24 @@ function processarDias(){
   const h=hoje();
   if(!S.ultimoDia){S.ultimoDia=h;missoesDoDia(h);return}
   if(S.ultimoDia===h){missoesDoDia(h);return}
-  let k=S.ultimoDia, falhou=false, perdeu=0, cont=0;
+  let k=S.ultimoDia, falhou=false, perdeu=0, cont=0, seqPen=0, perdMis=0;
   while(k<h&&cont<60){
     const d=S.dias[k];
     aprenderDia(d);
     // penalidade não cumprida -> perde XP
-    if(d&&d.penal&&!d.penal.feita){const p=d.penal.p;const q=Math.round(30*MODOS[S.modo].mult);S.xp[p]-=q;perdeu+=q;registrar('☠️ Penalidade ignorada: −'+q+' XP em '+PIL[p],1)}
-    if(taxa(k)<MODOS[S.modo].limite) falhou=true; else falhou=false;
+    if(d&&d.penal&&!d.penal.feita){const p=d.penal.p;const q=PEN_IGNORAR+PEN_SEQ*((d.penal.seq||1)-1);S.xp[p]-=q;perdeu+=q;registrar('☠️ Penalidade ignorada: −'+q+' XP em '+PIL[p],1)}
+    if(taxa(k)<MODOS[S.modo].limite){falhou=true;if(d&&d.lista&&d.lista.length){d.lista.forEach(m=>{if(!d.feitas.includes(m.id)&&m.p!=null&&S.xp[m.p]!=null){S.xp[m.p]-=PEN_MISSAO;perdeu+=PEN_MISSAO;perdMis+=PEN_MISSAO}});}}else falhou=false;
+    seqPen=d&&d.penal?(d.penal.seq||1):0;
     k=diaProx(k); cont++;
   }
   S.ultimoDia=h;
   missoesDoDia(h);
   if(falhou&&!S.dias[h].penal){
     const p=fraco();
-    S.dias[h].penal={p,t:PENAL[p],feita:false};
-    setTimeout(()=>sistema('⚠ ALERTA DO SISTEMA','Você não cumpriu o mínimo de missões. Uma <b class="rd">Zona de Penalidade</b> foi ativada no seu ponto mais fraco: <b>'+PIL[p]+'</b>.'+(perdeu?'<br><br>Perda registrada: −'+perdeu+' XP.':''),true),600);
+    const ult=S.penUlt||'',ops=PENAL[p].filter(t=>t!==ult),t=pick(ops.length?ops:PENAL[p]),seq=seqPen>0&&k===h?seqPen+1:1;S.penUlt=t;
+    S.dias[h].penal={p,t:'ZONA DE PENALIDADE: '+t,feita:false,seq};
+    if(perdMis)registrar('☠️ Mínimo de missões não cumprido: −'+perdMis+' XP',1);
+    setTimeout(()=>sistema('⚠ ALERTA DO SISTEMA','Você não cumpriu o mínimo de missões. Uma <b class="rd">Zona de Penalidade</b> foi ativada no seu ponto mais fraco: <b>'+PIL[p]+'</b>.<br><br>☠️ <b>'+t+'</b><br><br>Cumpra até 23:59 e ganhe <b class="gd">+'+Math.round(XP_PENAL*MODOS[S.modo].mult)+' XP</b>. Se ignorar: −'+(PEN_IGNORAR+PEN_SEQ*(seq-1))+' XP.'+(perdeu?'<br><br>Perda registrada: −'+perdeu+' XP.':''),true),600);
   }
   salvar();
 }
