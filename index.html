@@ -379,6 +379,12 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .sys.red .box{border-color:var(--red);box-shadow:0 0 40px rgba(255,46,77,.35)}
 .sys .box p{margin:12px 0 20px;font-size:17px;line-height:1.4}
 
+.mis.hab{cursor:pointer}.mis.hab.feito .mt{opacity:.6}.mis.hab.feito .chk{background:var(--cyan);color:#000;border-color:var(--cyan)}
+.hab-sq{font-size:13px;font-weight:800;color:#ff9600;margin-right:4px}
+.hab-cat{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:none;color:inherit}
+.hab-cat>span{font-size:24px}.hab-cat>div{flex:1}.hab-cat b{display:block;font-size:14.5px}.hab-cat small{color:var(--mut);font-size:12.5px}.hab-cat i{font-style:normal;font-weight:800;color:var(--cyan);font-size:18px}.hab-cat.on{border-color:var(--cyan)}
+.hab-icos{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 12px}.hab-icos button{font-size:22px;padding:6px 0;border:1px solid var(--line);border-radius:10px;background:none}.hab-icos button.on{border-color:var(--cyan);background:rgba(76,201,240,.12)}
+.hab-dias{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}.hab-dias button{padding:10px 0;border:1px solid var(--line);border-radius:10px;font-weight:800;background:none;color:inherit}.hab-dias button.on{border-color:var(--cyan);background:var(--cyan);color:#000}
 /* ===== Idiomas estilo Duolingo ===== */
 .duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
 .duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
@@ -586,7 +592,7 @@ body.duo-on{overflow:hidden}
 
     <!-- MISSÕES -->
     <div class="page" id="pgMis">
-      <div class="subtabs" data-grupo="mis"><button data-sec="missoes" class="on"><span class="ic">⚔️</span>MISSÕES</button><button data-sec="feitos"><span class="ic">🌟</span>FEITOS DO DIA</button></div>
+      <div class="subtabs" data-grupo="mis"><button data-sec="missoes" class="on"><span class="ic">⚔️</span>MISSÕES</button><button data-sec="habitos"><span class="ic">🔁</span>HÁBITOS</button><button data-sec="feitos"><span class="ic">🌟</span>FEITOS</button></div>
       <div class="sec on" data-grupo="mis" data-sec="missoes">
       <div class="ptitle h cy">Missões Diárias</div>
       <div id="penArea"></div>
@@ -599,6 +605,7 @@ body.duo-on{overflow:hidden}
       <div id="misList"></div>
       <p class="mut" style="text-align:center;font-size:14px;margin-top:10px">Toque no botão ✓ para fazer o check-in. Use ⇄ para trocar uma missão.</p>
       </div>
+      <div class="sec" data-grupo="mis" data-sec="habitos"><div class="ptitle h cy">Hábitos</div><div id="habBox"></div></div>
       <div class="sec" data-grupo="mis" data-sec="feitos"><div class="ptitle h cy">Feitos do Dia</div><div id="feitosBox"></div></div>
     </div>
 
@@ -1293,6 +1300,90 @@ function processarDias(){
 function registrar(txt,ruim){S.log.unshift({t:txt,d:Date.now(),r:!!ruim});S.log=S.log.slice(0,80);try{if(!ruim&&/^(⬆️|🏅|🎯 Meta concluída|⚔️|🏷️|🏆)/.test(txt))gPostar(txt)}catch(e){}}
 
 
+/* ============ HÁBITOS: pequenas rotinas por período/horário e dias da semana ============ */
+const HAB_XP=2,HAB_MAXDIA=20,HAB_MARCOS=[[7,10,'1 semana'],[21,20,'21 dias'],[30,25,'1 mês'],[66,40,'66 dias: hábito formado!'],[100,50,'100 dias']];
+const HAB_PER=[['manha','🌅','Manhã'],['tarde','☀️','Tarde'],['noite','🌙','Noite']];
+const HAB_DIAS=['D','S','T','Q','Q','S','S'];
+/* catálogo: [ícone, nome, pilar, períodos, horário, dias da semana (vazio = todos)] */
+const HAB_CAT=[
+ ['🪥','Escovar os dentes',0,['manha','tarde','noite'],'',[]],['🦷','Passar fio dental',0,['noite'],'',[]],['💧','Beber 2 litros de água',0,[],'',[]],['🚿','Tomar banho gelado',0,['manha'],'',[]],
+ ['⏰','Acordar às 5h',0,['manha'],'05:00',[]],['😴','Dormir antes das 23h',0,['noite'],'23:00',[]],['🤸','Alongar 5 minutos',0,['manha'],'',[]],['🚶','Caminhar 10 minutos',0,[],'',[]],
+ ['🍎','Comer uma fruta',0,[],'',[]],['🛏️','Arrumar a cama',0,['manha'],'',[]],['🥗','Comer salada no almoço',0,['tarde'],'',[]],
+ ['📖','Ler 1 página de um livro',1,['noite'],'',[]],['🗣️','Estudar idioma 10 minutos',1,[],'',[]],['📵','Primeira hora do dia sem celular',1,['manha'],'',[]],['📝','Escrever as 3 prioridades do dia',1,['manha'],'',[]],['🎧','Ouvir um podcast que ensina algo',1,[],'',[]],
+ ['🧘','Meditar 5 minutos',2,['manha'],'',[]],['🙏','Fazer uma oração',2,['manha','noite'],'',[]],['✨','Agradecer por 3 coisas',2,['noite'],'',[]],['📔','Escrever no Diário',2,['noite'],'',[]],['🌬️','Respirar fundo por 1 minuto',2,[],'',[]],
+ ['💸','Anotar os gastos do dia',3,['noite'],'',[]],['🐷','Guardar um valor na poupança',3,[],'',[1]],['📊','Conferir o orçamento da semana',3,[],'',[0]],
+ ['☀️','Mandar bom dia para a família',4,['manha'],'',[]],['🤗','Abraçar alguém querido',4,[],'',[]],['💬','Elogiar alguém de verdade',4,[],'',[]],['📞','Ligar para os pais',4,[],'',[0]]];
+function habS(){S.habitos=S.habitos||{lista:[],reg:{}};return S.habitos}
+const habSlots=h=>h.per&&h.per.length?h.per:['q'];
+const habHoje=(h,dt)=>!h.dias||!h.dias.length||h.dias.includes((dt||new Date()).getDay());
+function habCompleto(h,k){const r=habS().reg[k];return !!(r&&r[h.id]&&habSlots(h).every(s=>r[h.id].includes(s)))}
+function habSeq(h){let n=0;const dt=new Date();const kh=hoje(dt);if(habHoje(h,dt)&&habCompleto(h,kh))n++;
+  for(let i=0;i<400;i++){dt.setDate(dt.getDate()-1);if(h.criado&&dt.getTime()<h.criado-864e5)break;if(!habHoje(h,dt))continue;if(habCompleto(h,hoje(dt)))n++;else break}return n}
+function habXpHoje(){const k=hoje(),d=S.dias[k];return d&&d.habXp||0}
+function renderHabitos(){
+  const box=$('#habBox');if(!box)return;const H=habS(),k=hoje(),r=H.reg[k]=H.reg[k]||{},hojeL=H.lista.filter(h=>habHoje(h));
+  const grupo=(h,s)=>s!=='q'?s:h.hora?(+h.hora.slice(0,2)<12?'manha':+h.hora.slice(0,2)<18?'tarde':'noite'):'q';
+  const itens=[];hojeL.forEach(h=>habSlots(h).forEach(s=>itens.push({h,s,g:grupo(h,s)})));
+  const tot=itens.length,ok=itens.filter(x=>(r[x.h.id]||[]).includes(x.s)).length;
+  const sec=(g,ico,nome)=>{const xs=itens.filter(x=>x.g===g).sort((a,b)=>(a.h.hora||'99').localeCompare(b.h.hora||'99'));if(!xs.length)return'';
+    return'<div class="h cy" style="font-size:11px;margin:14px 0 8px">'+ico+' '+nome+'</div>'+xs.map(x=>{const f=(r[x.h.id]||[]).includes(x.s),sq=habSeq(x.h);
+      return'<div class="mis hab'+(f?' feito':'')+'" data-hc="'+x.h.id+'|'+x.s+'"><div class="chk">'+(f?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+x.h.ico+' '+esc(x.h.nome)+'</div><div class="ms">'+(x.h.hora?'🕐 '+x.h.hora+' · ':'')+PIL[x.h.p]+(habSlots(x.h).length>1?' · '+HAB_PER.find(p=>p[0]===x.s)[2]:'')+'</div></div>'+(sq>1?'<div class="hab-sq">🔥'+sq+'</div>':'')+'<button class="h mut" data-hed="'+x.h.id+'" style="font-size:16px;padding:0 4px">⋯</button></div>'}).join('')};
+  const fora=H.lista.length-hojeL.length;
+  box.innerHTML='<div class="card" style="margin-bottom:12px;font-size:14.5px;line-height:1.5">Hábitos são as pequenas coisas de todo dia. Missões são passos maiores; hábitos são a base. Cada marcação vale <b class="gd">+'+Math.round(HAB_XP*MODOS[S.modo].mult)+' XP</b> (até '+HAB_MAXDIA+' XP por dia) e a sequência 🔥 rende bônus.</div>'+
+    (H.lista.length?'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span class="mut">'+ok+'/'+tot+' hoje</span><span class="h mut" style="font-size:11px">'+(tot&&ok===tot?'🏆 TUDO FEITO!':'')+'</span></div><div class="bar" style="margin-bottom:4px"><i style="width:'+(tot?ok/tot*100:0)+'%"></i></div>'+
+      sec('manha','🌅','MANHÃ')+sec('tarde','☀️','TARDE')+sec('noite','🌙','NOITE')+sec('q','🕐','QUALQUER HORA')+
+      (!tot?'<p class="mut" style="font-size:14px;margin:12px 0">Nenhum hábito programado para hoje.</p>':'')+(fora?'<p class="mut" style="font-size:13px;margin-top:10px">+ '+fora+' hábito'+(fora>1?'s':'')+' para outros dias da semana.</p>':'')
+      :'<p class="mut" style="font-size:14px;margin:8px 0 12px">Você ainda não tem hábitos. Escolha alguns prontos ou crie o seu.</p>')+
+    '<div class="row" style="margin-top:14px"><button class="btn ghost" id="habCat">📚 HÁBITOS PRONTOS</button><button class="btn" id="habNovo">＋ CRIAR HÁBITO</button></div>'+
+    '<p class="mut" style="font-size:12.5px;line-height:1.45;margin-top:12px">💡 Pesquisas indicam que um hábito novo leva, em média, cerca de 2 meses (66 dias) para ficar automático, e varia muito de pessoa para pessoa. Falhar um dia não estraga o processo: o importante é voltar no dia seguinte.</p>';
+  $('#habCat').onclick=habCatalogo;$('#habNovo').onclick=()=>habForm();
+  box.querySelectorAll('[data-hed]').forEach(b=>b.onclick=e=>{e.stopPropagation();habForm(H.lista.find(h=>h.id===b.dataset.hed))});
+  box.querySelectorAll('[data-hc]').forEach(el=>el.onclick=()=>{const [id,s]=el.dataset.hc.split('|'),h=H.lista.find(x=>x.id===id);if(!h)return;
+    const a=r[id]=r[id]||[],d=S.dias[k]=S.dias[k]||null,dd=S.dias[k];const xp=Math.round(HAB_XP*MODOS[S.modo].mult);
+    if(a.includes(s)){a.splice(a.indexOf(s),1);const g=(h.xpDia&&h.xpDia[k]||0);if(g&&dd){const q=Math.min(g,xp);S.xp[h.p]-=q;h.xpDia[k]-=q;dd.habXp=Math.max(0,(dd.habXp||0)-q);dd.xp=Math.max(0,(dd.xp||0)-q)}salvar();render();renderHabitos();return}
+    const antesSeq=habSeq(h);a.push(s);let ganho=0;
+    if(dd&&(dd.habXp||0)<HAB_MAXDIA){ganho=Math.min(xp,HAB_MAXDIA-(dd.habXp||0));S.xp[h.p]+=ganho;dd.habXp=(dd.habXp||0)+ganho;dd.xp=(dd.xp||0)+ganho;h.xpDia=h.xpDia||{};h.xpDia[k]=(h.xpDia[k]||0)+ganho;
+      for(const kk in h.xpDia)if(kk<diaAntes(k,10))delete h.xpDia[kk]}
+    try{SFX.certo()}catch(e){}
+    const sq=habSeq(h);h.marcos=h.marcos||[];const m=sq>antesSeq&&HAB_MARCOS.find(x=>x[0]===sq&&!h.marcos.includes(x[0]));
+    if(m){h.marcos.push(m[0]);S.xp[h.p]+=m[1];if(dd)dd.xp=(dd.xp||0)+m[1];registrar('🔥 Hábito "'+h.nome+'": '+m[2]+' (+'+m[1]+' XP)');
+      setTimeout(()=>sistema('SEQUÊNCIA DE HÁBITO','<span style="font-size:48px">🔥</span><br><b>'+esc(h.nome)+'</b><br><br>'+m[2]+' seguidos!'+(m[0]===66?' Em média, é o tempo para um hábito ficar automático.':' Continue assim.')+'<br><br><b class="cy">+'+m[1]+' XP</b> em '+PIL[h.p]),150)}
+    else if(ganho)toast('+'+ganho+' XP · '+h.nome);
+    salvar();render();renderHabitos()});
+  /* limpeza de registros antigos */
+  const lim=diaAntes(k,120);for(const kk in H.reg)if(kk<lim)delete H.reg[kk];
+}
+function habCatalogo(){const H=habS(),tem=new Set(H.lista.map(h=>h.nome));
+  abrir('<h3 class="cy">📚 HÁBITOS PRONTOS</h3><p class="mut" style="font-size:14px;margin-bottom:10px">Toque para adicionar. Depois você pode ajustar horário, períodos e dias.</p>'+
+    PIL.map((n,p)=>'<div class="h cy" style="font-size:11px;margin:12px 0 6px">'+['💪','🧠','🕊️','💰','🤝'][p]+' '+n+'</div>'+HAB_CAT.filter(c=>c[2]===p).map((c,i)=>'<button class="hab-cat'+(tem.has(c[1])?' on':'')+'" data-hcat="'+HAB_CAT.indexOf(c)+'"><span>'+c[0]+'</span><div><b>'+c[1]+'</b><small>'+(c[3].length?c[3].map(x=>HAB_PER.find(p=>p[0]===x)[2]).join(', '):'Qualquer hora')+(c[4]?' · '+c[4]:'')+(c[5].length?' · '+c[5].map(d=>['dom','seg','ter','qua','qui','sex','sáb'][d]).join(', '):' · todo dia')+'</small></div><i>'+(tem.has(c[1])?'✓':'＋')+'</i></button>').join('')).join('')+
+    '<button class="btn" id="hcX" style="margin-top:14px">PRONTO</button>');
+  $('#hcX').onclick=()=>{fechar();renderHabitos()};
+  $('#sheet').querySelectorAll('[data-hcat]').forEach(b=>b.onclick=()=>{const c=HAB_CAT[+b.dataset.hcat];if(b.classList.contains('on')){toast('Já está na sua lista');return}
+    H.lista.push({id:'h'+novoToken(6),ico:c[0],nome:c[1],p:c[2],per:c[3].slice(),hora:c[4],dias:c[5].slice(),criado:Date.now()});salvar();b.classList.add('on');b.querySelector('i').textContent='✓';toast('Hábito adicionado: '+c[1])});
+}
+function habForm(h){const H=habS(),novo=!h;h=h||{ico:'✅',nome:'',p:null,per:[],hora:'',dias:[]};let st={ico:h.ico,p:h.p,per:h.per.slice(),dias:h.dias.slice()};
+  const ICOS=['✅','🪥','💧','🚿','⏰','😴','🤸','🚶','🍎','📖','🗣️','📵','📝','🧘','🙏','✨','📔','💸','🐷','☀️','🤗','💬','📞','🎸','🧹','🐶','💊','🥗'];
+  const draw=()=>{abrir('<h3 class="cy">'+(novo?'＋ NOVO HÁBITO':'✏️ EDITAR HÁBITO')+'</h3>'+
+    '<div class="field"><label>NOME</label><input id="hfN" maxlength="50" value="'+esc(h.nome)+'" placeholder="Ex.: Escovar os dentes"></div>'+
+    '<label class="mut" style="font-size:11px;letter-spacing:.1em">ÍCONE</label><div class="hab-icos">'+ICOS.map(i=>'<button class="'+(st.ico===i?'on':'')+'" data-hi="'+i+'">'+i+'</button>').join('')+'</div>'+
+    '<label class="mut" style="font-size:11px;letter-spacing:.1em">PILAR</label><div class="idi-grid" style="margin:6px 0 12px">'+PIL.map((n,i)=>'<button class="chip'+(st.p===i?' on':'')+'" data-hp="'+i+'" style="font-size:13px;padding:6px 10px">'+['💪','🧠','🕊️','💰','🤝'][i]+' '+n+'</button>').join('')+'</div>'+
+    '<label class="mut" style="font-size:11px;letter-spacing:.1em">QUANDO? (marque um ou mais; nenhum = qualquer hora)</label><div class="idi-grid" style="margin:6px 0 12px">'+HAB_PER.map(p=>'<button class="chip'+(st.per.includes(p[0])?' on':'')+'" data-hpe="'+p[0]+'" style="font-size:13px;padding:6px 12px">'+p[1]+' '+p[2]+'</button>').join('')+'</div>'+
+    '<div class="field"><label>HORÁRIO (OPCIONAL)</label><input id="hfH" type="time" value="'+(h.hora||'')+'"></div>'+
+    '<label class="mut" style="font-size:11px;letter-spacing:.1em">DIAS DA SEMANA (nenhum = todos)</label><div class="hab-dias">'+HAB_DIAS.map((d,i)=>'<button class="'+(st.dias.includes(i)?'on':'')+'" data-hd="'+i+'">'+d+'</button>').join('')+'</div>'+
+    '<p class="mut" style="font-size:12.5px;margin:10px 0">Os hábitos ficam só aqui no app: ele não manda lembretes fora dele.</p>'+
+    '<div class="row">'+(novo?'<button class="btn ghost" id="hfX">CANCELAR</button>':'<button class="btn ghost" id="hfDel">REMOVER</button>')+'<button class="btn" id="hfOk">SALVAR</button></div>');
+    const keep=()=>{h.nome=$('#hfN').value;h.hora=$('#hfH').value};
+    $('#sheet').querySelectorAll('[data-hi]').forEach(b=>b.onclick=()=>{keep();st.ico=b.dataset.hi;draw()});
+    $('#sheet').querySelectorAll('[data-hp]').forEach(b=>b.onclick=()=>{keep();st.p=+b.dataset.hp;draw()});
+    $('#sheet').querySelectorAll('[data-hpe]').forEach(b=>b.onclick=()=>{keep();const v=b.dataset.hpe;st.per=st.per.includes(v)?st.per.filter(x=>x!==v):HAB_PER.map(p=>p[0]).filter(x=>x===v||st.per.includes(x));draw()});
+    $('#sheet').querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{keep();const v=+b.dataset.hd;st.dias=st.dias.includes(v)?st.dias.filter(x=>x!==v):st.dias.concat(v).sort();draw()});
+    if($('#hfX'))$('#hfX').onclick=fechar;
+    if($('#hfDel'))$('#hfDel').onclick=()=>{const b=$('#hfDel');if(!b.dataset.c){b.dataset.c=1;b.textContent='CONFIRMAR';return}H.lista=H.lista.filter(x=>x.id!==h.id);salvar();fechar();renderHabitos()};
+    $('#hfOk').onclick=()=>{keep();const nome=h.nome.trim();if(nome.length<2){toast('Dê um nome ao hábito');return}if(st.p==null){const g=typeof feitoPilar==='function'?feitoPilar(nome):null;if(g==null){toast('Escolha o pilar');return}st.p=g}
+      Object.assign(h,{nome,ico:st.ico,p:st.p,per:st.per,hora:h.hora||'',dias:st.dias.length===7?[]:st.dias});if(novo){h.id='h'+novoToken(6);h.criado=Date.now();H.lista.push(h)}salvar();fechar();renderHabitos();toast(novo?'Hábito criado':'Hábito atualizado')}};
+  draw();
+}
+
 /* ============ FEITOS DO DIA: coisas boas que você fez além das missões ============ */
 const FEITO_XP=5,FEITO_MAX=5;
 const FEITO_PIL=[[0,/trein|corr|academi|caminh|flex|agach|nad|bike|pedal|exerc|alonga|dorm|água|abdomin|muscula|esport|futebol|karat|lut/i],[1,/l(i|e)[ru]|livro|p[áa]gina|estud|curso|aula|aprend|idioma|ingl|podcast|document/i],[2,/medit|or(ei|ar|ação)|gratid|diário|igreja|missa|culto|b[íi]blia|respir|perdo|paz|silêncio/i],[3,/econom|guard|invest|vend|pag(uei|ar)|d[íi]vid|renda|gast|poup|orçament|conta|anunci/i],[4,/lig(uei|ar)|ajud|amig|fam[íi]lia|visit|favor|m(ã|a)e|pai|esposa|marido|filh|vizinh|volunt|doei|doar|conversei/i]];
@@ -1601,10 +1692,10 @@ $('#btnEgo').onclick=()=>{
   S=novoEstado();
   if(antigo&&zerar){ // redefinir: só mantém a visão dos outros, a guilda e as configurações
     S.token=antigo.token||S.token;S.ext=antigo.ext||[];S.extMes=antigo.extMes||[];S.extArq=antigo.extArq||[];S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.modo=antigo.modo||S.modo;
-    ['guilda','valPed','valPremio','gPremio','votosDia','vicios','diario','privPin'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    ['guilda','valPed','valPremio','gPremio','votosDia','vicios','diario','privPin','habitos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
   }
   else if(antigo){S.metas=antigo.metas;S.log=antigo.log;S.modo=antigo.modo;S.avaliacoes=antigo.avaliacoes||[];
-    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','focos','jg','finVistos','leVistos','vicios','diario','privPin'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
+    S.token=antigo.token||S.token;S.linkBase=antigo.linkBase||'';S.pref=antigo.pref||S.pref;S.custom=antigo.custom||[];S.tarefas=antigo.tarefas||[];S.minhas=antigo.minhas||[];['classe','equil','titulo','conq','valores','relatVisto','guilda','valPed','valPremio','gPremio','votosDia','arena','saber','saberFoco','logica','idiomas','lidos','bibVistos','ciVistos','xadrez','simon','minhas','fin','chk','subs','focos','jg','finVistos','leVistos','vicios','diario','privPin','habitos'].forEach(k=>{if(antigo[k]!=null)S[k]=antigo[k]});
     S.extArq=(antigo.extArq||[]).concat((antigo.ext||[]).length?[{d:Date.now(),ext:antigo.ext}]:[]);}
   S.nome=nome;S.realAuto=calcularReal();S.real=S.realAuto.slice();S.ego=egoTmp.slice();_extKey='';
   S.avaliacoes.push({d:Date.now(),real:S.realAuto.slice(),ego:S.ego.slice(),tipo:'completo'});limparProg();
@@ -1630,7 +1721,7 @@ function render(){
   const pen=S.dias[hoje()]&&S.dias[hoje()].penal&&!S.dias[hoje()].penal.feita;
   document.body.classList.toggle('penal',!!pen);
   try{MUS.modo(pen?'penal':'normal')}catch(e){}
-  renderHeader();renderRadar();renderMissoes();try{if(!document.activeElement||document.activeElement.id!=='ftT')renderFeitos()}catch(e){console.error(e)}renderMetas();renderLog();renderExt();renderClasse();renderValores();try{privRender()}catch(e){console.error(e)}try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
+  renderHeader();renderRadar();renderMissoes();try{if(!document.activeElement||document.activeElement.id!=='ftT')renderFeitos()}catch(e){console.error(e)}try{renderHabitos()}catch(e){console.error(e)}renderMetas();renderLog();renderExt();renderClasse();renderValores();try{privRender()}catch(e){console.error(e)}try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
 
 /* ===== Modo teste (código especial): perfil SS temporário, o perfil real fica guardado ===== */
@@ -1644,7 +1735,7 @@ function entrarTeste(){
   S.logica={ac:320,er:0};S.modoTeste=1;S.focos={sel:[],troca:0};
   registrar('🧪 Modo teste ativado (perfil SS)');salvar();fechar();render();sistema('MODO TESTE','<span style="font-size:44px">🧪</span><br>Perfil <b class="gd">SS</b> liberado para testes.<br><br>Seu perfil real está guardado. Para voltar, toque em <b class="cy">SAIR DO TESTE</b> no topo ou use ⚙️ → Código especial.')}
 function sairTeste(){let r=null;try{r=JSON.parse(localStorage.getItem('evo_perfil_real')||'null')}catch(e){}if(!r){toast('Perfil real não encontrado');return}
-  ['guilda','vicios','diario','privPin'].forEach(k=>{if(S[k]!=null)r[k]=S[k]});S=r;delete S.modoTeste;salvar();try{localStorage.removeItem('evo_perfil_real')}catch(e){}location.reload()}
+  ['guilda','vicios','diario','privPin','habitos'].forEach(k=>{if(S[k]!=null)r[k]=S[k]});S=r;delete S.modoTeste;salvar();try{localStorage.removeItem('evo_perfil_real')}catch(e){}location.reload()}
 function testeFaixa(){let f=$('#testeFx');if(!S.modoTeste){if(f)f.remove();return}if(!f){document.body.insertAdjacentHTML('beforeend','<button id="testeFx" class="teste-fx">🧪 MODO TESTE · SAIR DO TESTE</button>');f=$('#testeFx');f.onclick=()=>{if(!f.dataset.c){f.dataset.c=1;f.textContent='TOQUE DE NOVO PARA VOLTAR AO PERFIL REAL';setTimeout(()=>{f.dataset.c='';f.textContent='🧪 MODO TESTE · SAIR DO TESTE'},4000);return}sairTeste()}}}
 function renderHeader(){testeFaixa();
   const n=nivel(),x=Math.max(0,xpTotal())-xpParaNivel(n),cust=xpParaNivel(n+1)-xpParaNivel(n);
