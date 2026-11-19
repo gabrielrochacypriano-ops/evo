@@ -385,6 +385,30 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .hab-cat>span{font-size:24px}.hab-cat>div{flex:1}.hab-cat b{display:block;font-size:14.5px}.hab-cat small{color:var(--mut);font-size:12.5px}.hab-cat i{font-style:normal;font-weight:800;color:var(--cyan);font-size:18px}.hab-cat.on{border-color:var(--cyan)}
 .hab-icos{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 12px}.hab-icos button{font-size:22px;padding:6px 0;border:1px solid var(--line);border-radius:10px;background:none}.hab-icos button.on{border-color:var(--cyan);background:rgba(76,201,240,.12)}
 .hab-dias{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}.hab-dias button{padding:10px 0;border:1px solid var(--line);border-radius:10px;font-weight:800;background:none;color:inherit}.hab-dias button.on{border-color:var(--cyan);background:var(--cyan);color:#000}
+.lg-ops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.lg-op{padding:16px 0;border:1px solid var(--line);border-radius:14px;font-family:Orbitron;font-size:22px;font-weight:700;background:transparent;color:var(--txt)}
+.lg-op.ok{background:var(--cyan);color:#000;border-color:var(--cyan)}.lg-op.err{background:var(--red);color:#fff;border-color:var(--red)}
+.lg-eq{display:flex;flex-direction:column;gap:8px;align-items:center;font-size:26px;font-weight:700;margin:6px 0}
+.lg-eq .q{color:var(--cyan);margin-top:6px}
+.lg-seq{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:6px;font-family:Orbitron;font-size:26px;margin:16px 0 4px}
+.lg-seq i{font-style:normal;color:var(--mut)}.lg-seq .q{color:var(--cyan)}
+.rb{display:grid;gap:4px;max-width:340px;margin:8px auto}
+.rb-c{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:22px;background:rgba(127,127,127,.08)}
+.rb-c.w{background:rgba(127,127,127,.28)}
+.rb-cmd{display:flex;flex-wrap:wrap;gap:4px;min-height:38px;padding:6px;border:1px dashed var(--line);border-radius:10px;margin:8px 0}
+.rb-cmd b{width:28px;height:28px;display:grid;place-items:center;border-radius:6px;background:var(--cyan);color:#000;font-size:16px}
+.rb-pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.rb-pad button{padding:12px 0;font-size:22px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--txt)}
+.mq{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:10px auto}
+.mq-c{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);font-family:Orbitron;font-size:28px;font-weight:700;background:rgba(127,127,127,.15);color:var(--txt)}
+.mq-c.v{background:transparent;border-style:dashed;color:var(--cyan)}.mq-c.sel{border:2px solid var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.mq-pad{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:6px}
+.mq-pad button{padding:10px 0;border:1px solid var(--line);border-radius:8px;font-weight:700;font-size:16px;background:transparent;color:var(--txt)}
+.mq-pad button.usado{opacity:.25}
+.tb{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:12px 0}
+.tb-t{display:flex;flex-direction:column;gap:4px;padding:6px 5px;border:2px solid var(--line);border-top:0;border-radius:0 0 18px 18px;background:transparent;transition:transform .15s}
+.tb-t.sel{transform:translateY(-8px);border-color:var(--cyan)}
+.tb-t i{width:28px;height:28px;border-radius:50%;display:block}
 /* ===== Idiomas estilo Duolingo ===== */
 .duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
 .duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
@@ -2467,8 +2491,128 @@ function cardMatriz(el,fim){
     J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(fase!=='jogar'||acabou)return;const i=+b.dataset.i;if(achou.has(i))return;
       if(alvo.has(i)){achou.add(i);try{SFX.certo()}catch(e){}if(achou.size===n){acabou=true;const s=jgSubir('matriz',12);draw();jgWin(J,'Memória perfeita!',s);jgFim(fim,true,nv)}else draw()}
       else{acabou=true;try{SFX.erro()}catch(e){}b.classList.add('err');draw('Errou. Os certos estão acesos. Você achou '+achou.size+' de '+n+'.');J.querySelector('[data-i="'+i+'"]').classList.add('err');jgFim(fim,achou.size>=n-1,nv,achou.size/n)}})};
-  draw();setTimeout(()=>{fase='jogar';draw()},900+n*250);
+  fase='pronto';J.innerHTML='<p class="ar-inst">Memorize os <b class="cy">'+n+' quadrados</b> que vão acender por poucos segundos e depois toque neles.</p><div class="mz" style="grid-template-columns:repeat('+N+',1fr)">'+[...Array(N*N).keys()].map(i=>'<button class="mz-c"></button>').join('')+'</div><button class="btn" data-mzgo style="margin-top:12px">👁️ MOSTRAR OS QUADRADOS</button><p class="ar-msg"></p>';
+  J.querySelector('[data-mzgo]').onclick=()=>{fase='ver';draw();setTimeout(()=>{fase='jogar';draw()},1200+n*300)};
 }
+/* ============ 5 NOVOS JOGOS DE LÓGICA ============ */
+/* opções numéricas próximas */
+function opsNum(v,spread){const s=new Set([v]);let t=0;while(s.size<4&&t<60){t++;const d=v+(rr(1,spread||3))*(Math.random()<.5?-1:1);if(d>=0)s.add(d)}let k=1;while(s.size<4)s.add(v+(k++));return embaralhar([...s])}
+function ligaOps(J,ops,certo,cb){J.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{if(J._trava)return;J._trava=1;const v=+b.dataset.op,ok=v===certo;
+  J.querySelectorAll('[data-op]').forEach(x=>{if(+x.dataset.op===certo)x.classList.add('ok');else if(x===b)x.classList.add('err')});try{ok?SFX.certo():SFX.erro()}catch(e){}setTimeout(()=>{J._trava=0;cb(ok)},ok?650:1300)})}
+const opsHtml=ops=>'<div class="lg-ops">'+ops.map(v=>'<button class="lg-op" data-op="'+v+'">'+v+'</button>').join('')+'</div>';
+
+/* ---------- 1. Equações de Emojis ---------- */
+function cardEmojis(el,fim){
+  const nv=jg('emojis').nv,R=2;let rod=0,acertos=0;
+  jgCab(el,'🍎','Equações de Emojis',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const TEMAS=[['🍎','🍌','🍇'],['🐶','🐱','🐭'],['⭐','🌙','☀️'],['⚽','🏀','🎾'],['🚗','🚲','✈️'],['🍕','🍔','🌮']];
+  const nova=()=>{const [A,B,C]=embaralhar(pick(TEMAS)),mx=nv<=2?6:nv<=4?9:12;let a=rr(1,mx),b=rr(1,mx),c=rr(1,mx);let eqs,perg,resp,expl;
+    if(nv<=1){eqs=[A+' + '+A+' = '+(2*a),A+' + '+B+' = '+(a+b)];perg=B+' = ?';resp=b;expl=A+' = '+a+' (porque '+a+' + '+a+' = '+(2*a)+'). Então '+B+' = '+(a+b)+' − '+a+' = '+b+'.'}
+    else if(nv<=2){eqs=[A+' + '+A+' + '+A+' = '+(3*a),A+' + '+B+' = '+(a+b),B+' + '+C+' = '+(b+c)];perg=C+' = ?';resp=c;expl=A+' = '+a+', '+B+' = '+b+', então '+C+' = '+(b+c)+' − '+b+' = '+c+'.'}
+    else if(nv<=3){if(b<c)[b,c]=[c,b];if(b===c)b++;eqs=[A+' + '+A+' = '+(2*a),A+' × '+B+' = '+(a*b),B+' − '+C+' = '+(b-c)];perg=A+' + '+B+' + '+C+' = ?';resp=a+b+c;expl=A+' = '+a+', '+B+' = '+b+', '+C+' = '+c+'. Soma: '+(a+b+c)+'.'}
+    else{eqs=[A+' + '+A+' + '+A+' = '+(3*a),A+' + '+B+' + '+B+' = '+(a+2*b),B+' × '+C+' = '+(b*c)];perg=A+' + '+B+' × '+C+' = ?';resp=a+b*c;expl=A+' = '+a+', '+B+' = '+b+', '+C+' = '+c+'. Atenção à ordem: a multiplicação vem antes! '+a+' + '+b+' × '+c+' = '+a+' + '+(b*c)+' = '+resp+'.'}
+    const ops=opsNum(resp,nv>=4?6:3);
+    J.innerHTML='<p class="ar-inst">Descubra o valor de cada símbolo. Rodada '+(rod+1)+' de '+R+'.</p><div class="lg-eq">'+eqs.map(e=>'<div>'+e+'</div>').join('')+'<div class="q">'+perg+'</div></div>'+opsHtml(ops)+'<p class="ar-msg"></p>';
+    ligaOps(J,ops,resp,ok=>{if(ok)acertos++;rod++;if(rod<R){nova();return}const v=acertos===R,s=v?jgSubir('emojis',8):false;J.querySelector('.ar-msg').innerHTML='💡 '+expl;if(v)jgWin(J,'Acertou as '+R+'!',s);else J.querySelector('.ar-msg').innerHTML+='<br>Acertou '+acertos+' de '+R+'.';jgFim(fim,acertos>=1,nv,acertos/R)})};
+  nova();
+}
+
+/* ---------- 2. Próximo da Sequência ---------- */
+function cardSeqNum(el,fim){
+  const nv=jg('seqnum').nv,R=3;let rod=0,acertos=0,ultimaExp='';
+  jgCab(el,'🔢','Próximo da Sequência',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const gerar=()=>{const t=pick(nv<=1?['soma','sub']:nv<=2?['soma','sub','dobro','alt']:nv<=3?['dobro','alt','quad','cresc']:nv<=4?['fib','cresc','quad','mult','alt2']:['fib','mult','alt2','primo','cubo','cresc2']);let a,s=[],exp;
+    if(t==='soma'){const k=rr(2,9);a=rr(1,20);for(let i=0;i<5;i++)s.push(a+i*k);exp='Soma '+k+' a cada passo.'}
+    else if(t==='sub'){const k=rr(2,8);a=rr(40,80);for(let i=0;i<5;i++)s.push(a-i*k);exp='Diminui '+k+' a cada passo.'}
+    else if(t==='dobro'){a=rr(1,5);for(let i=0;i<5;i++)s.push(a*2**i);exp='Cada número é o dobro do anterior.'}
+    else if(t==='alt'){const x=rr(2,6),y=rr(1,4);a=rr(1,10);s=[a];for(let i=1;i<5;i++)s.push(s[i-1]+(i%2?x:-y));exp='Alterna: +'+x+', −'+y+', +'+x+'…'}
+    else if(t==='quad'){a=rr(1,5);for(let i=0;i<5;i++)s.push((a+i)**2);exp='São quadrados perfeitos: '+(a)+'², '+(a+1)+'², '+(a+2)+'²…'}
+    else if(t==='cresc'){a=rr(1,10);s=[a];for(let i=1;i<5;i++)s.push(s[i-1]+i);exp='Soma 1, depois 2, depois 3… (a diferença cresce).'}
+    else if(t==='cresc2'){a=rr(1,5);s=[a];for(let i=1;i<5;i++)s.push(s[i-1]+2*i);exp='Soma 2, 4, 6, 8… (a diferença cresce de 2 em 2).'}
+    else if(t==='fib'){const x=rr(1,4),y=rr(1,5);s=[x,y];for(let i=2;i<5;i++)s.push(s[i-1]+s[i-2]);exp='Cada número é a soma dos dois anteriores (como Fibonacci).'}
+    else if(t==='mult'){const k=rr(2,3),c=rr(1,3);a=rr(1,4);s=[a];for(let i=1;i<5;i++)s.push(s[i-1]*k+c);exp='Multiplica por '+k+' e soma '+c+'.'}
+    else if(t==='alt2'){const x=rr(2,3),y=rr(1,6);a=rr(1,5);s=[a];for(let i=1;i<5;i++)s.push(i%2?s[i-1]*x:s[i-1]+y);exp='Alterna: ×'+x+', +'+y+', ×'+x+'…'}
+    else if(t==='primo'){const P=[2,3,5,7,11,13,17,19,23,29,31,37,41,43],o=rr(0,P.length-6);s=P.slice(o,o+5);exp='São números primos (só divisíveis por 1 e por eles mesmos).'}
+    else{a=rr(1,3);for(let i=0;i<5;i++)s.push((a+i)**3);exp='São cubos: '+a+'³, '+(a+1)+'³, '+(a+2)+'³…'}
+    return{mostra:s.slice(0,4),resp:s[4],exp}};
+  const nova=()=>{const g=gerar(),ops=opsNum(g.resp,Math.max(3,Math.round(g.resp*.15)));ultimaExp=g.exp;
+    J.innerHTML='<p class="ar-inst">Qual número vem depois? Rodada '+(rod+1)+' de '+R+'.</p><div class="lg-seq">'+g.mostra.map(v=>'<b>'+v+'</b>').join('<i>,</i>')+'<i>,</i><b class="q">?</b></div>'+opsHtml(ops)+'<p class="ar-msg"></p>';
+    ligaOps(J,ops,g.resp,ok=>{if(ok)acertos++;rod++;if(rod<R){nova();return}const v=acertos===R,s=v?jgSubir('seqnum',8):false;J.querySelector('.ar-msg').innerHTML='💡 Última: '+ultimaExp;if(v)jgWin(J,'Sequências perfeitas!',s);else J.querySelector('.ar-msg').innerHTML+='<br>Acertou '+acertos+' de '+R+'.';jgFim(fim,acertos>=2,nv,acertos/R)})};
+  nova();
+}
+
+/* ---------- 3. Robô Programador ---------- */
+function cardRobo(el,fim){
+  const nv=jg('robo').nv,N=nv<=1?4:nv<=3?5:6,nParede=[3,5,7,9,11,13][Math.min(nv,6)-1],folga=nv<=2?3:nv<=4?1:0;
+  jgCab(el,'🤖','Robô Programador',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const D={'↑':[-1,0],'→':[0,1],'↓':[1,0],'←':[0,-1]};let mapa,ini,alvo,dist,tent=0,acabou=false,cmds=[];
+  for(let t=0;t<200;t++){const p=new Set(embaralhar([...Array(N*N).keys()]).slice(0,nParede)),livres=[...Array(N*N).keys()].filter(i=>!p.has(i));if(livres.length<2)continue;
+    const a=pick(livres),b=pick(livres);if(a===b)continue;const q=[[a,0]],vis=new Set([a]);let d=-1;
+    while(q.length){const [c,k]=q.shift();if(c===b){d=k;break}const r=Math.floor(c/N),cc=c%N;for(const v of Object.values(D)){const nr=r+v[0],nc=cc+v[1];if(nr<0||nc<0||nr>=N||nc>=N)continue;const ni=nr*N+nc;if(p.has(ni)||vis.has(ni))continue;vis.add(ni);q.push([ni,k+1])}}
+    if(d>=Math.min(N+1,3+nv)){mapa=p;ini=a;alvo=b;dist=d;break}}
+  if(!mapa){mapa=new Set();ini=0;alvo=N*N-1;dist=2*(N-1)}
+  const maxC=dist+folga;
+  const draw=(pos,msg)=>{J.innerHTML='<p class="ar-inst">Monte os comandos para o 🤖 chegar ao 🏁 sem bater nas paredes. Máximo: <b class="cy">'+maxC+' comandos</b>.'+(tent?' Tentativa 2 de 2.':'')+'</p>'+
+    '<div class="rb" style="grid-template-columns:repeat('+N+',1fr)">'+[...Array(N*N).keys()].map(i=>'<div class="rb-c'+(mapa.has(i)?' w':'')+'">'+(i===pos?'🤖':i===alvo?'🏁':mapa.has(i)?'🧱':'')+'</div>').join('')+'</div>'+
+    '<div class="rb-cmd">'+(cmds.length?cmds.map(c=>'<b>'+c+'</b>').join(''):'<span class="mut">sem comandos</span>')+'</div>'+
+    '<div class="rb-pad">'+Object.keys(D).map(k=>'<button data-d="'+k+'">'+k+'</button>').join('')+'<button data-d="del">⌫</button></div><button class="btn" data-run style="margin-top:10px">▶ EXECUTAR</button><p class="ar-msg">'+(msg||'')+'</p>';
+    J.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(acabou||J._rodando)return;const d=b.dataset.d;if(d==='del')cmds.pop();else if(cmds.length<maxC)cmds.push(d);else{toast('Limite de comandos');return}draw(ini)});
+    J.querySelector('[data-run]').onclick=rodar};
+  const rodar=()=>{if(acabou||J._rodando||!cmds.length)return;J._rodando=1;let pos=ini,k=0;
+    const passo=()=>{if(k>=cmds.length){J._rodando=0;falhou(pos===alvo?null:'O robô parou antes do 🏁.');return}const r=Math.floor(pos/N),c=pos%N,v=D[cmds[k++]],nr=r+v[0],nc=c+v[1],ni=nr*N+nc;
+      if(nr<0||nc<0||nr>=N||nc>=N||mapa.has(ni)){J._rodando=0;try{SFX.erro()}catch(e){}falhou('Bateu '+(mapa.has(ni)?'na parede':'na borda')+' no comando '+k+'.');return}
+      pos=ni;draw(pos);if(pos===alvo){J._rodando=0;acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('robo',10);draw(pos);jgWin(J,'Chegou! Programação perfeita'+(cmds.length===dist?' e no caminho mais curto':'')+'.',s);jgFim(fim,true,nv,tent?.7:1);return}setTimeout(passo,280)};
+    passo()};
+  const falhou=m=>{if(!m)return;if(tent===0){tent=1;draw(ini,'❌ '+m+' Ajuste e tente de novo.')}else{acabou=true;draw(ini,'❌ '+m+' O caminho mais curto tinha '+dist+' comandos.');jgFim(fim,false,nv,.3)}};
+  draw(ini);
+}
+
+/* ---------- 4. Quadrado Mágico ---------- */
+function cardMagico(el,fim){
+  const nv=jg('magico').nv,vazios=[3,4,5,6,7][Math.min(nv,5)-1];
+  jgCab(el,'🔮','Quadrado Mágico',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const base=[2,7,6,9,5,1,4,3,8],rot=a=>[a[6],a[3],a[0],a[7],a[4],a[1],a[8],a[5],a[2]],esp=a=>[a[2],a[1],a[0],a[5],a[4],a[3],a[8],a[7],a[6]];
+  let sol=base;for(let i=rr(0,3);i>0;i--)sol=rot(sol);if(Math.random()<.5)sol=esp(sol);
+  const buracos=new Set(embaralhar([...Array(9).keys()]).slice(0,vazios)),val=sol.map((v,i)=>buracos.has(i)?0:v);let sel=null,erros=0,acabou=false;
+  const LIN=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const draw=msg=>{const faltam=sol.filter(v=>!val.includes(v));
+    J.innerHTML='<p class="ar-inst">Use os números de 1 a 9 (sem repetir) para que <b class="cy">cada linha, coluna e diagonal some 15</b>. Toque num espaço vazio e escolha o número.</p>'+
+      '<div class="mq">'+val.map((v,i)=>'<button class="mq-c'+(buracos.has(i)?' v':'')+(sel===i?' sel':'')+'" data-c="'+i+'">'+(v||'')+'</button>').join('')+'</div>'+
+      '<div class="mq-pad">'+[1,2,3,4,5,6,7,8,9].map(n=>'<button data-n="'+n+'"'+(val.includes(n)&&!(sel!=null&&val[sel]===n)?' class="usado"':'')+'>'+n+'</button>').join('')+'</div>'+
+      '<button class="btn" data-ver style="margin-top:10px"'+(val.includes(0)?' disabled':'')+'>VERIFICAR</button><p class="ar-msg">'+(msg||'')+'</p>';
+    J.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{if(acabou||!buracos.has(+b.dataset.c))return;sel=+b.dataset.c;draw()});
+    J.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(acabou||sel==null)return;const n=+b.dataset.n,j=val.indexOf(n);if(j>=0&&j!==sel){if(!buracos.has(j))return;val[j]=0}val[sel]=val[sel]===n?0:n;const prox=[...buracos].find(i=>!val[i]);sel=prox!=null?prox:sel;draw()});
+    J.querySelector('[data-ver]').onclick=()=>{if(acabou||val.includes(0))return;const ruins=LIN.filter(l=>l.reduce((a,i)=>a+val[i],0)!==15);
+      if(!ruins.length){acabou=true;try{SFX.certo()}catch(e){}const s=jgSubir('magico',5);draw();jgWin(J,'Quadrado mágico completo!',s);jgFim(fim,true,nv,erros?.7:1);return}
+      erros++;try{SFX.erro()}catch(e){}if(erros>=3){acabou=true;buracos.forEach(i=>val[i]=sol[i]);draw('A solução está acima. Dica: o 5 sempre fica no centro e os pares ficam nos cantos.');jgFim(fim,false,nv,.3);return}
+      draw('❌ '+ruins.length+' linha(s) não somam 15. Tentativa '+erros+' de 3.')}};
+  sel=[...buracos][0];draw();
+}
+
+/* ---------- 5. Separe as Cores ---------- */
+function cardBolas(el,fim){
+  const nv=jg('bolas').nv,k=[3,4,5,6,7][Math.min(nv,5)-1],CAP=4,T=k+2,COR=['#ef4444','#3b82f6','#22c55e','#f59e0b','#a855f7','#ec4899','#14b8a6'];
+  jgCab(el,'🧪','Separe as Cores',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  let tb=[...Array(T)].map((_,i)=>i<k?Array(CAP).fill(i):[]);
+  const resolvido=x=>x.every(t=>!t.length||(t.length===CAP&&t.every(c=>c===t[0])));
+  /* embaralha com movimentos reversos: sempre tem solução */
+  for(let it=0,feitos=0;it<4000&&feitos<k*45;it++){const a=rr(0,T-1),b=rr(0,T-1);if(a===b||!tb[a].length||tb[b].length>=CAP)continue;const c=tb[a][tb[a].length-1],resto=tb[a].slice(0,-1);
+    if(resto.length&&resto[resto.length-1]!==c)continue;tb[b].push(tb[a].pop());feitos++}
+  if(resolvido(tb)){tb[0].push(tb[1].pop())}
+  const inicial=JSON.stringify(tb);let sel=null,mov=0,acabou=false,hist=[];
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Deixe cada tubo com uma cor só. Toque num tubo e depois em outro: a bola de cima só pode ir para um tubo vazio ou sobre uma bola da mesma cor.</p>'+
+    '<div class="tb">'+tb.map((t,i)=>'<button class="tb-t'+(sel===i?' sel':'')+'" data-t="'+i+'">'+[...Array(CAP).keys()].map(j=>'<i'+(t[CAP-1-j]!=null?' style="background:'+COR[t[CAP-1-j]]+'"':'')+'></i>').join('')+'</button>').join('')+'</div>'+
+    '<div class="row" style="margin-top:10px"><button class="btn ghost" data-u>↶ DESFAZER</button><button class="btn ghost" data-r>↺ RECOMEÇAR</button></div><p class="ar-msg">'+(msg||'Movimentos: '+mov)+'</p>';
+    J.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.t;
+      if(sel==null){if(tb[i].length)sel=i;draw();return}if(sel===i){sel=null;draw();return}
+      const A=tb[sel],B=tb[i],c=A[A.length-1];if(B.length<CAP&&(!B.length||B[B.length-1]===c)){hist.push(JSON.stringify(tb));B.push(A.pop());mov++;try{SFX.nota(c%4)}catch(e){}sel=null;
+        if(resolvido(tb)){acabou=true;draw();const s=jgSubir('bolas',5);jgWin(J,'Cores separadas em '+mov+' movimentos!',s);jgFim(fim,true,nv);return}draw()}
+      else{try{SFX.erro()}catch(e){}sel=tb[i].length?i:null;draw('Não pode: só sobre a mesma cor ou em tubo vazio.')}});
+    J.querySelector('[data-u]').onclick=()=>{if(acabou||!hist.length)return;tb=JSON.parse(hist.pop());mov++;sel=null;draw()};
+    J.querySelector('[data-r]').onclick=()=>{if(acabou)return;tb=JSON.parse(inicial);hist=[];sel=null;draw()}};
+  draw();
+}
+
 /* ---------- 6. Tabela de Schulte ---------- */
 function cardSchulte(el,fim){
   const nv=jg('schulte').nv,N=nv<=1?3:nv<=3?4:5,M=N*N,meta=Math.round(M*(nv<=2?1.6:nv<=4?1.3:1.05)),nums=embaralhar([...Array(M)].map((_,i)=>i+1));let prox=1,t0=0,err=0,acabou=false,tm;
@@ -5380,7 +5524,7 @@ const ARENA_PESO={saber:6,logica:4,cientista:3,livro:2,idioma:2,leitura:1,biblia
 const FOCO={mat:new Set(),idi:new Set(),grp:new Set()};
 const FOCO_GRUPOS={
   logica:['🧩 Lógica',['logica']],
-  jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','xadrez','sudoku4','sudoku9','erros','memoria']],
+  jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','emojis','seqnum','robo','magico','bolas','xadrez','sudoku4','sudoku9','erros','memoria']],
   reflexos:['⚡ Reflexos',['alvos','reacao','simon','vainao','fisico']],
   leituras:['📖 Leituras e livros',['leitura','livro','biblia','cientista']],
   financas:['💰 Finanças',['financas','calculo']]
@@ -5390,7 +5534,7 @@ function focoTipos(){const t=new Set();if(FOCO.mat.size)t.add('saber');if(FOCO.i
 const arenaVistos={};   // distribuição: quanto mais um tipo apareceu na sessão, menor a chance de vir de novo
 const ARENA_CATS={
   perguntas:{w:3,t:{saber:4,cientista:1,financas:1}},
-  logica:{w:2,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1}},
+  logica:{w:2.4,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1,emojis:1,seqnum:1,robo:1,magico:1,bolas:1}},
   jogos:{w:2,t:{memoria:1,erros:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,xadrez:1}},
   reflexo:{w:1.3,t:{alvos:1,reacao:1,simon:1,vainao:1,fisico:1}},
   idiomas:{w:1.3,t:{idioma:1}},
@@ -5455,6 +5599,11 @@ const ARENA_TIPOS={
   nono:{nome:'Nonograma',ico:'🖼️',dif:'medio',xp:30,pilar:1,run:cardNonograma},
   soma:{nome:'Soma Alvo',ico:'➕',dif:'medio',xp:30,pilar:1,run:cardSoma},
   conta:{nome:'Conta Exata',ico:'🧮',dif:'medio',xp:30,pilar:1,run:cardConta},
+  emojis:{nome:'Equações de Emojis',ico:'🍎',dif:'medio',xp:30,pilar:1,run:cardEmojis},
+  seqnum:{nome:'Próximo da Sequência',ico:'🔢',dif:'medio',xp:30,pilar:1,run:cardSeqNum},
+  robo:{nome:'Robô Programador',ico:'🤖',dif:'medio',xp:30,pilar:1,run:cardRobo},
+  magico:{nome:'Quadrado Mágico',ico:'🔮',dif:'medio',xp:30,pilar:1,run:cardMagico},
+  bolas:{nome:'Separe as Cores',ico:'🧪',dif:'medio',xp:30,pilar:1,run:cardBolas},
   livro:{nome:'Ideia de livro',ico:'📖',dif:'facil',xp:8,pilar:2,run:cardLivro},
   biblia:{nome:'Palavra do dia',ico:'✝️',dif:'facil',xp:8,pilar:2,run:cardBiblia},
   idioma:{nome:'Lição de idioma',ico:'🌍',dif:'facil',xp:15,pilar:1,run:cardIdioma},
