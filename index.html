@@ -586,6 +586,8 @@ body.duo-on{overflow:hidden}
 
     <!-- MISSÕES -->
     <div class="page" id="pgMis">
+      <div class="subtabs" data-grupo="mis"><button data-sec="missoes" class="on"><span class="ic">⚔️</span>MISSÕES</button><button data-sec="feitos"><span class="ic">🌟</span>FEITOS DO DIA</button></div>
+      <div class="sec on" data-grupo="mis" data-sec="missoes">
       <div class="ptitle h cy">Missões Diárias</div>
       <div id="penArea"></div>
       <div class="week" id="week"></div>
@@ -596,6 +598,8 @@ body.duo-on{overflow:hidden}
       <div class="bar" style="margin-bottom:16px"><i id="misBar" style="width:0"></i></div>
       <div id="misList"></div>
       <p class="mut" style="text-align:center;font-size:14px;margin-top:10px">Toque no botão ✓ para fazer o check-in. Use ⇄ para trocar uma missão.</p>
+      </div>
+      <div class="sec" data-grupo="mis" data-sec="feitos"><div class="ptitle h cy">Feitos do Dia</div><div id="feitosBox"></div></div>
     </div>
 
     <!-- METAS -->
@@ -1078,7 +1082,7 @@ function missoesDoDia(k){
     if(!m)continue;
     usados.add(m.id);lista.push({id:m.id,p:m.p,t:m.t});
   }
-  S.dias[k]={lista,feitas:[],trocas:0,penal:S.dias[k]&&S.dias[k].penal||null};
+  S.dias[k]={lista,feitas:[],trocas:0,penal:S.dias[k]&&S.dias[k].penal||null,feitos:S.dias[k]&&S.dias[k].feitos||[],xp:S.dias[k]&&S.dias[k].xp||0};
   return lista;
 }
 
@@ -1287,6 +1291,37 @@ function processarDias(){
   salvar();
 }
 function registrar(txt,ruim){S.log.unshift({t:txt,d:Date.now(),r:!!ruim});S.log=S.log.slice(0,80);try{if(!ruim&&/^(⬆️|🏅|🎯 Meta concluída|⚔️|🏷️|🏆)/.test(txt))gPostar(txt)}catch(e){}}
+
+
+/* ============ FEITOS DO DIA: coisas boas que você fez além das missões ============ */
+const FEITO_XP=5,FEITO_MAX=5;
+const FEITO_PIL=[[0,/trein|corr|academi|caminh|flex|agach|nad|bike|pedal|exerc|alonga|dorm|água|abdomin|muscula|esport|futebol|karat|lut/i],[1,/l(i|e)[ru]|livro|p[áa]gina|estud|curso|aula|aprend|idioma|ingl|podcast|document/i],[2,/medit|or(ei|ar|ação)|gratid|diário|igreja|missa|culto|b[íi]blia|respir|perdo|paz|silêncio/i],[3,/econom|guard|invest|vend|pag(uei|ar)|d[íi]vid|renda|gast|poup|orçament|conta|anunci/i],[4,/lig(uei|ar)|ajud|amig|fam[íi]lia|visit|favor|m(ã|a)e|pai|esposa|marido|filh|vizinh|volunt|doei|doar|conversei/i]];
+const FEITO_SUG=['📖 Li 20 páginas de um livro','🏃 Fiz uma caminhada','💧 Bebi 2 litros de água','📞 Liguei para alguém querido','🧘 Meditei 10 minutos','💰 Não gastei nada supérfluo','🤝 Ajudei alguém','🧹 Arrumei a casa'];
+function feitoPilar(t){const m=FEITO_PIL.find(x=>x[1].test(t));return m?m[0]:null}
+function renderFeitos(){
+  const box=$('#feitosBox');if(!box)return;const k=hoje();missoesDoDia(k);const d=S.dias[k];d.feitos=d.feitos||[];
+  const comXp=d.feitos.filter(f=>f.xp).length,xp=Math.round(FEITO_XP*MODOS[S.modo].mult);
+  let pil=null;
+  const hist=[];for(let i=1;i<=7;i++){const dd=new Date();dd.setDate(dd.getDate()-i);const kk=hoje(dd),x=S.dias[kk];if(x&&x.feitos&&x.feitos.length)hist.push([dd,x.feitos])}
+  box.innerHTML='<div class="card" style="margin-bottom:12px;font-size:14.5px;line-height:1.5">Fez algo bom que não estava nas missões? Registre aqui. Cada feito vale <b class="gd">+'+xp+' XP</b> no pilar escolhido (até '+FEITO_MAX+' por dia com XP).</div>'+
+    '<div class="card" style="margin-bottom:12px"><div class="field" style="margin-bottom:8px"><label>O QUE VOCÊ FEZ HOJE?</label><input id="ftT" maxlength="80" placeholder="Ex.: Li 20 páginas de um livro"></div>'+
+    '<div class="idi-grid" id="ftSug" style="margin-bottom:10px">'+embaralhar(FEITO_SUG).slice(0,4).map(t=>'<button class="chip" data-sug="'+esc(t)+'" style="font-size:13px;padding:6px 10px">'+t+'</button>').join('')+'</div>'+
+    '<label class="mut" style="font-size:11px;letter-spacing:.1em">PILAR</label><div class="idi-grid" id="ftP" style="margin:6px 0 12px">'+PIL.map((n,i)=>'<button class="chip" data-fp="'+i+'" style="font-size:13px;padding:6px 10px">'+['💪','🧠','🕊️','💰','🤝'][i]+' '+n+'</button>').join('')+'</div>'+
+    '<button class="btn" id="ftOk">🌟 REGISTRAR FEITO</button></div>'+
+    '<div class="h cy" style="font-size:11px;margin:4px 0 8px">HOJE · '+d.feitos.length+' FEITO'+(d.feitos.length===1?'':'S')+'</div>'+
+    (d.feitos.length?d.feitos.map((f,i)=>'<div class="mis" style="cursor:default;border-color:rgba(255,201,74,.35)"><div class="chk" style="border-color:var(--gold);font-size:15px">🌟</div><div><div class="mt">'+esc(f.t)+'</div><div class="ms">'+PIL[f.p]+'</div></div><div class="xp">'+(f.xp?'+'+f.xp:'')+'</div><button class="h mut" data-fdel="'+i+'" style="font-size:16px;padding:0 4px">✕</button></div>').join(''):'<p class="mut" style="font-size:14px;margin-bottom:10px">Nenhum feito registrado hoje ainda.</p>')+
+    (hist.length?'<div class="h cy" style="font-size:11px;margin:16px 0 8px">ÚLTIMOS DIAS</div>'+hist.map(([dd,fs])=>'<div class="card" style="margin-bottom:8px;font-size:14px;line-height:1.5"><b class="mut" style="font-size:12px">'+dd.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'})+'</b><br>'+fs.map(f=>'🌟 '+esc(f.t)).join('<br>')+'</div>').join(''):'');
+  const marcaP=p=>{pil=p;box.querySelectorAll('[data-fp]').forEach(b=>b.classList.toggle('on',+b.dataset.fp===p))};
+  const inp=$('#ftT');inp.oninput=()=>{const g=feitoPilar(inp.value);if(g!=null)marcaP(g)};
+  box.querySelectorAll('[data-sug]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.sug.replace(/^\S+\s/,'');inp.oninput()});
+  box.querySelectorAll('[data-fp]').forEach(b=>b.onclick=()=>marcaP(+b.dataset.fp));
+  $('#ftOk').onclick=()=>{const t=inp.value.trim();if(t.length<3){toast('Escreva o que você fez');return}if(pil==null){toast('Escolha o pilar');return}
+    const ganha=comXp<FEITO_MAX?xp:0;d.feitos.unshift({t,p:pil,xp:ganha,h:Date.now()});if(ganha){S.xp[pil]+=ganha;d.xp=(d.xp||0)+ganha}
+    registrar('🌟 Feito do dia: '+t+(ganha?' (+'+ganha+' XP)':''));salvar();render();renderFeitos();
+    try{SFX.certo()}catch(e){}toast(ganha?'🌟 +'+ganha+' XP em '+PIL[pil]+'. Mandou bem!':'🌟 Registrado! (limite de XP de hoje atingido)')};
+  box.querySelectorAll('[data-fdel]').forEach(b=>b.onclick=()=>{if(!b.dataset.c){b.dataset.c=1;b.textContent='APAGAR?';b.style.fontSize='10px';return}
+    const f=d.feitos.splice(+b.dataset.fdel,1)[0];if(f&&f.xp){S.xp[f.p]-=f.xp;d.xp=Math.max(0,(d.xp||0)-f.xp)}salvar();render();renderFeitos()});
+}
 
 /* ============ VÍCIOS e DIÁRIO — privados (nunca vão para a guilda), com senha numérica opcional ============ */
 const VIC_TIPOS=[
@@ -1595,7 +1630,7 @@ function render(){
   const pen=S.dias[hoje()]&&S.dias[hoje()].penal&&!S.dias[hoje()].penal.feita;
   document.body.classList.toggle('penal',!!pen);
   try{MUS.modo(pen?'penal':'normal')}catch(e){}
-  renderHeader();renderRadar();renderMissoes();renderMetas();renderLog();renderExt();renderClasse();renderValores();try{privRender()}catch(e){console.error(e)}try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
+  renderHeader();renderRadar();renderMissoes();try{if(!document.activeElement||document.activeElement.id!=='ftT')renderFeitos()}catch(e){console.error(e)}renderMetas();renderLog();renderExt();renderClasse();renderValores();try{privRender()}catch(e){console.error(e)}try{renderSaber()}catch(e){}verificarConquistas();renderConquistas();try{finLembrete()}catch(e){}relatorioAuto();try{renderGuilda();gSyncMembro()}catch(e){console.error(e)}
 }
 
 /* ===== Modo teste (código especial): perfil SS temporário, o perfil real fica guardado ===== */
