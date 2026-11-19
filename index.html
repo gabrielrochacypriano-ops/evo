@@ -605,8 +605,8 @@ body.duo-on{overflow:hidden}
       <div id="misList"></div>
       <p class="mut" style="text-align:center;font-size:14px;margin-top:10px">Toque no botão ✓ para fazer o check-in. Use ⇄ para trocar uma missão.</p>
       </div>
-      <div class="sec" data-grupo="mis" data-sec="habitos"><div class="ptitle h cy">Hábitos</div><div id="habBox"></div></div>
-      <div class="sec" data-grupo="mis" data-sec="feitos"><div class="ptitle h cy">Feitos do Dia</div><div id="feitosBox"></div></div>
+      <div class="sec" data-grupo="mis" data-sec="habitos"><div class="ptitle h cy">Hábitos</div><div id="habBox" style="padding-bottom:70px"></div></div>
+      <div class="sec" data-grupo="mis" data-sec="feitos"><div class="ptitle h cy">Feitos do Dia</div><div id="feitosBox" style="padding-bottom:70px"></div></div>
     </div>
 
     <!-- METAS -->
@@ -1385,7 +1385,7 @@ function habForm(h){const H=habS(),novo=!h;h=h||{ico:'✅',nome:'',p:null,per:[]
 }
 
 /* ============ FEITOS DO DIA: coisas boas que você fez além das missões ============ */
-const FEITO_XP=5,FEITO_MAX=5;
+const FEITO_XP=5,FEITO_MAX=10;
 const FEITO_PIL=[[0,/trein|corr|academi|caminh|flex|agach|nad|bike|pedal|exerc|alonga|dorm|água|abdomin|muscula|esport|futebol|karat|lut/i],[1,/l(i|e)[ru]|livro|p[áa]gina|estud|curso|aula|aprend|idioma|ingl|podcast|document/i],[2,/medit|or(ei|ar|ação)|gratid|diário|igreja|missa|culto|b[íi]blia|respir|perdo|paz|silêncio/i],[3,/econom|guard|invest|vend|pag(uei|ar)|d[íi]vid|renda|gast|poup|orçament|conta|anunci/i],[4,/lig(uei|ar)|ajud|amig|fam[íi]lia|visit|favor|m(ã|a)e|pai|esposa|marido|filh|vizinh|volunt|doei|doar|conversei/i]];
 const FEITO_SUG=['📖 Li 20 páginas de um livro','🏃 Fiz uma caminhada','💧 Bebi 2 litros de água','📞 Liguei para alguém querido','🧘 Meditei 10 minutos','💰 Não gastei nada supérfluo','🤝 Ajudei alguém','🧹 Arrumei a casa'];
 function feitoPilar(t){const m=FEITO_PIL.find(x=>x[1].test(t));return m?m[0]:null}
