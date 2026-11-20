@@ -409,6 +409,7 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .tb-t{display:flex;flex-direction:column;gap:4px;padding:6px 5px;border:2px solid var(--line);border-top:0;border-radius:0 0 18px 18px;background:transparent;transition:transform .15s}
 .tb-t.sel{transform:translateY(-8px);border-color:var(--cyan)}
 .tb-t i{width:28px;height:28px;border-radius:50%;display:block}
+.mis.tap{cursor:pointer}.mis.tap:active{transform:scale(.99)}.mis.pend{border-color:var(--cyan);opacity:.75}.mis.pend .chk{background:var(--cyan);color:#000;border-color:var(--cyan)}.mis.pend .mt{text-decoration:line-through}
 /* ===== Idiomas estilo Duolingo ===== */
 .duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
 .duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
@@ -627,7 +628,7 @@ body.duo-on{overflow:hidden}
       </div>
       <div class="bar" style="margin-bottom:16px"><i id="misBar" style="width:0"></i></div>
       <div id="misList"></div>
-      <p class="mut" style="text-align:center;font-size:14px;margin-top:10px">Toque no botão ✓ para fazer o check-in. Use ⇄ para trocar uma missão.</p>
+      <p class="mut" style="text-align:center;font-size:14px;margin-top:10px">Toque na missão para concluir (toque de novo logo em seguida para desfazer). Use ⇄ para trocar uma missão.</p>
       </div>
       <div class="sec" data-grupo="mis" data-sec="habitos"><div class="ptitle h cy">Hábitos</div><div id="habBox" style="padding-bottom:70px"></div></div>
       <div class="sec" data-grupo="mis" data-sec="feitos"><div class="ptitle h cy">Feitos do Dia</div><div id="feitosBox" style="padding-bottom:70px"></div></div>
@@ -1825,7 +1826,8 @@ function renderMissoes(){
   const k=hoje(),lista=missoesDoDia(k),d=S.dias[k];
   const pen=d.penal;
   $('#penArea').innerHTML=pen?(
-    '<div class="penbox"'+(pen.feita?' style="animation:none;opacity:.6"':'')+'><div class="h rd" style="font-size:13px;margin-bottom:6px">'+(pen.feita?'✓ Penalidade cumprida':'☠ Zona de Penalidade ativa')+'</div><div style="font-weight:600">'+pen.t+'</div><div class="mut" style="font-size:13px;margin-top:6px">Pilar: '+PIL[pen.p]+(pen.feita?'':' · Ignorar custa XP amanhã')+'</div></div>'):'';
+    '<div class="penbox"'+(pen.feita?' style="animation:none;opacity:.6"':'')+'><div class="h rd" style="font-size:13px;margin-bottom:6px">'+(pen.feita?'✓ Penalidade cumprida':'☠ Zona de Penalidade ativa')+'</div><div style="font-weight:600">'+pen.t+'</div><div class="mut" style="font-size:13px;margin-top:6px">Pilar: '+PIL[pen.p]+(pen.feita?'':' · Ignorar custa XP amanhã')+'</div>'+(pen.feita?'':'<button class="btn" id="penOk" style="margin-top:10px;border-color:var(--red);color:var(--red)">✓ CUMPRI A PENALIDADE (+'+Math.round(XP_PENAL*MODOS[S.modo].mult)+' XP)</button>')+'</div>'):'';
+  if($('#penOk'))$('#penOk').onclick=()=>{const b=$('#penOk');if(!b.dataset.c){b.dataset.c=1;b.textContent='TOQUE DE NOVO PARA CONFIRMAR';return}concluirMissoes(S.dias[hoje()].feitas.slice(),true)};
   // semana
   let w='',dd=new Date();dd.setDate(dd.getDate()-6);const nomes=['D','S','T','Q','Q','S','S'];
   for(let i=0;i<7;i++){const kk=hoje(dd),t=taxa(kk),p=S.dias[kk]&&S.dias[kk].penal;w+='<div class="'+(kk===k?'today':'')+'"><b class="'+(p?'p':'')+'"><i style="height:'+(t*100)+'%"></i></b>'+nomes[dd.getDay()]+'</div>';dd.setDate(dd.getDate()+1)}
@@ -1837,7 +1839,7 @@ function renderMissoes(){
   const xp=Math.round(XP_MISSAO*MODOS[S.modo].mult);
   const rest=trocasRestantes();
   const card=(m,i)=>{const ok=d.feitas.includes(m.id);
-    return'<div class="mis'+(ok?' done':'')+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.foco?'🧬 '+m.foco.toUpperCase()+' · ':m.minha?'✍️ MINHA · ':'')+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls||m.minha?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'};
+    return'<div class="mis'+(ok?' done':' tap')+'" data-mid="'+m.id+'"><div class="chk">'+(ok?'✓':'')+'</div><div style="flex:1;min-width:0"><div class="mt">'+esc(m.t)+'</div>'+dicaHtml(m)+'<div class="ms">'+(m.foco?'🧬 '+m.foco.toUpperCase()+' · ':m.minha?'✍️ MINHA · ':'')+(m.meta?'🎯 META · ':'')+(m.cls?CLASSES[m.cls].ico+' CLASSE · ':'')+PIL[m.p]+' · +'+xpDe(m)+' XP'+(valorPilar(m.p)?' <span class="gd">★</span>':'')+'</div></div>'+(ok&&G.gid&&!m.meta?'<button class="valbtn" data-v="'+i+'" aria-label="Pedir validação">'+(S.valPed[k+'|'+m.id]?'🛡️':'🙋')+'</button>':'')+(ok||m.meta||m.cls||m.minha?'':'<button class="swap" data-i="'+i+'" aria-label="Trocar">⇄</button>')+'</div>'};
   const pend=lista.map((m,i)=>[m,i]).filter(([m])=>!d.feitas.includes(m.id)),feitasL=lista.map((m,i)=>[m,i]).filter(([m])=>d.feitas.includes(m.id));
   const ml=minhasLimite();
   $('#misList').innerHTML=(pend.length?pend.map(([m,i])=>card(m,i)).join(''):'<div class="card" style="text-align:center;margin-bottom:10px"><div style="font-size:30px">🏆</div><b class="cy">Todas as missões de hoje concluídas!</b></div>')+
@@ -1845,7 +1847,12 @@ function renderMissoes(){
     '<button class="btn ghost" id="minhaNova" style="margin:6px 0 4px;min-height:46px">＋ MINHA MISSÃO <span class="mut" style="font-size:13px">('+(S.minhas||[]).length+'/'+ml.total+')</span></button>'+
     ((S.minhas||[]).length?'<button class="h mut" id="minhaVer" style="display:block;margin:6px auto 2px;font-size:11px;letter-spacing:.1em">GERENCIAR MINHAS MISSÕES</button>':'')+
     '<p class="mut" style="font-size:13px;text-align:center;margin:4px 0 0">⇄ Trocas restantes hoje: <b class="cy">'+(rest>50?'ilimitadas':rest)+'</b> · lesões não contam</p>';
-  $('#misList').querySelectorAll('.swap').forEach(b=>b.onclick=()=>trocar(+b.dataset.i));
+  $('#misList').querySelectorAll('.swap').forEach(b=>b.onclick=e=>{e.stopPropagation();trocar(+b.dataset.i)});
+  /* check-in direto: toque na missão; 2,5 s para desfazer antes de confirmar */
+  $('#misList').querySelectorAll('.mis.tap').forEach(el=>el.onclick=e=>{if(e.target.closest('button,a,details,summary,.dica'))return;const id=el.dataset.mid;
+    if(misPend[id]){clearTimeout(misPend[id]);delete misPend[id];el.classList.remove('pend');el.querySelector('.chk').textContent='';return}
+    el.classList.add('pend');el.querySelector('.chk').textContent='✓';try{SFX.certo()}catch(e){}
+    misPend[id]=setTimeout(()=>{delete misPend[id];concluirMissoes([...(S.dias[hoje()].feitas||[]),id],false)},2500)});
   $('#minhaNova').onclick=()=>minhaEditar(null);if($('#minhaVer'))$('#minhaVer').onclick=minhasTela;
   $('#misList').querySelectorAll('.valbtn').forEach(b=>b.onclick=()=>pedirValidacao(+b.dataset.v));
 }
@@ -1938,21 +1945,25 @@ function checkin(){
       draw();
     });
     $('#ckX').onclick=fechar;
-    $('#ckOk').onclick=()=>{
+    $('#ckOk').onclick=()=>{fechar();concluirMissoes([...sel],penSel)};
+  };
+  draw();
+}
+const misPend={};
+function concluirMissoes(ids,penSel){
+  const k=hoje(),lista=missoesDoDia(k),d=S.dias[k],pen=d.penal&&!d.penal.feita?d.penal:null,sel=new Set(ids);{{
       const nvAntes=nivel();let ganho=0,novas=0;
       let xpN=0;for(const m of lista)if(sel.has(m.id)&&!d.feitas.includes(m.id)){d.feitas.push(m.id);const q=xpDe(m);S.xp[m.p]+=q;ganho+=q;xpN+=q;novas++;if(m.cls)ganharEquilibrio()}
       if(pen&&penSel){pen.feita=true;const q=Math.round(XP_PENAL*MODOS[S.modo].mult);S.xp[pen.p]+=q;ganho+=q;registrar('⚔️ Zona de Penalidade superada em '+PIL[pen.p]+' (+'+q+' XP)')}
       if(novas){registrar('✅ '+novas+' missão(ões) concluída(s) (+'+xpN+' XP)');try{gContar(novas)}catch(e){}}
       if(novas&&d.feitas.length===lista.length)registrar('🏆 Todas as missões do dia concluídas!');
-      fechar();salvar();render();
+      salvar();render();
       if(ganho){try{SFX.sucesso()}catch(e){}
         const nv=nivel();
         if(nv>nvAntes){registrar('⬆️ Subiu para o nível '+nv+' (Rank '+rank(nv)+')');salvar();renderLog();sistema('LEVEL UP','Você alcançou o <b class="cy">Nível '+nv+'</b>.<br>Rank atual: <b class="gd">'+rank(nv)+'</b>'+(nvAntes<NV_CLASSE&&nv>=NV_CLASSE?'<br><br>⚔️ <b class="gd">Rank D: Classes liberadas!</b> Faça o Ritual em Perfil → Identidade.':''))}
         else toast('+'+ganho+' XP')
       }
-    };
-  };
-  draw();
+  }}
 }
 $('#fab').onclick=checkin;
 
@@ -5691,6 +5702,16 @@ pages.addEventListener('scroll',()=>{
   $('#fab').classList.toggle('hide',i!==1);
 },{passive:true});
 window.addEventListener('resize',()=>pages.scrollLeft=pages.clientWidth*pagAtual);
+/* Botão voltar (Android): fecha janelas → volta para a home → só sai com 2 toques seguidos */
+let voltarT=0;
+try{history.pushState({evo:1},'');window.addEventListener('popstate',()=>{
+  const duo=document.getElementById('duo'),sys=$('#sys');let tratou=true;
+  if(duo&&duo.style.display!=='none'&&duo.style.display!=='')duoFechar();
+  else if($('#modal').classList.contains('on'))fechar();
+  else if(sys&&sys.classList.contains('on'))sys.classList.remove('on');
+  else if(pagAtual!==0){if(arenaPreso)arenaTravar(null);pages.scrollTo({left:0,behavior:'smooth'})}
+  else{voltarT=Date.now();tratou=false;toast('Toque em voltar de novo para sair');setTimeout(()=>{if(!(history.state&&history.state.evo))history.pushState({evo:1},'')},2000)}
+  if(tratou)history.pushState({evo:1},'')})}catch(e){}
 
 /* Vira o dia com o app aberto */
 let _diaVisto='';
