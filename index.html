@@ -426,6 +426,8 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .tm-k{display:flex;flex-direction:column;gap:5px;margin-top:10px}.tm-k div{display:flex;gap:4px;justify-content:center}.tm-k button{flex:1;max-width:34px;padding:12px 0;border-radius:6px;border:0;background:rgba(127,127,127,.28);color:var(--txt);font-weight:800;font-size:14px}.tm-k button.w{max-width:52px;flex:1.5}
 .tm-k button.v{background:#22a35a;color:#fff}.tm-k button.a{background:#d4a514;color:#fff}.tm-k button.x{background:#374151;color:#9ca3af}
 .mv-q{font-size:18px;font-weight:700;line-height:1.45;text-align:center;margin:10px 0 16px}.mv-b{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mv-b button{padding:16px 0;border:1px solid var(--line);border-radius:14px;font-weight:800;font-size:16px;background:transparent;color:var(--txt)}.mv-b button.ok{background:var(--cyan);color:#000}.mv-b button.err{background:var(--red);color:#fff}
+.pd-l{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin:10px 0 14px}.pd-l b{width:30px;height:38px;border-bottom:3px solid var(--cyan);display:grid;place-items:center;font-size:22px;font-weight:900}
+.pd-d{display:flex;flex-direction:column;gap:8px}.pd-d div{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.4;padding:10px;border:1px solid var(--line);border-radius:12px}.pd-d span{flex:0 0 24px;height:24px;border-radius:50%;background:var(--gold);color:#000;display:grid;place-items:center;font-weight:800;font-size:13px}
 /* ===== Idiomas estilo Duolingo ===== */
 .duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
 .duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
@@ -2753,6 +2755,99 @@ function cardTermo(el,fim){
       if(atual.length<5){atual+=k;draw()}})};
   draw();
 }
+/* ---------- Palavra com dicas (substitui o Termo) ---------- */
+const PAL_DICAS=[
+['GIRAFA','Animal',['É o animal terrestre mais alto do mundo.','Vive nas savanas da África.','Tem um pescoço muito comprido.']],
+['PINGUIM','Animal',['É uma ave, mas não voa.','Nada muito bem em águas geladas.','Parece estar sempre de "smoking".']],
+['ELEFANTE','Animal',['É o maior animal terrestre.','Tem uma memória famosa.','Usa a tromba para pegar comida e beber água.']],
+['CAMALEAO','Animal',['É um réptil.','Seus olhos se movem de forma independente.','É famoso por mudar de cor.']],
+['MORCEGO','Animal',['É um mamífero.','Costuma dormir de cabeça para baixo.','É o único mamífero que voa de verdade.']],
+['TARTARUGA','Animal',['Pode viver muitas décadas.','Tem uma carapaça.','É símbolo de lentidão nas fábulas.']],
+['ABELHA','Animal',['É um inseto.','É essencial para a polinização.','Produz mel.']],
+['BALEIA','Animal',['Vive no mar, mas respira ar.','A espécie azul é o maior animal do planeta.','É um mamífero aquático gigante.']],
+['CORUJA','Animal',['Tem hábitos noturnos.','Consegue girar muito a cabeça.','É ave símbolo da sabedoria.']],
+['TUBARAO','Animal',['Vive no mar.','Seu esqueleto é de cartilagem.','Tem várias fileiras de dentes afiados.']],
+['VULCAO','Natureza',['Pode ficar adormecido por séculos.','Expele cinzas e gases.','De dentro dele sai lava.']],
+['ARCOIRIS','Natureza',['Aparece quando há sol e chuva ao mesmo tempo.','Tem sete cores tradicionais.','É formado pela luz passando pelas gotas de água.']],
+['DESERTO','Natureza',['Chove muito pouco nesse lugar.','O Saara é o maior quente do mundo.','Tem muita areia e dunas.']],
+['CACHOEIRA','Natureza',['É feita de água.','Acontece quando um rio encontra um desnível.','A Foz do Iguaçu tem várias delas.']],
+['FLORESTA','Natureza',['Tem muitas árvores.','A Amazônia é a maior tropical do mundo.','É lar de milhares de espécies.']],
+['TERREMOTO','Natureza',['A escala Richter mede a sua força.','Acontece pelo movimento das placas tectônicas.','Faz o chão tremer.']],
+['RELAMPAGO','Natureza',['Aparece em tempestades.','É uma descarga elétrica.','Vemos antes de ouvir o trovão.']],
+['ILHA','Natureza',['Pode ser pequena ou enorme.','A Groenlândia é a maior do mundo.','É uma porção de terra cercada de água.']],
+['PIRAMIDE','Lugar',['Tem base quadrada e lados triangulares.','As mais famosas ficam em Gizé.','Os egípcios as construíram como túmulos.']],
+['BIBLIOTECA','Lugar',['Costuma pedir silêncio.','Lá você pode pegar algo emprestado.','Guarda muitos livros.']],
+['HOSPITAL','Lugar',['Funciona 24 horas.','Tem pronto-socorro.','Lá trabalham médicos e enfermeiros.']],
+['AEROPORTO','Lugar',['Tem portões de embarque.','Lá você passa pelo raio-x com a bagagem.','É de onde os aviões decolam.']],
+['MUSEU','Lugar',['Guarda objetos de valor histórico ou artístico.','O Louvre, em Paris, é um dos mais famosos.','Lá você vê exposições.']],
+['FAROL','Lugar',['Fica perto do mar.','É uma torre alta.','Sua luz orienta os navios à noite.']],
+['GUARDACHUVA','Objeto',['Pode ser dobrável.','Você abre quando o tempo fecha.','Protege da chuva.']],
+['RELOGIO','Objeto',['Pode ser de pulso ou de parede.','Tem ponteiros ou números digitais.','Mostra as horas.']],
+['BUSSOLA','Objeto',['Foi muito usada pelos navegadores.','Tem uma agulha imantada.','Aponta para o norte.']],
+['TELESCOPIO','Objeto',['Galileu usou um para ver as luas de Júpiter.','Aproxima o que está muito longe.','É usado para observar estrelas e planetas.']],
+['ESPELHO','Objeto',['Fica muito no banheiro.','Mostra tudo ao contrário, da esquerda para a direita.','Reflete a sua imagem.']],
+['TESOURA','Objeto',['Tem duas lâminas.','Fica no estojo escolar.','Serve para cortar papel.']],
+['ESCADA','Objeto',['Pode ser rolante.','Tem degraus.','Serve para subir e descer.']],
+['MOCHILA','Objeto',['Tem alças.','Você leva nas costas.','É usada para levar material escolar.']],
+['TRAVESSEIRO','Objeto',['Fica na cama.','É fofo.','Você apoia a cabeça nele para dormir.']],
+['GELADEIRA','Objeto',['Fica na cozinha.','Tem um congelador.','Mantém os alimentos frios.']],
+['VIOLAO','Música',['Tem seis cordas.','É muito usado na bossa nova.','É tocado com os dedos, apoiado no colo.']],
+['PIANO','Música',['Tem teclas brancas e pretas.','Chopin e Mozart compuseram muito para ele.','É um instrumento de teclado.']],
+['BATERIA','Música',['Tem pratos e tambores.','Quem toca usa baquetas.','Marca o ritmo na banda.']],
+['SAMBA','Música',['Nasceu no Brasil.','É a música das escolas no Carnaval.','Tem pandeiro, cuíca e tamborim.']],
+['FUTEBOL','Esporte',['O Brasil é pentacampeão mundial.','Cada time tem 11 jogadores.','Só o goleiro pode usar as mãos.']],
+['XADREZ','Jogo',['Tem 64 casas.','Tem rei, rainha, torres e cavalos.','O objetivo é dar xeque-mate.']],
+['MARATONA','Esporte',['Tem 42,195 km.','Lembra a lenda de um mensageiro grego.','É uma corrida de longa distância.']],
+['SKATE','Esporte',['Virou modalidade olímpica em Tóquio.','Rayssa Leal é uma estrela brasileira nele.','É uma prancha com quatro rodinhas.']],
+['NATACAO','Esporte',['Tem estilos como crawl e borboleta.','Michael Phelps é a maior lenda.','É praticada na piscina.']],
+['PIZZA','Comida',['É muito famosa na Itália.','Pode ser de mussarela, calabresa ou portuguesa.','É assada em formato redondo com recheio por cima.']],
+['FEIJOADA','Comida',['É um prato típico brasileiro.','Costuma ser servida com couve e laranja.','Leva feijão preto e carnes.']],
+['BRIGADEIRO','Comida',['Não pode faltar em festa de aniversário brasileira.','Leva leite condensado e chocolate.','É enrolado em bolinhas com granulado.']],
+['ABACAXI','Comida',['Tem uma coroa de folhas.','É uma fruta tropical com casca áspera.','Amarelo por dentro e azedinho.']],
+['PIPOCA','Comida',['Combina com cinema.','É feita de milho.','Estoura na panela.']],
+['SORVETE','Comida',['Derrete no calor.','Pode ser de casquinha ou de pote.','É uma sobremesa gelada.']],
+['CHOCOLATE','Comida',['É feito a partir do cacau.','Pode ser ao leite, meio amargo ou branco.','É muito dado na Páscoa.']],
+['MEDICO','Profissão',['Estudou muitos anos de faculdade.','Usa estetoscópio.','Cuida da saúde das pessoas.']],
+['BOMBEIRO','Profissão',['O número de emergência é 193.','Usa capacete e mangueira.','Apaga incêndios e faz resgates.']],
+['ASTRONAUTA','Profissão',['Treina por anos antes de uma missão.','Usa um traje especial.','Viaja para o espaço.']],
+['PROFESSOR','Profissão',['Prepara aulas.','Corrige provas.','Ensina os alunos.']],
+['CARTEIRO','Profissão',['Anda muito pelas ruas.','Trabalha nos Correios.','Entrega cartas e encomendas.']],
+['PADEIRO','Profissão',['Começa a trabalhar de madrugada.','Usa farinha, fermento e forno.','Faz pão francês.']],
+['DENTISTA','Profissão',['Pede para você abrir bem a boca.','Recomenda fio dental.','Cuida dos dentes.']],
+['SATURNO','Espaço',['É o segundo maior planeta do Sistema Solar.','É um gigante gasoso.','É famoso pelos seus anéis.']],
+['COMETA','Espaço',['Tem uma cauda brilhante.','O Halley é o mais famoso.','É feito de gelo e poeira e viaja ao redor do Sol.']],
+['ECLIPSE','Espaço',['Pode ser solar ou lunar.','Acontece quando um astro fica na frente do outro.','Por alguns minutos o dia pode escurecer.']],
+['GALAXIA','Espaço',['A nossa se chama Via Láctea.','Reúne bilhões de estrelas.','Andrômeda é uma vizinha nossa.']],
+['FOGUETE','Espaço',['Precisa de muito combustível.','Decola na vertical.','Leva satélites e astronautas ao espaço.']],
+['AMIZADE','Sentimento',['Não se compra.','Se cultiva com tempo e confiança.','É o laço entre amigos.']],
+['SAUDADE','Sentimento',['Dizem que essa palavra quase não tem tradução.','Aparece quando alguém querido está longe.','É a falta que se sente de algo ou alguém.']],
+['CORAGEM','Sentimento',['Não é falta de medo.','É agir mesmo com medo.','Os heróis são conhecidos por ela.']],
+['PACIENCIA','Sentimento',['Dizem que é uma virtude.','Ajuda a esperar sem perder a calma.','Falta quando estamos no trânsito.']],
+['GRATIDAO','Sentimento',['Pode começar com um "obrigado".','Faz bem para a saúde mental.','É reconhecer o que recebemos de bom.']],
+['CARNAVAL','Cultura',['Acontece antes da Quaresma.','Tem desfiles de escolas de samba.','É a maior festa popular do Brasil.']],
+['FERIADO','Cultura',['Pode ser nacional ou municipal.','Às vezes vira "feriadão".','É um dia de folga oficial.']],
+['INTERNET','Tecnologia',['Conecta bilhões de pessoas.','Você usa para ver sites e vídeos.','Funciona por Wi-Fi ou dados móveis.']],
+['SENHA','Tecnologia',['Nunca deve ser compartilhada.','Pode ter letras, números e símbolos.','Protege o acesso às suas contas.']],
+['BATERIA','Tecnologia',['Seu celular avisa quando ela está fraca.','Precisa ser recarregada.','Guarda a energia do aparelho.']]
+].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i);
+function cardDicas(el,fim){
+  S.pdVistos=S.pdVistos||[];let livres=PAL_DICAS.map((_,i)=>i).filter(i=>!S.pdVistos.includes(i));if(!livres.length){S.pdVistos=[];livres=PAL_DICAS.map((_,i)=>i)}
+  const idx=pick(livres);S.pdVistos.push(idx);salvar();const [pal,cat,ds]=PAL_DICAS[idx],dicas=ds.concat(['Começa com a letra '+pal[0]+'.']);
+  cabecalho(el,'💡','Adivinhe a Palavra','DICAS','gd','até +'+xpA(30)+' XP · MENTE');const J=el.querySelector('.jogo');
+  const norm=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z]/g,'');
+  let n=1,erros=0,acabou=false;
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Categoria: <b class="cy">'+cat+'</b> · '+pal.length+' letras. Quanto menos dicas usar, mais XP.</p><div class="pd-l">'+[...pal].map((c,i)=>'<b>'+(acabou||(n>=4&&i===0)?c:'')+'</b>').join('')+'</div>'+
+    '<div class="pd-d">'+dicas.slice(0,n).map((d,i)=>'<div><span>'+(i+1)+'</span>'+d+'</div>').join('')+'</div>'+
+    (acabou?'':'<div class="field" style="margin:10px 0 8px"><input id="pdI" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Sua resposta"></div><div class="row"><button class="btn ghost" data-dica'+(n>=dicas.length?' disabled':'')+'>💡 MAIS UMA DICA</button><button class="btn" data-ok>RESPONDER</button></div>')+'<p class="ar-msg">'+(msg||'')+'</p>';
+    if(acabou)return;const inp=J.querySelector('#pdI');
+    J.querySelector('[data-dica]').onclick=()=>{if(n<dicas.length){n++;draw()}};
+    const resp=()=>{const v=norm(inp.value);if(!v)return;if(v===pal){acabou=true;try{SFX.certo()}catch(e){}draw();jgWin(J,'Acertou com '+n+' dica'+(n>1?'s':'')+'!',false);fim(true,[1.3,1.1,.9,.7][n-1]);return}
+      erros++;try{SFX.erro()}catch(e){}if(erros>=3){acabou=true;draw('A palavra era <b class="cy">'+pal+'</b>.');fim(false,.3);return}
+      if(n<dicas.length)n++;draw('✗ Não é "'+esc(inp.value.trim())+'". '+(3-erros)+' tentativa'+(3-erros>1?'s':'')+' restante'+(3-erros>1?'s':'')+'. Veja a nova dica.')};
+    J.querySelector('[data-ok]').onclick=resp;inp.onkeydown=e=>{if(e.key==='Enter')resp()}};
+  draw();
+}
+
 /* ---------- Mito ou verdade (saúde) ---------- */
 const MITOS_SAUDE=[
 ['É preciso esperar 2 horas depois de comer para entrar na piscina.',0,'Não há evidência de que comer antes cause afogamento. No máximo, pode dar um leve desconforto.'],
@@ -5818,7 +5913,7 @@ const FOCO={mat:new Set(),idi:new Set(),grp:new Set()};
 const FOCO_GRUPOS={
   logica:['🧩 Lógica',['logica']],
   geo:['🌍 Bandeiras e mapas',['bandeiras','mapa']],
-  palavras:['🔤 Palavras e foco',['termo','caca','stroop','digitos']],
+  palavras:['🔤 Palavras e foco',['dicas','caca','stroop','digitos']],
   vida:['🩺 Saúde, socorro e dinheiro',['mito','dinmito','socorro']],
   reflexao:['💭 Reflexão e gratidão',['pensar','gratidao']],
   jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','emojis','seqnum','robo','magico','bolas','xadrez','sudoku4','sudoku9','erros','memoria']],
@@ -5832,12 +5927,12 @@ const arenaVistos={};   // distribuição: quanto mais um tipo apareceu na sess�
 const ARENA_CATS={
   perguntas:{w:3,t:{saber:4,cientista:1,financas:1,mito:1,dinmito:1,socorro:1,duelo:6}},
   logica:{w:2.4,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1,emojis:1,seqnum:1,robo:1,magico:1,bolas:1}},
-  jogos:{w:2.2,t:{memoria:1,erros:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,xadrez:1,bandeiras:1.3,mapa:1.3,stroop:1,digitos:1,caca:1,termo:1.3}},
+  jogos:{w:2.2,t:{memoria:1,erros:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,xadrez:1,bandeiras:1.3,mapa:1.3,stroop:1,digitos:1,caca:1,dicas:1.3}},
   reflexo:{w:1.3,t:{alvos:1,reacao:1,simon:1,vainao:1,fisico:1}},
   idiomas:{w:1.3,t:{idioma:1}},
   calma:{w:1.4,t:{livro:2,leitura:1,biblia:1,respira:1,pensar:1,gratidao:1}}
 };
-const ARENA_LONGOS=['idioma','sudoku9','xadrez','leitura','termo','caca','duelo'];
+const ARENA_LONGOS=['idioma','sudoku9','xadrez','leitura','caca','duelo'];
 const arTipoOk=k=>!!ARENA_TIPOS[k]&&(S.arPref||{})[k]!=='off'&&(!ARENA_TIPOS[k].disp||ARENA_TIPOS[k].disp());
 const arPeso=k=>(S.arPref||{})[k]==='menos'?.25:1;
 let arenaCatVistos={};
@@ -5910,7 +6005,7 @@ const ARENA_TIPOS={
   stroop:{nome:'Teste de Stroop',ico:'🎨',dif:'medio',xp:25,pilar:1,run:cardStroop},
   digitos:{nome:'Memória de Dígitos',ico:'🔢',dif:'medio',xp:25,pilar:1,run:cardDigitos},
   caca:{nome:'Caça-palavras',ico:'🔍',dif:'facil',xp:25,pilar:1,run:cardCaca},
-  termo:{nome:'Termo',ico:'🟩',dif:'medio',xp:30,pilar:1,run:cardTermo},
+  dicas:{nome:'Adivinhe a Palavra',ico:'💡',dif:'medio',xp:30,pilar:1,run:cardDicas},
   mito:{nome:'Mito ou Verdade: Saúde',ico:'🧪',dif:'facil',xp:25,pilar:0,run:(el,f)=>cardMito(el,f,false)},
   dinmito:{nome:'Mito ou Verdade: Dinheiro',ico:'💸',dif:'facil',xp:25,pilar:3,run:(el,f)=>cardMito(el,f,true)},
   socorro:{nome:'Primeiros Socorros',ico:'⛑️',dif:'facil',xp:25,pilar:4,run:cardSocorro},
