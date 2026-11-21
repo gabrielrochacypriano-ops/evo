@@ -429,6 +429,16 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .mv-q{font-size:18px;font-weight:700;line-height:1.45;text-align:center;margin:10px 0 16px}.mv-b{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mv-b button{padding:16px 0;border:1px solid var(--line);border-radius:14px;font-weight:800;font-size:16px;background:transparent;color:var(--txt)}.mv-b button.ok{background:var(--cyan);color:#000}.mv-b button.err{background:var(--red);color:#fff}
 .pd-l{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin:10px 0 14px}.pd-l b{width:30px;height:38px;border-bottom:3px solid var(--cyan);display:grid;place-items:center;font-size:22px;font-weight:900}
 .pd-d{display:flex;flex-direction:column;gap:8px}.pd-d div{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.4;padding:10px;border:1px solid var(--line);border-radius:12px}.pd-d span{flex:0 0 24px;height:24px;border-radius:50%;background:var(--gold);color:#000;display:grid;place-items:center;font-weight:800;font-size:13px}
+.bl-f{display:flex;flex-direction:column;gap:6px;margin:6px 0}.bl-f div{padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-size:16px;font-weight:600}
+.bl-o{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.bl-o button{font-size:34px;padding:8px 14px;border:1px solid var(--line);border-radius:14px;background:transparent}.bl-o button.ok{background:var(--cyan)}.bl-o button.err{background:var(--red)}
+.qq-p{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}.qq-p div{font-size:14.5px;line-height:1.4;padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+.qq-t{display:flex;flex-direction:column;gap:6px}.qq-r{display:flex;gap:6px;align-items:center}.qq-r b{width:52px;font-size:15px}.qq-r button{flex:1;padding:10px 4px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-weight:700;background:transparent;color:var(--txt)}
+.nm{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:14px 0 6px;min-height:60px}.nm i{width:8px;height:56px;border-radius:4px;background:linear-gradient(#f5c542 0 12%,#d4a373 12%)}
+.nm-n{text-align:center;font-family:Orbitron;font-size:20px;color:var(--gold);margin-bottom:10px}.nm-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:8px}.nm-b button{padding:14px 0;border:1px solid var(--line);border-radius:12px;font-weight:800;background:transparent;color:var(--txt)}.nm-b button:disabled{opacity:.3}
+.tv{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:6px;min-height:150px;margin:8px 0}.tv-m{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px;padding:8px;border-radius:12px;background:rgba(80,160,80,.15);border:1px solid var(--line)}
+.tv-m button,.tv-b button{font-size:28px;background:none;border:0;padding:2px}.tv-m button:disabled{opacity:.55}.tv-r{display:flex;flex-direction:column;justify-content:center;background:rgba(56,140,220,.18);border-radius:12px;padding:6px}
+.tv-b{display:flex;align-items:center;gap:2px;font-size:26px;flex-wrap:wrap;max-width:100%}
+.mn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:270px;margin:10px auto}.mn b{aspect-ratio:1.3;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;font-family:Orbitron;font-size:24px}.mn b.q{color:var(--cyan);border:2px dashed var(--cyan)}
 /* ===== Idiomas estilo Duolingo ===== */
 .duo{--db:#131f24;--dt:#f1f7fb;--dm:#8fa3ad;--dl:#37464f;--dc:#16252b;--dg:#58cc02;--dgs:#58a700;--dbl:#1cb0f6;--dsel:#1c3b4a;position:fixed;inset:0;z-index:95;background:var(--db);color:var(--dt);display:none;flex-direction:column;font-family:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;font-weight:700;letter-spacing:0}
 .duo.claro{--db:#fff;--dt:#3c3c3c;--dm:#777;--dl:#e5e5e5;--dc:#fff;--dsel:#ddf4ff}
@@ -3029,6 +3039,95 @@ function cardDuelo(el,fim){
       const x=Q[i],q=x.q;J.innerHTML='<p class="ar-inst">'+(i+1)+'/5 · '+MATERIAS[x.m].nome+'</p><div class="mv-q">'+q[0]+'</div><div class="ar-ops">'+q[1].map((o,k)=>'<button class="ar-op" data-k="'+k+'">'+o+'</button>').join('')+'</div>';
       J.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(J._t)return;J._t=1;const ok=+b.dataset.k===q[2];if(ok)ac++;J.querySelectorAll('[data-k]').forEach(z=>{if(+z.dataset.k===q[2])z.classList.add('ok');else if(z===b)z.classList.add('err')});try{ok?SFX.certo():SFX.erro()}catch(e){}setTimeout(()=>{J._t=0;i++;prox()},ok?600:1100)})};
     prox()};
+}
+
+/* ============ MAIS 5 JOGOS DE LÓGICA ============ */
+/* ---------- 1. Balança ---------- */
+function cardBalanca(el,fim){
+  const nv=jg('balanca').nv,R=2;let rod=0,ac=0;jgCab(el,'⚖️','Qual Pesa Mais?',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const nova=()=>{const n=nv<=1?3:nv<=3?4:5,itens=embaralhar(['🔴','🔵','🟢','🟡','🟣','🟠']).slice(0,n),ord=embaralhar(itens.slice());/* ord[0] = mais pesado */
+    let fatos=[];for(let i=0;i<n-1;i++)fatos.push([ord[i],ord[i+1]]);if(nv>=3){const a=rr(0,n-3);fatos.push([ord[a],ord[a+2]])}fatos=embaralhar(fatos);
+    const txt=f=>nv>=4&&Math.random()<.5?f[1]+' é mais leve que '+f[0]:f[0]+' é mais pesado que '+f[1];
+    const tipo=nv<=1?0:nv<=3?pick([0,1]):pick([0,1,2]),perg=['Qual é o MAIS PESADO?','Qual é o MAIS LEVE?','Qual é o SEGUNDO mais pesado?'][tipo],certo=[ord[0],ord[n-1],ord[1]][tipo];
+    J.innerHTML='<p class="ar-inst">Rodada '+(rod+1)+' de '+R+'. Leia as pesagens:</p><div class="bl-f">'+fatos.map(f=>'<div>⚖️ '+txt(f)+'</div>').join('')+'</div><div class="mv-q">'+perg+'</div><div class="bl-o">'+itens.map(i=>'<button data-i="'+i+'">'+i+'</button>').join('')+'</div><p class="ar-msg"></p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(J._t)return;J._t=1;const ok=b.dataset.i===certo;if(ok)ac++;b.classList.add(ok?'ok':'err');try{ok?SFX.certo():SFX.erro()}catch(e){}
+      J.querySelector('.ar-msg').innerHTML='Do mais pesado ao mais leve: '+ord.join(' > ');setTimeout(()=>{J._t=0;rod++;if(rod<R)nova();else{const v=ac===R,s=v?jgSubir('balanca',6):false;if(v)jgWin(J,'Raciocínio certeiro!',s);else J.querySelector('.ar-msg').innerHTML+='<br>Acertou '+ac+' de '+R+'.';jgFim(fim,ac>=1,nv,ac/R)}},ok?1100:2200)})};
+  nova();
+}
+/* ---------- 2. Quem é Quem (lógica de grade) ---------- */
+function permsDe(a){if(a.length<=1)return[a.slice()];const r=[];a.forEach((x,i)=>permsDe(a.slice(0,i).concat(a.slice(i+1))).forEach(p=>r.push([x].concat(p))));return r}
+function cardQuem(el,fim){
+  const nv=jg('quem').nv,N=nv<=2?3:4,nA=nv===1||nv===3?1:2;jgCab(el,'🕵️','Quem é Quem?',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const P=['Ana','Beto','Caio','Duda'].slice(0,N),ATR=embaralhar([['pet',['🐶 cão','🐱 gato','🐟 peixe','🐦 pássaro']],['cor',['💙 azul','❤️ vermelho','💚 verde','💛 amarelo']],['bebida',['☕ café','🍵 chá','🧃 suco','🥛 leite']]]).slice(0,nA).map(a=>[a[0],a[1].slice(0,N)]);
+  const perms=permsDe([...Array(N).keys()]),sol=ATR.map(()=>pick(perms));/* sol[a][pessoa]=índice do valor */
+  const todas=[];const rec=(a,acc)=>{if(a===nA){todas.push(acc);return}perms.forEach(p=>rec(a+1,acc.concat([p])))};rec(0,[]);
+  const vale=(c,s)=>c.t==='tem'?s[c.a][c.p]===c.v:c.t==='nao'?s[c.a][c.p]!==c.v:c.t==='liga'?s[c.a].indexOf(c.v)===s[c.b].indexOf(c.w):s[c.a].indexOf(c.v)!==s[c.b].indexOf(c.w);
+  const gera=()=>{const p=rr(0,N-1),a=rr(0,nA-1),r=Math.random();
+    if(nA===2&&r<.35){const q=rr(0,N-1),v=sol[0][q],w=sol[1][q];return Math.random()<.6?{t:'liga',a:0,b:1,v,w}:{t:'nliga',a:0,b:1,v,w:sol[1][(q+1)%N]}}
+    if(r<.75)return{t:'nao',p,a,v:(sol[a][p]+rr(1,N-1))%N};return{t:'tem',p,a,v:sol[a][p]}};
+  let pistas=[],cand=todas;
+  for(let t=0;t<400&&cand.length>1;t++){const c=gera();if(c.t==='tem'&&pistas.filter(x=>x.t==='tem').length>=1)continue;const novo=cand.filter(s=>vale(c,s));if(novo.length<cand.length&&novo.length>=1){pistas.push(c);cand=novo}}
+  const nomeV=(a,v)=>ATR[a][1][v],txtP=c=>c.t==='tem'?'<b>'+P[c.p]+'</b> tem '+nomeV(c.a,c.v)+'.':c.t==='nao'?'<b>'+P[c.p]+'</b> NÃO tem '+nomeV(c.a,c.v)+'.':c.t==='liga'?'Quem tem '+nomeV(c.a,c.v)+' também tem '+nomeV(c.b,c.w)+'.':'Quem tem '+nomeV(c.a,c.v)+' NÃO tem '+nomeV(c.b,c.w)+'.';
+  const resp=ATR.map(()=>Array(N).fill(-1));let tent=0,acabou=false;
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Use as pistas para descobrir o '+ATR.map(a=>a[0]).join(' e a ')+' de cada pessoa. Toque nas casas para trocar a opção.</p><div class="qq-p">'+pistas.map(c=>'<div>🔎 '+txtP(c)+'</div>').join('')+'</div>'+
+    '<div class="qq-t">'+P.map((n,p)=>'<div class="qq-r"><b>'+n+'</b>'+ATR.map((A,a)=>'<button data-c="'+a+'-'+p+'">'+(resp[a][p]>=0?A[1][resp[a][p]]:'?')+'</button>').join('')+'</div>').join('')+'</div><button class="btn" data-ver style="margin-top:10px">VERIFICAR</button><p class="ar-msg">'+(msg||'')+'</p>';
+    J.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{if(acabou)return;const [a,p]=b.dataset.c.split('-').map(Number);resp[a][p]=(resp[a][p]+1)%N;draw()});
+    J.querySelector('[data-ver]').onclick=()=>{if(acabou)return;if(resp.some(r=>r.includes(-1))){draw('Preencha todas as casas.');return}
+      const certo=resp.every((r,a)=>r.every((v,p)=>v===sol[a][p]));if(certo){acabou=true;try{SFX.certo()}catch(e){}draw();const s=jgSubir('quem',6);jgWin(J,'Detetive de primeira!',s);jgFim(fim,true,nv,tent?.7:1);return}
+      tent++;try{SFX.erro()}catch(e){}const errs=resp.reduce((t,r,a)=>t+r.filter((v,p)=>v!==sol[a][p]).length,0);
+      if(tent>=2){acabou=true;ATR.forEach((A,a)=>P.forEach((_,p)=>resp[a][p]=sol[a][p]));draw('A resposta certa está acima. Dica: comece pelas pistas com "NÃO" e vá eliminando.');jgFim(fim,false,nv,.3);return}
+      draw('❌ '+errs+' casa(s) errada(s). Última tentativa!')}};
+  draw();
+}
+/* ---------- 3. Nim dos Palitos ---------- */
+function cardNim(el,fim){
+  const nv=jg('nim').nv,max=nv>=4?4:3,mod=max+1,esperto=[.35,.55,.7,.8,.9,1][Math.min(nv,6)-1];jgCab(el,'🥢','Palitos (Nim)',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  let n;do{n=rr(10,nv>=4?21:17)}while(n%mod===0);let vez='voce',acabou=false,log=[];
+  const draw=msg=>{J.innerHTML='<p class="ar-inst">Cada um, na sua vez, tira de 1 a '+max+' palitos. <b class="cy">Quem tirar o último palito vence.</b> Você começa.</p><div class="nm">'+'<i></i>'.repeat(n)+'</div><div class="nm-n">'+n+' palito'+(n!==1?'s':'')+'</div>'+
+    (acabou?'':'<div class="nm-b">'+[...Array(max).keys()].map(k=>'<button data-k="'+(k+1)+'"'+(vez!=='voce'||k+1>n?' disabled':'')+'>Tirar '+(k+1)+'</button>').join('')+'</div>')+'<p class="ar-msg">'+(msg||log.slice(-2).join(' · '))+'</p>';
+    J.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{if(acabou||vez!=='voce')return;const k=+b.dataset.k;n-=k;log.push('Você tirou '+k);try{SFX.nota(0)}catch(e){}
+      if(n<=0){acabou=true;try{SFX.certo()}catch(e){}draw('🏆 Você tirou o último palito e venceu!');const s=jgSubir('nim',5);jgWin(J,'Estrategista!',s);jgFim(fim,true,nv);return}
+      vez='pc';draw();setTimeout(()=>{let t=n%mod;if(!t||Math.random()>esperto)t=rr(1,Math.min(max,n));n-=t;log.push('O app tirou '+t);try{SFX.nota(2)}catch(e){}
+        if(n<=0){acabou=true;try{SFX.erro()}catch(e){}draw('O app tirou o último palito. 💡 Segredo: deixe sempre um múltiplo de '+mod+' palitos para o adversário.');jgFim(fim,false,nv,.3);return}vez='voce';draw()},800)})};
+  draw();
+}
+/* ---------- 4. Travessia do Rio ---------- */
+function cardTravessia(el,fim){
+  const nv=jg('travessia').nv,modo=nv<=2?'fazendeiro':'raposas';jgCab(el,'⛵','Travessia do Rio',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const IT=modo==='fazendeiro'?[['🐺','lobo'],['🐐','cabra'],['🥬','couve']]:[['🐔','galinha'],['🐔','galinha'],['🐔','galinha'],['🦊','raposa'],['🦊','raposa'],['🦊','raposa']];
+  let lado=IT.map(()=>0),barco=0,sel=new Set(),mov=0,falhas=0,acabou=false;
+  const regra=modo==='fazendeiro'?'O 🧑‍🌾 leva no máximo 1 item por vez. Se ficarem sozinhos, o lobo come a cabra e a cabra come a couve.':'O barco leva 1 ou 2 animais (alguém precisa remar). Em nenhuma margem as galinhas podem ficar em menor número que as raposas (se houver galinhas ali).';
+  const perigo=()=>{if(modo==='fazendeiro'){for(const m of [0,1]){if(m===barco)continue;const aqui=i=>lado[i]===m;if(aqui(0)&&aqui(1))return'O lobo comeu a cabra!';if(aqui(1)&&aqui(2))return'A cabra comeu a couve!'}return null}
+    for(const m of [0,1]){const g=IT.filter((x,i)=>lado[i]===m&&x[1]==='galinha').length,r=IT.filter((x,i)=>lado[i]===m&&x[1]==='raposa').length;if(g>0&&r>g)return'As raposas ficaram em maior número que as galinhas!'}return null};
+  const draw=msg=>{const margem=m=>IT.map((x,i)=>lado[i]===m&&!(m===barco&&sel.has(i))?'<button data-i="'+i+'"'+(m!==barco?' disabled':'')+'>'+x[0]+'</button>':'').join('');
+    J.innerHTML='<p class="ar-inst">Leve todos para a margem direita. '+regra+'</p><div class="tv"><div class="tv-m">'+margem(0)+'</div><div class="tv-r"><div class="tv-b" style="align-self:'+(barco?'flex-end':'flex-start')+'">'+(modo==='fazendeiro'?'🧑‍🌾':'')+[...sel].map(i=>'<button data-s="'+i+'">'+IT[i][0]+'</button>').join('')+'⛵</div></div><div class="tv-m">'+margem(1)+'</div></div>'+
+      '<div class="row" style="margin-top:10px"><button class="btn" data-go>⛵ ATRAVESSAR</button></div><p class="ar-msg">'+(msg||'Viagens: '+mov)+'</p>';
+    J.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(acabou)return;const i=+b.dataset.i,cap=modo==='fazendeiro'?1:2;if(sel.size>=cap){draw('O barco já está cheio.');return}sel.add(i);draw()});
+    J.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sel.delete(+b.dataset.s);draw()});
+    J.querySelector('[data-go]').onclick=()=>{if(acabou)return;if(modo==='raposas'&&!sel.size){draw('Alguém precisa remar o barco.');return}
+      sel.forEach(i=>lado[i]=1-barco);barco=1-barco;sel.clear();mov++;try{SFX.nota(mov%4)}catch(e){}
+      const p=perigo();if(p){falhas++;try{SFX.erro()}catch(e){}if(falhas>=3){acabou=true;draw('❌ '+p+' Fim das tentativas. '+(modo==='fazendeiro'?'Dica: leve a cabra primeiro e traga ela de volta no meio do caminho.':'Dica: às vezes é preciso trazer animais de volta.'));jgFim(fim,false,nv,.3);return}
+        lado=IT.map(()=>0);barco=0;mov=0;draw('❌ '+p+' Recomeçando ('+falhas+'/3 erros).');return}
+      if(lado.every(x=>x===1)){acabou=true;try{SFX.certo()}catch(e){}draw();const s=jgSubir('travessia',6);jgWin(J,'Todos atravessaram em '+mov+' viagens!',s);jgFim(fim,true,nv,falhas?.7:1);return}draw()}};
+  draw();
+}
+/* ---------- 5. Matriz Numérica ---------- */
+function cardMatrizNum(el,fim){
+  const nv=jg('matnum').nv,R=2;let rod=0,ac=0;jgCab(el,'🧩','Matriz Numérica',nv,jgXP(nv));const J=el.querySelector('.jogo');
+  const gerar=()=>{const t=pick(nv<=1?['soma','pa']:nv<=2?['soma','pa','col']:nv<=3?['soma','pa','col','prod','dobro']:['prod','dobro','sub','quad','pa2']);let M,exp;
+    if(t==='soma'){M=[0,1,2].map(()=>{const a=rr(1,12),b=rr(1,12);return[a,b,a+b]});exp='Em cada linha, o 3º número é a soma dos dois primeiros.'}
+    else if(t==='pa'){const d=rr(2,7);M=[0,1,2].map(()=>{const a=rr(1,20);return[a,a+d,a+2*d]});exp='Em cada linha, soma-se '+d+' de um número para o outro.'}
+    else if(t==='col'){const d=rr(2,6);const top=[rr(1,9),rr(1,9),rr(1,9)];M=[0,1,2].map(r=>top.map(x=>x+r*d));exp='Em cada coluna, soma-se '+d+' de cima para baixo.'}
+    else if(t==='prod'){M=[0,1,2].map(()=>{const a=rr(2,9),b=rr(2,9);return[a,b,a*b]});exp='Em cada linha, o 3º número é o produto dos dois primeiros.'}
+    else if(t==='dobro'){const l=[rr(1,6),rr(1,6),rr(1,6)];M=[l,l.map(x=>x*2),l.map(x=>x*4)];exp='Cada linha é o dobro da linha de cima.'}
+    else if(t==='sub'){M=[0,1,2].map(()=>{const a=rr(10,30),b=rr(1,9);return[a,b,a-b]});exp='Em cada linha, o 3º número é o 1º menos o 2º.'}
+    else if(t==='quad'){M=[0,1,2].map(()=>{const a=rr(2,9);return[a,a*a,a*a*a]});exp='Em cada linha: o número, o seu quadrado e o seu cubo.'}
+    else{const d1=rr(2,4),d2=rr(5,8);M=[0,1,2].map(r=>{const a=rr(1,9),d=r===1?d2:d1;return[a,a+d,a+2*d]});M=[0,1,2].map(r=>{const a=rr(1,9),d=d1+r;return[a,a+d,a+2*d]});exp='Linha 1 soma '+d1+', linha 2 soma '+(d1+1)+', linha 3 soma '+(d1+2)+' a cada passo.'}
+    const pos=nv<=1?8:rr(0,8),resp=M[Math.floor(pos/3)][pos%3];return{M,pos,resp,exp}};
+  const nova=()=>{const g=gerar(),ops=opsNum(g.resp,Math.max(3,Math.round(Math.abs(g.resp)*.2)));
+    J.innerHTML='<p class="ar-inst">Descubra a regra e o número que falta. Rodada '+(rod+1)+' de '+R+'.</p><div class="mn">'+g.M.flat().map((v,i)=>'<b'+(i===g.pos?' class="q"':'')+'>'+(i===g.pos?'?':v)+'</b>').join('')+'</div>'+opsHtml(ops)+'<p class="ar-msg"></p>';
+    ligaOps(J,ops,g.resp,ok=>{if(ok)ac++;J.querySelector('.ar-msg').innerHTML='💡 '+g.exp;setTimeout(()=>{rod++;if(rod<R)nova();else{const v=ac===R,s=v?jgSubir('matnum',7):false;if(v)jgWin(J,'Padrão encontrado!',s);else J.querySelector('.ar-msg').innerHTML+='<br>Acertou '+ac+' de '+R+'.';jgFim(fim,ac>=1,nv,ac/R)}},1600)})};
+  nova();
 }
 
 /* ---------- 6. Tabela de Schulte ---------- */
@@ -5950,7 +6049,7 @@ const FOCO_GRUPOS={
   palavras:['🔤 Palavras e foco',['dicas','caca','stroop','digitos']],
   vida:['🩺 Saúde, socorro e dinheiro',['mito','dinmito','socorro']],
   reflexao:['💭 Reflexão e gratidão',['pensar','gratidao']],
-  jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','emojis','seqnum','robo','magico','bolas','xadrez','sudoku4','sudoku9','erros','memoria']],
+  jogos:['🎲 Jogos de raciocínio',['hanoi','luzes','desliza','labirinto','matriz','schulte','senha','nono','soma','conta','emojis','seqnum','robo','magico','bolas','balanca','quem','nim','travessia','matnum','xadrez','sudoku4','sudoku9','erros','memoria']],
   reflexos:['⚡ Reflexos',['alvos','reacao','simon','vainao','fisico']],
   leituras:['📖 Leituras e livros',['leitura','livro','biblia','cientista']],
   financas:['💰 Finanças',['financas','calculo']]
@@ -5960,7 +6059,7 @@ function focoTipos(){const t=new Set();if(FOCO.mat.size)t.add('saber');if(FOCO.i
 const arenaVistos={};   // distribuição: quanto mais um tipo apareceu na sessão, menor a chance de vir de novo
 const ARENA_CATS={
   perguntas:{w:3,t:{saber:4,cientista:1,financas:1,mito:1,dinmito:1,socorro:1,duelo:6}},
-  logica:{w:2.4,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1,emojis:1,seqnum:1,robo:1,magico:1,bolas:1}},
+  logica:{w:2.4,t:{logica:3,calculo:1,conta:1,soma:1,sudoku4:1,sudoku9:.5,senha:1,nono:1,emojis:1,seqnum:1,robo:1,magico:1,bolas:1,balanca:1,quem:1,nim:1,travessia:1,matnum:1}},
   jogos:{w:2.2,t:{memoria:1,erros:1,hanoi:1,luzes:1,desliza:1,labirinto:1,matriz:1,schulte:1,xadrez:1,bandeiras:1.3,mapa:1.3,stroop:1,digitos:1,caca:1,dicas:1.3}},
   reflexo:{w:1.3,t:{alvos:1,reacao:1,simon:1,vainao:1,fisico:1}},
   idiomas:{w:1.3,t:{idioma:1}},
@@ -6034,6 +6133,11 @@ const ARENA_TIPOS={
   robo:{nome:'Robô Programador',ico:'🤖',dif:'medio',xp:30,pilar:1,run:cardRobo},
   magico:{nome:'Quadrado Mágico',ico:'🔮',dif:'medio',xp:30,pilar:1,run:cardMagico},
   bolas:{nome:'Separe as Cores',ico:'🧪',dif:'medio',xp:30,pilar:1,run:cardBolas},
+  balanca:{nome:'Qual Pesa Mais?',ico:'⚖️',dif:'facil',xp:25,pilar:1,run:cardBalanca},
+  quem:{nome:'Quem é Quem?',ico:'🕵️',dif:'medio',xp:30,pilar:1,run:cardQuem},
+  nim:{nome:'Palitos (Nim)',ico:'🥢',dif:'medio',xp:25,pilar:1,run:cardNim},
+  travessia:{nome:'Travessia do Rio',ico:'⛵',dif:'medio',xp:30,pilar:1,run:cardTravessia},
+  matnum:{nome:'Matriz Numérica',ico:'🧩',dif:'medio',xp:25,pilar:1,run:cardMatrizNum},
   bandeiras:{nome:'Bandeiras do Mundo',ico:'🏳️',dif:'facil',xp:25,pilar:1,run:cardBandeiras},
   mapa:{nome:'Mapa-múndi',ico:'🗺️',dif:'medio',xp:30,pilar:1,run:cardMapa},
   stroop:{nome:'Teste de Stroop',ico:'🎨',dif:'medio',xp:25,pilar:1,run:cardStroop},
