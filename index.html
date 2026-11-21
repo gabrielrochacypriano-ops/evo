@@ -413,8 +413,9 @@ body.zen input,body.zen textarea,body.zen select{background:#f4f8f5}
 .ar-mais{font-size:20px;color:var(--mut);padding:2px 8px;margin-left:4px;background:none;border:0}
 .ar-ops{display:flex;flex-direction:column;gap:8px}.ar-op{width:100%;padding:13px 12px;border:1px solid var(--line);border-radius:12px;font-weight:700;font-size:16px;background:transparent;color:var(--txt);text-align:center}.ar-op.ok{background:var(--cyan);color:#000;border-color:var(--cyan)}.ar-op.err{background:var(--red);color:#fff;border-color:var(--red)}
 .bd{display:flex;justify-content:center;margin:10px 0 14px}.bd img{max-width:240px;width:70%;border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.25);border:1px solid var(--line)}.bd-emo{font-size:110px;line-height:1}
-.mapa{border-radius:12px;overflow:hidden;background:#a9d3e8;border:1px solid var(--line);margin:6px 0}
-.mapa svg{width:100%;height:auto;display:block;aspect-ratio:784/458}.mapa path{fill:#e8e4d4;stroke:#7a8b86;stroke-width:.35;transition:fill .2s}
+.mapa{position:relative;border-radius:12px;overflow:hidden;background:#a9d3e8;border:1px solid var(--line);margin:6px 0;height:min(58vh,440px)}
+.mapa svg{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.mp-z{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:2}.mp-z button{width:40px;height:40px;border-radius:10px;border:0;background:rgba(255,255,255,.92);color:#1f2937;font-size:20px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.2)}.mapa path{fill:#e8e4d4;stroke:#7a8b86;stroke-width:.8px;vector-effect:non-scaling-stroke;transition:fill .2s}
 .sp-prog{text-align:center;color:var(--mut);font-size:13px}.sp-w{text-align:center;font-size:40px;font-weight:900;letter-spacing:.04em;margin:18px 0 10px;font-family:system-ui,sans-serif}
 .sp-bar{height:6px;border-radius:9px;background:rgba(127,127,127,.25);overflow:hidden;margin-bottom:14px}.sp-bar i{display:block;height:100%;background:var(--cyan);animation:spBar linear forwards}@keyframes spBar{from{width:100%}to{width:0}}
 .sp-ops{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sp-ops button{padding:16px 0;border:1px solid var(--line);border-radius:12px;font-weight:800;font-size:15px;background:transparent;color:var(--txt)}
@@ -2671,20 +2672,49 @@ function cardBandeiras(el,fim){
 /* ---------- Mapa-múndi ---------- */
 const MAPA_PEQ=new Set(['sg','mt','lu','cy','st','cv','bs','tt','lb','bz','sv','me','mk','si','ba','md','am','ge','az','qa','kw','rw','gw','jm','fj','jo','al','ee','lv','lt','sk','cz','hr','rs','be','nl','ch','at','dk','ie','pa','cr','ht','do','ni','hn','gt','tn','ae','om','ye','sy','kh','la','np','lk','bd','uz','tz','ug','zw','zm','bw','na','ml','ne','td','so','sd','gh','sn','ci','cm','mz','ke','et','pg','bg','ro','hu','pl','gr','pt','by','ua','ir','iq','af','pk','th','vn','ph','my','kp','kr','is','fi','no','se','uy','py','ec','gy','sr','bo','cu','mg','dz','ly','ma','cd','ao','tr']);
 function cardMapa(el,fim){
-  const nv=jg('mapa').nv,R=3;let rod=0,ac=0;const usados=new Set();
+  const nv=jg('mapa').nv,R=3;let rod=0,pts=0;const usados=new Set();
   jgCab(el,'🗺️','Mapa-múndi',nv,jgXP(nv));const J=el.querySelector('.jogo');
-  const pool=GEO_PAISES.filter(p=>p[0]!=='il'&&(nv<=1?(p[2]===1&&!MAPA_PEQ.has(p[0])):nv<=2?(p[2]<=2&&!['sg','mt','lu','cy','st','cv','bs','tt','lb'].includes(p[0])):nv<=3?p[2]<=3&&!['sg','mt','st','cv','lb'].includes(p[0]):true));
-  const nova=()=>{const cand=pool.filter(p=>!usados.has(p[0])),p=pick(cand.length?cand:pool);usados.add(p[0]);
-    J.innerHTML='<p class="ar-inst">Toque no país: <b class="cy" style="font-size:18px">'+p[1]+'</b> <span class="mut">('+(rod+1)+'/'+R+')</span></p><div class="mapa">'+MAPA_SVG+'</div><p class="ar-msg"></p><p class="mut" style="font-size:10.5px;margin-top:4px">Mapa: Al MacDonald / Fritz Lekschas · CC BY-SA 3.0</p>';
-    const svg=J.querySelector('svg');svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-    const alvo=svg.getElementById?svg.getElementById(p[0]):svg.querySelector('#'+p[0]);
-    if(nv>=2&&alvo){requestAnimationFrame(()=>{try{const b=alvo.getBBox(),W=Math.max(b.width*(nv>=4?3:4),nv>=4?150:nv>=3?200:280),H=W*0.6,cx=b.x+b.width/2+(Math.random()-.5)*W*.35,cy=b.y+b.height/2+(Math.random()-.5)*H*.35;svg.setAttribute('viewBox',(cx-W/2)+' '+(cy-H/2)+' '+W+' '+H)}catch(e){}})}
-    const idDe=t=>{let n=t;while(n&&n!==svg){if(n.id&&!n.id.startsWith('_'))return n.id;if(n.id)return n.id;n=n.parentNode}return null};
-    svg.addEventListener('click',e=>{if(J._t)return;const id=idDe(e.target);if(!id)return;J._t=1;const ok=id===p[0];if(ok)ac++;
-      const pinta=(i,c)=>{const n=svg.getElementById(i);if(!n)return;(n.tagName==='g'?n.querySelectorAll('path'):[n]).forEach(x=>x.style.fill=c)};
-      if(!ok)pinta(id,'#ef4444');pinta(p[0],'#22c55e');try{ok?SFX.certo():SFX.erro()}catch(e){}
-      const tocado=GEO_PAISES.find(x=>x[0]===id);J.querySelector('.ar-msg').innerHTML=ok?'✓ Isso! <b>'+p[1]+'</b> fica em '+p[3]+'.':'✗ Você tocou em '+(tocado?tocado[1]:'outro país')+'. '+p[1]+' está em verde.';
-      setTimeout(()=>{J._t=0;rod++;if(rod<R)nova();else{const s=ac===R?jgSubir('mapa',5):false;J.querySelector('.ar-msg').innerHTML+='<br>Acertou '+ac+' de '+R+'.';if(ac===R)jgWin(J,'Geógrafo de primeira!',s);jgFim(fim,ac>=2,nv,ac/R)}},ok?1100:2000)});
+  const TINY=['sg','mt','lu','cy','st','cv','bs','tt','lb','il'];
+  const pool=GEO_PAISES.filter(p=>!TINY.includes(p[0])||nv>=6).filter(p=>nv<=2?p[2]<=1:nv<=3?p[2]<=2:true);
+  const WB={x:30.767,y:241.591,w:784.077,h:458.627};
+  const nova=()=>{const cand=pool.filter(p=>!usados.has(p[0])),p=pick(cand.length?cand:pool);usados.add(p[0]);let tent=0,acabou=false;
+    J.innerHTML='<p class="ar-inst">Toque no país: <b class="cy" style="font-size:19px">'+p[1]+'</b> <span class="mut">('+(rod+1)+'/'+R+')</span></p>'+
+      '<div class="mapa"><div class="mp-z"><button data-z="in">＋</button><button data-z="out">－</button><button data-z="ini" title="Voltar">⟲</button></div>'+MAPA_SVG+'</div>'+
+      '<p class="mut" style="font-size:12px;margin-top:4px">Use dois dedos (ou os botões) para dar zoom e arraste para mover.</p><p class="ar-msg"></p><p class="mut" style="font-size:10.5px">Mapa: Al MacDonald / Fritz Lekschas · CC BY-SA 3.0</p>';
+    const box=J.querySelector('.mapa'),svg=box.querySelector('svg');svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    const node=i=>svg.querySelector('[id="'+i+'"]'),alvo=node(p[0]);let vb={x:WB.x,y:WB.y,w:WB.w,h:WB.h},ini;
+    const rect=()=>box.getBoundingClientRect();
+    const aplica=()=>{const r=rect(),asp=r.height/Math.max(1,r.width);vb.w=Math.min(Math.max(vb.w,18),WB.w*1.05);vb.h=vb.w*asp;
+      vb.x=Math.min(Math.max(vb.x,WB.x-vb.w*.3),WB.x+WB.w-vb.w*.7);vb.y=Math.min(Math.max(vb.y,WB.y-vb.h*.3),WB.y+WB.h-vb.h*.7);svg.setAttribute('viewBox',vb.x+' '+vb.y+' '+vb.w+' '+vb.h)};
+    const centra=(cx,cy,w)=>{const r=rect();vb.w=w;vb.h=w*r.height/Math.max(1,r.width);vb.x=cx-vb.w/2;vb.y=cy-vb.h/2;aplica()};
+    let cx=WB.x+WB.w/2,cy=WB.y+WB.h/2,tam=40;ini={cx,cy,w:WB.w};
+    const preparar=()=>{let b=null;try{if(alvo)b=alvo.getBBox()}catch(e){}if(!b||!b.width){if(--tentaBB>0){requestAnimationFrame(preparar);return}}else{cx=b.x+b.width/2;cy=b.y+b.height/2;tam=Math.max(b.width,b.height)}
+      const W0=nv<=1?Math.max(tam*3,110):nv<=2?Math.max(tam*5,200):nv<=3?Math.max(tam*7,330):nv<=4?Math.max(tam*9,480):WB.w,desl=nv<=1?.12:nv<=2?.22:.3;
+      ini=W0>=WB.w?{cx:WB.x+WB.w/2,cy:WB.y+WB.h/2,w:WB.w}:{cx:cx+(Math.random()-.5)*W0*desl,cy:cy+(Math.random()-.5)*W0*desl*.6,w:W0};centra(ini.cx,ini.cy,ini.w)};
+    let tentaBB=20;requestAnimationFrame(preparar);
+    const zoom=(f,px,py)=>{const nw=Math.min(Math.max(vb.w*f,18),WB.w*1.05),k=nw/vb.w;px=px==null?vb.x+vb.w/2:px;py=py==null?vb.y+vb.h/2:py;vb.x=px-(px-vb.x)*k;vb.y=py-(py-vb.y)*k;vb.w=nw;aplica()};
+    const svgPt=(cxp,cyp)=>{const r=rect();return{x:vb.x+(cxp-r.left)/r.width*vb.w,y:vb.y+(cyp-r.top)/r.height*vb.h}};
+    box.querySelectorAll('[data-z]').forEach(bt=>bt.onclick=e=>{e.stopPropagation();const z=bt.dataset.z;if(z==='in')zoom(.7);else if(z==='out')zoom(1/.7);else centra(ini.cx,ini.cy,ini.w)});
+    box.addEventListener('wheel',e=>{e.preventDefault();const q=svgPt(e.clientX,e.clientY);zoom(e.deltaY<0?.85:1/.85,q.x,q.y)},{passive:false});
+    const pts0=new Map();let mov=0,dist0=0,w0=0,mid0=null;
+    const pinta=(i,c)=>{const n=node(i);if(!n)return;(n.tagName.toLowerCase()==='g'?n.querySelectorAll('path'):[n]).forEach(x=>x.style.fill=c)};
+    const idDe=t=>{let n=t;while(n&&n!==svg){if(n.id)return n.id;n=n.parentNode}return null};
+    svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);pts0.set(e.pointerId,{x:e.clientX,y:e.clientY});mov=0;
+      if(pts0.size===2){const [a,c]=[...pts0.values()];dist0=Math.hypot(a.x-c.x,a.y-c.y);w0=vb.w;mid0=svgPt((a.x+c.x)/2,(a.y+c.y)/2)}});
+    svg.addEventListener('pointermove',e=>{if(!pts0.has(e.pointerId))return;const ant=pts0.get(e.pointerId),r=rect();
+      if(pts0.size===1){const dx=e.clientX-ant.x,dy=e.clientY-ant.y;mov+=Math.abs(dx)+Math.abs(dy);vb.x-=dx/r.width*vb.w;vb.y-=dy/r.height*vb.h;aplica()}
+      pts0.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(pts0.size===2&&dist0){mov+=99;const [a,c]=[...pts0.values()],d=Math.hypot(a.x-c.x,a.y-c.y);const nw=Math.min(Math.max(w0*dist0/Math.max(d,1),18),WB.w*1.05),k=nw/vb.w;vb.x=mid0.x-(mid0.x-vb.x)*k;vb.y=mid0.y-(mid0.y-vb.y)*k;vb.w=nw;aplica()}});
+    const solta=e=>{const era=pts0.size;pts0.delete(e.pointerId);if(pts0.size<2)dist0=0;if(era!==1||mov>10||acabou||J._t)return;
+      const t=document.elementFromPoint(e.clientX,e.clientY),id=t&&svg.contains(t)?idDe(t):null;if(!id||id[0]==='_')return;tocou(id)};
+    svg.addEventListener('pointerup',solta);svg.addEventListener('pointercancel',e=>{pts0.delete(e.pointerId);dist0=0});
+    const msg=J.querySelector('.ar-msg');
+    const tocou=id=>{const ok=id===p[0],nome=(GEO_PAISES.find(x=>x[0]===id)||[0,'outro país'])[1];
+      if(ok){acabou=true;pts+=tent?.5:1;pinta(p[0],'#22c55e');try{SFX.certo()}catch(e){}msg.innerHTML='✓ Isso! <b>'+p[1]+'</b> fica em '+p[3]+'.';prox();return}
+      try{SFX.erro()}catch(e){}pinta(id,'#ef4444');setTimeout(()=>pinta(id,''),900);
+      if(!tent){tent=1;msg.innerHTML='✗ Esse é '+nome+'. Tente de novo! <span class="mut">Dica: '+p[1]+' fica em '+p[3]+'.</span>';return}
+      acabou=true;pinta(p[0],'#22c55e');centra(cx,cy,Math.max(tam*4,120));msg.innerHTML='✗ Esse é '+nome+'. '+p[1]+' está em verde.';prox()};
+    const prox=()=>{J._t=1;setTimeout(()=>{J._t=0;rod++;if(rod<R)nova();else{const ok=pts>=2,s=pts>=3?jgSubir('mapa',6):false;J.querySelector('.ar-msg').innerHTML+='<br>Pontos: '+pts+' de '+R+'.';if(pts>=3)jgWin(J,'Geógrafo de primeira!',s);jgFim(fim,ok,nv,pts/R)}},1500)};
   };
   nova();
 }
