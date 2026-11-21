@@ -5742,8 +5742,11 @@ function cardAlvos(el,fim){
   J.innerHTML='<p class="ar-inst">Toque nos alvos antes que eles fujam. Meta: <b class="cy">'+meta+' acertos</b> em 20 s.</p><div class="rf-area" id="rfA"><button class="rf-alvo" id="rfT" style="display:none;width:'+tam+'px;height:'+tam+'px;font-size:'+Math.round(tam*.55)+'px">🎯</button><div class="rf-cent" id="rfC"><button class="btn" id="rfGo">▶ COMEÇAR</button></div></div><p class="ar-msg">Acertos: 0/'+meta+' · Tempo: 20s</p>';
   const A=J.querySelector('#rfA'),T=J.querySelector('#rfT'),msg=J.querySelector('.ar-msg');
   const mover=()=>{const w=A.clientWidth-tam-4,h=A.clientHeight-tam-4;T.style.left=rr(4,Math.max(5,w))+'px';T.style.top=rr(4,Math.max(5,h))+'px';clearTimeout(mv);mv=setTimeout(mover,vida)};
-  T.onpointerdown=e=>{e.stopPropagation();if(!on)return;pts++;try{SFX.certo()}catch(x){}mover();msg.textContent='Acertos: '+pts+'/'+meta+' · Tempo: '+t+'s'};
-  A.onpointerdown=()=>{if(on){err++;try{SFX.erro()}catch(e){}}};
+  /* acerto por distância do toque ao centro do alvo (funciona mesmo se o alvo estiver se movendo) */
+  let ultT=0;const toque=(x,y)=>{if(!on)return;const now=performance.now();if(now-ultT<60)return;ultT=now;const r=T.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+    if(Math.hypot(x-cx,y-cy)<=r.width*.65){pts++;try{SFX.certo()}catch(e){}mover();msg.textContent='Acertos: '+pts+'/'+meta+' · Tempo: '+t+'s'}else{err++;try{SFX.erro()}catch(e){}}};
+  A.addEventListener('touchstart',e=>{if(!on)return;e.preventDefault();for(const tc of e.changedTouches)toque(tc.clientX,tc.clientY)},{passive:false});
+  A.addEventListener('mousedown',e=>{if(on)toque(e.clientX,e.clientY)});
   J.querySelector('#rfGo').onclick=()=>{J.querySelector('#rfC').remove();on=true;T.style.display='block';mover();
     tm=setInterval(()=>{t--;msg.textContent='Acertos: '+pts+'/'+meta+' · Tempo: '+t+'s';if(t<=0){clearInterval(tm);clearTimeout(mv);on=false;T.style.display='none';
       const passou=pts>=meta&&err<=Math.max(3,pts/2);msg.innerHTML='<b class="cy">'+pts+' alvos</b> · '+err+' toques fora. '+(passou?'Meta batida!':'Meta: '+meta+(err>Math.max(3,pts/2)?' com menos toques fora.':'.'));rfFim(fim,'alvos',passou,nv,J)}},1000)};
