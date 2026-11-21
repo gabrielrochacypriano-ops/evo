@@ -2699,7 +2699,7 @@ function cardMapa(el,fim){
     const pts0=new Map();let mov=0,dist0=0,w0=0,mid0=null;
     const pinta=(i,c)=>{const n=node(i);if(!n)return;(n.tagName.toLowerCase()==='g'?n.querySelectorAll('path'):[n]).forEach(x=>x.style.fill=c)};
     const idDe=t=>{let n=t;while(n&&n!==svg){if(n.id)return n.id;n=n.parentNode}return null};
-    svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);pts0.set(e.pointerId,{x:e.clientX,y:e.clientY});mov=0;
+    svg.addEventListener('pointerdown',e=>{pts0.set(e.pointerId,{x:e.clientX,y:e.clientY});mov=0;
       if(pts0.size===2){const [a,c]=[...pts0.values()];dist0=Math.hypot(a.x-c.x,a.y-c.y);w0=vb.w;mid0=svgPt((a.x+c.x)/2,(a.y+c.y)/2)}});
     svg.addEventListener('pointermove',e=>{if(!pts0.has(e.pointerId))return;const ant=pts0.get(e.pointerId),r=rect();
       if(pts0.size===1){const dx=e.clientX-ant.x,dy=e.clientY-ant.y;mov+=Math.abs(dx)+Math.abs(dy);vb.x-=dx/r.width*vb.w;vb.y-=dy/r.height*vb.h;aplica()}
@@ -5714,6 +5714,7 @@ function idiExercicio(l){
   return{tipo,item,t,perg:item[0],ops:ops.map(x=>x[L.col]),c:ops.indexOf(item),fala:alvo};
 }
 /* ---------- Reflexo e agilidade (FÍSICO) ---------- */
+function tapRapido(el,fn){el.addEventListener('pointerdown',e=>{el._pd=performance.now();fn(e)});el.addEventListener('click',e=>{if(performance.now()-(el._pd||0)<800)return;fn(e)})}
 function cardSimon(el,fim){
   S.simon=S.simon||{alvo:5,rec:0};const alvo=S.simon.alvo;
   const J=el.querySelector('.jogo'),cores=['#22d3ee','#f5c542','#ef4444','#a3e635'],seq=[];let pos=0,trava=true,acabou=false;
@@ -5725,12 +5726,12 @@ function cardSimon(el,fim){
     const vel=Math.max(330,700-seq.length*22);seq.forEach((s,k)=>setTimeout(()=>acende(s,vel-120),600+k*vel));
     setTimeout(()=>{trava=false;msg.innerHTML='Fase <b>'+seq.length+'/'+alvo+'</b> · sua vez'},600+seq.length*vel)};
   let comecou=false;
-  bs.forEach(b=>b.onpointerdown=()=>{if(!comecou){comecou=true;setTimeout(rodada,400);return}if(trava||acabou)return;const i=+b.dataset.s;acende(i,200);
+  bs.forEach(b=>tapRapido(b,()=>{if(!comecou){comecou=true;setTimeout(rodada,400);return}if(trava||acabou)return;const i=+b.dataset.s;acende(i,200);
     if(i!==seq[pos]){acabou=true;try{SFX.erro()}catch(e){}const n=seq.length-1;S.simon.rec=Math.max(S.simon.rec,n);salvar();
       msg.innerHTML='Você chegou à fase <b class="cy">'+n+'</b> de '+alvo+'. Na próxima vez, de novo com '+alvo+' fases.';fim(n>=Math.ceil(alvo*.6),Math.max(.4,n/alvo));return}
     pos++;if(pos===seq.length){
       if(seq.length>=alvo){acabou=true;S.simon.alvo=alvo+1;S.simon.rec=Math.max(S.simon.rec,alvo);salvar();msg.innerHTML='<b class="cy">Venceu as '+alvo+' fases!</b> Na próxima vez serão <b class="gd">'+(alvo+1)+'</b>.';fim(true,1);return}
-      trava=true;setTimeout(rodada,750)}});
+      trava=true;setTimeout(rodada,750)}}));
 }
 /* ---------- Reflexo e agilidade (FÍSICO) · 20 níveis, sobem devagar ---------- */
 const RF_MAX=20,rfTag=nv=>nv<=5?['FÁCIL','cy']:nv<=12?['MÉDIO','gd']:['DIFÍCIL','rd'];
@@ -5756,13 +5757,13 @@ function cardReacao(el,fim){
   J.innerHTML='<p class="ar-inst">5 rodadas. Quando ficar <b class="cy">VERDE</b>, toque o mais rápido possível. Meta: média abaixo de <b class="cy">'+lim+' ms</b>. Tocar antes do verde queima a rodada.</p><button class="rf-reac" id="rfR">TOQUE PARA COMEÇAR</button><p class="ar-msg"></p>';
   const B=J.querySelector('#rfR'),msg=J.querySelector('.ar-msg');
   const espera=()=>{est='espera';B.className='rf-reac esp';B.textContent='Espere o verde…';to=setTimeout(()=>{est='vai';B.className='rf-reac vai';B.textContent='TOQUE!';t0=performance.now()},rr(1200,3500))};
-  B.onpointerdown=()=>{
+  tapRapido(B,()=>{
     if(est==='pronto'){espera();return}
     if(est==='espera'){clearTimeout(to);try{SFX.erro()}catch(e){}est='pronto';B.className='rf-reac';B.textContent='Queimou! Toque para repetir a rodada';return}
     if(est==='vai'){const ms=Math.round(performance.now()-t0);tempos.push(ms);r++;try{SFX.certo()}catch(e){}
       if(r>=5){est='fim';const md=Math.round(tempos.reduce((a,b)=>a+b,0)/tempos.length),passou=md<=lim;B.className='rf-reac';B.textContent='Média: '+md+' ms';
         msg.innerHTML='Tempos: '+tempos.join(' · ')+' ms<br>'+(passou?'<b class="cy">Meta batida!</b>':'Meta: '+lim+' ms. Dormir bem e se exercitar melhora o tempo de reação.');rfFim(fim,'reacao',passou,nv,J);return}
-      est='pronto';B.className='rf-reac';B.textContent=ms+' ms · toque para a rodada '+(r+1)}};
+      est='pronto';B.className='rf-reac';B.textContent=ms+' ms · toque para a rodada '+(r+1)}});
 }
 function cardVaiNao(el,fim){
   const nv=jg('vainao').nv,dur=Math.round(1150-(nv-1)*40),pctR=Math.min(.45,.2+nv*.012),meta=nv<=10?75:80;
@@ -5773,8 +5774,8 @@ function cardVaiNao(el,fim){
     if(k>=N){A.className='vn-alvo';const pc=Math.round(ok/N*100),passou=pc>=meta;msg.innerHTML='<b class="cy">'+pc+'% de acerto</b> ('+err+' erro'+(err===1?'':'s')+'). '+(passou?'Meta batida!':'Meta: '+meta+'%.');rfFim(fim,'vainao',passou,nv,J);return}
     k++;tocou=false;estim=Math.random()<1-pctR?'g':'r';A.className='vn-alvo '+estim;
     setTimeout(()=>{A.className='vn-alvo';setTimeout(passo,Math.max(150,300-nv*6))},dur)};
-  A.onpointerdown=()=>{if(tocou||!estim||!A.classList.contains(estim))return;tocou=true;
-    if(estim==='g'){ok++;try{SFX.certo()}catch(e){}}else{err++;try{SFX.erro();navigator.vibrate&&navigator.vibrate(80)}catch(e){}}A.className='vn-alvo';};
+  tapRapido(A,()=>{if(tocou||!estim||!A.classList.contains(estim))return;tocou=true;
+    if(estim==='g'){ok++;try{SFX.certo()}catch(e){}}else{err++;try{SFX.erro();navigator.vibrate&&navigator.vibrate(80)}catch(e){}}A.className='vn-alvo';});
   J.querySelector('#vnGo').onclick=e=>{e.target.remove();passo()};
 }
 
